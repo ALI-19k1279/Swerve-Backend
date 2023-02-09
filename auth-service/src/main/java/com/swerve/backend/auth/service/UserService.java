@@ -89,6 +89,7 @@ public class UserService extends BaseService<User, UserDetailsDTO, Long> {
         if (!getUsername().equals(username) && !hasAuthority(ROLE_ADMIN)) {
             throw new ForbiddenException("You are not allowed to view this user's details");
         }
+        System.out.println(getUsername());
         System.out.println(username);
         return (UserDetailsDTO) userDetailsService.loadUserByUsername(username);
     }

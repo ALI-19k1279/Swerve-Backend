@@ -27,6 +27,7 @@ public class SecurityUtils {
     public static String BEARER_PREFIX = "Bearer ";
 
     public static String getUsername() {
+        System.out.println(SecurityContextHolder.getContext().getAuthentication());
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return principal instanceof UserDetails ? ((UserDetails) principal).getUsername() : "";
     }

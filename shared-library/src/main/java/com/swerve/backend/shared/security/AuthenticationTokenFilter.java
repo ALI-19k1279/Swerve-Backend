@@ -32,8 +32,11 @@ public class AuthenticationTokenFilter extends OncePerRequestFilter {
     protected void doFilterInternal(
             HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
+        System.out.println(request);
         String token = extractJwtFromRequest(request);
+        System.out.println("filterr");
         String username = tokenUtils.getUsername(token);
+        System.out.println(username);
         if ((username != null && SecurityContextHolder.getContext().getAuthentication() == null)) {
             UserDetails userDetails = getUserDetails(username);
             if (tokenUtils.validateToken(token, userDetails)) {
@@ -52,6 +55,7 @@ public class AuthenticationTokenFilter extends OncePerRequestFilter {
 
     private String extractJwtFromRequest(HttpServletRequest request) {
         String bearerToken = request.getHeader(HttpHeaders.AUTHORIZATION);
+        System.out.println("bearer token:"+ bearerToken);
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_PREFIX)) {
             return bearerToken.substring(BEARER_PREFIX.length());
         }

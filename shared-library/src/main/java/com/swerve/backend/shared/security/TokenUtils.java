@@ -2,20 +2,27 @@ package com.swerve.backend.shared.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import java.security.Key;
 import java.util.Date;
 
 @Component
 public class TokenUtils {
     @Value("${token.secret}")
-    private String secret;
+    private static final String SECRET_KEY = "404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970";
 
+    private Key getSignInKey() {
+        byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
+        return Keys.hmacShaKeyFor(keyBytes);
+    }
     public Claims getClaims(String token) {
         try {
-            return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
+            return Jwts.parser().setSigningKey(getSignInKey()).parseClaimsJws(token).getBody();
         } catch (Exception exception) {
             return null;
         }
@@ -30,6 +37,7 @@ public class TokenUtils {
     }
 
     public String getUsername(String token) {
+        System.out.println("token:" + token);
         try {
             return getClaims(token).getSubject();
         } catch (Exception exception) {
