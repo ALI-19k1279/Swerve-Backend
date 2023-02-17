@@ -20,6 +20,10 @@ public class SubjectController extends BaseController<Subject, SubjectDTO, Long>
         this.service = service;
     }
 
+    @GetMapping("/ss")
+    public String getHello() {
+        return "hello";
+    }
     @GetMapping("/study-program/{id}/all")
     public ResponseEntity<List<SubjectDTO>> getByStudyProgramId(@PathVariable Long id) {
         return new ResponseEntity<>(this.service.findByStudyProgramId(id), HttpStatus.OK);
