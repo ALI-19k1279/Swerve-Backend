@@ -4,7 +4,9 @@
     <file url="file://$PROJECT_DIR$/auth-service/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/auth-service/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/course-service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/course-service/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/shared-library/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/shared-library/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/subject/src/main/java" charset="UTF-8" />

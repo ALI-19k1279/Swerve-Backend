@@ -19,8 +19,7 @@ public class SubjectController extends BaseController<Course, SubjectDTO, Long> 
         super(service);
         this.service = service;
     }
-    @GetMapping("/hello")
-    public ResponseEntity<String> helloAPI(){return new ResponseEntity<>("HELLO",HttpStatus.OK);}
+
     @GetMapping("/study-program/{id}/all")
     public ResponseEntity<List<SubjectDTO>> getByStudyProgramId(@PathVariable Long id) {
         System.out.println("hello");
