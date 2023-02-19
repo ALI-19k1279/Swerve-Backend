@@ -2,7 +2,7 @@ package com.swerve.backend.subject.controller;
 
 import com.swerve.backend.shared.controller.BaseController;
 import com.swerve.backend.subject.dto.SubjectMaterialDTO;
-import com.swerve.backend.subject.model.SubjectMaterial;
+import com.swerve.backend.subject.model.CourseMaterial;
 import com.swerve.backend.subject.service.SubjectMaterialService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,7 +15,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/subject-materials")
 public class SubjectMaterialController
-        extends BaseController<SubjectMaterial, SubjectMaterialDTO, Long> {
+        extends BaseController<CourseMaterial, SubjectMaterialDTO, Long> {
     private final SubjectMaterialService service;
 
     public SubjectMaterialController(SubjectMaterialService service) {

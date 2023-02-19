@@ -6,7 +6,7 @@ import com.swerve.backend.shared.service.ExtendedService;
 import com.swerve.backend.subject.client.FacultyFeignClient;
 import com.swerve.backend.subject.dto.SubjectDTO;
 import com.swerve.backend.subject.mapper.SubjectMapper;
-import com.swerve.backend.subject.model.Subject;
+import com.swerve.backend.subject.model.Course;
 import com.swerve.backend.subject.repository.SubjectRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,7 +16,7 @@ import java.util.List;
 import static com.swerve.backend.shared.security.SecurityUtils.*;
 
 @Service
-public class SubjectService extends ExtendedService<Subject, SubjectDTO, Long> {
+public class SubjectService extends ExtendedService<Course, SubjectDTO, Long> {
     private final SubjectRepository repository;
     private final SubjectMapper mapper;
     private final FacultyFeignClient facultyFeignClient;
@@ -56,6 +56,8 @@ public class SubjectService extends ExtendedService<Subject, SubjectDTO, Long> {
                 mapper.toDTO(
                         repository.findByStudyProgramIdAndDeletedFalseOrderBySemesterAscNameAsc(
                                 id));
+        var res=subjects.isEmpty() ? subjects : this.mapMissingValues(subjects);
+        System.out.println(res);
         return subjects.isEmpty() ? subjects : this.mapMissingValues(subjects);
     }
 
@@ -80,18 +82,18 @@ public class SubjectService extends ExtendedService<Subject, SubjectDTO, Long> {
 
     @Transactional
     public SubjectDTO updateSyllabus(Long id, String syllabus) {
-        Subject subject =
+        Course course =
                 repository
                         .findById(id)
-                        .orElseThrow(() -> new NotFoundException("Subject not found"));
+                        .orElseThrow(() -> new NotFoundException("Course not found"));
 
         if (hasAuthority(ROLE_TEACHER)
-                && !subject.getProfessorId().equals(getTeacherId())
-                && !subject.getAssistantId().equals(getTeacherId())) {
-            throw new ForbiddenException("You are not allowed to update this subject syllabus");
+                && !course.getProfessorId().equals(getTeacherId())
+                && !course.getAssistantId().equals(getTeacherId())) {
+            throw new ForbiddenException("You are not allowed to update this course syllabus");
         }
 
-        subject.setSyllabus(syllabus);
-        return mapper.toDTO(repository.save(subject));
+        course.setSyllabus(syllabus);
+        return mapper.toDTO(repository.save(course));
     }
 }

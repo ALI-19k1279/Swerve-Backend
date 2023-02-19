@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
 
 <!--    <groupId>ca.utoronto.lms</groupId>-->
-<!--    <artifactId>subject-service</artifactId>-->
+<!--    <artifactId>course-service</artifactId>-->
 <!--    <version>1.0</version>-->
 <!--    <name>University of Toronto - Subject service</name>-->
 
@@ -14,7 +14,7 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>subject-service</artifactId>
+    <artifactId>course-service</artifactId>
 
 <!--    <properties>-->
 <!--        <java.version>17</java.version>-->

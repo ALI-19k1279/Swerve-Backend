@@ -8,7 +8,7 @@ import com.swerve.backend.subject.dto.SubjectDTO;
 import com.swerve.backend.subject.dto.SubjectNotificationDTO;
 import com.swerve.backend.subject.dto.TeacherDTO;
 import com.swerve.backend.subject.mapper.SubjectNotificationMapper;
-import com.swerve.backend.subject.model.Subject;
+import com.swerve.backend.subject.model.Course;
 import com.swerve.backend.subject.model.SubjectNotification;
 import com.swerve.backend.subject.repository.SubjectNotificationRepository;
 import com.swerve.backend.subject.repository.SubjectRepository;
@@ -74,9 +74,9 @@ public class SubjectNotificationService
                     subjectNotifications.stream()
                             .anyMatch(
                                     subjectNotification -> {
-                                        Subject subject = subjectNotification.getSubject();
-                                        return !subject.getProfessorId().equals(teacherId)
-                                                && !subject.getAssistantId().equals(teacherId);
+                                        Course course = subjectNotification.getCourse();
+                                        return !course.getProfessorId().equals(teacherId)
+                                                && !course.getAssistantId().equals(teacherId);
                                     });
             if (forbidden) {
                 throw new ForbiddenException(
@@ -101,7 +101,7 @@ public class SubjectNotificationService
 
     public List<SubjectNotificationDTO> findBySubjectId(Long id) {
         if (!subjectRepository.existsById(id)) {
-            throw new NotFoundException("Subject not found");
+            throw new NotFoundException("Course not found");
         }
 
         List<SubjectNotificationDTO> subjectNotifications =
@@ -114,7 +114,7 @@ public class SubjectNotificationService
 
     public Page<SubjectNotificationDTO> findBySubjectId(Long id, Pageable pageable, String search) {
         if (!subjectRepository.existsById(id)) {
-            throw new NotFoundException("Subject not found");
+            throw new NotFoundException("Course not found");
         }
 
         Page<SubjectNotificationDTO> subjectNotifications =

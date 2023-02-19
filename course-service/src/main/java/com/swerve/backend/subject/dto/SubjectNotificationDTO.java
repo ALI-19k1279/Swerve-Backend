@@ -26,6 +26,6 @@ public class SubjectNotificationDTO extends BaseDTO<Long> {
 
     private TeacherDTO teacher;
 
-    @NotNull(message = "Subject is mandatory")
+    @NotNull(message = "Course is mandatory")
     private SubjectDTO subject;
 }

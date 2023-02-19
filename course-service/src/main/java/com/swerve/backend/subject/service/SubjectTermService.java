@@ -8,8 +8,8 @@ import com.swerve.backend.subject.dto.SubjectDTO;
 import com.swerve.backend.subject.dto.SubjectTermDTO;
 import com.swerve.backend.subject.dto.TeacherDTO;
 import com.swerve.backend.subject.mapper.SubjectTermMapper;
-import com.swerve.backend.subject.model.Subject;
-import com.swerve.backend.subject.model.SubjectTerm;
+import com.swerve.backend.subject.model.Course;
+import com.swerve.backend.subject.model.LearningTrack;
 import com.swerve.backend.subject.repository.SubjectTermRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -23,7 +23,7 @@ import java.util.Set;
 import static com.swerve.backend.shared.security.SecurityUtils.*;
 
 @Service
-public class SubjectTermService extends ExtendedService<SubjectTerm, SubjectTermDTO, Long> {
+public class SubjectTermService extends ExtendedService<LearningTrack, SubjectTermDTO, Long> {
     private final SubjectTermRepository repository;
     private final SubjectTermMapper mapper;
     private final SubjectTermRepository subjectRepository;
@@ -65,14 +65,14 @@ public class SubjectTermService extends ExtendedService<SubjectTerm, SubjectTerm
     public void delete(Set<Long> id) {
         if (hasAuthority(ROLE_TEACHER)) {
             Long teacherId = getTeacherId();
-            List<SubjectTerm> subjectTerms = (List<SubjectTerm>) repository.findAllById(id);
+            List<LearningTrack> learningTracks = (List<LearningTrack>) repository.findAllById(id);
             boolean forbidden =
-                    subjectTerms.stream()
+                    learningTracks.stream()
                             .anyMatch(
                                     subjectTerm -> {
-                                        Subject subject = subjectTerm.getSubject();
-                                        return !subject.getProfessorId().equals(teacherId)
-                                                && !subject.getAssistantId().equals(teacherId);
+                                        Course course = subjectTerm.getCourse();
+                                        return !course.getProfessorId().equals(teacherId)
+                                                && !course.getAssistantId().equals(teacherId);
                                     });
             if (forbidden) {
                 throw new ForbiddenException("You are not allowed to delete these subject terms");
@@ -95,7 +95,7 @@ public class SubjectTermService extends ExtendedService<SubjectTerm, SubjectTerm
 
     public List<SubjectTermDTO> findBySubjectId(Long id) {
         if (!subjectRepository.existsById(id)) {
-            throw new NotFoundException("Subject not found");
+            throw new NotFoundException("Course not found");
         }
 
         List<SubjectTermDTO> subjectTerms =
@@ -105,7 +105,7 @@ public class SubjectTermService extends ExtendedService<SubjectTerm, SubjectTerm
 
     public Page<SubjectTermDTO> findBySubjectId(Long id, Pageable pageable, String search) {
         if (!subjectRepository.existsById(id)) {
-            throw new NotFoundException("Subject not found");
+            throw new NotFoundException("Course not found");
         }
 
         Page<SubjectTermDTO> subjectTerms =

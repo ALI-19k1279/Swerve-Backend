@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import java.util.Set;
 
 //import javax.persistence.Column;
 //import javax.persistence.Entity;
@@ -13,13 +14,14 @@ import lombok.Setter;
 import jakarta.persistence.Entity;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
-public class SubjectTerm extends BaseEntity<Long> {
+public class LearningTrack extends BaseEntity<Long> {
     @Column(nullable = false)
     private String name;
 
@@ -27,15 +29,15 @@ public class SubjectTerm extends BaseEntity<Long> {
     @Column(nullable = false)
     private String description;
 
-    @Column(nullable = false)
-    private LocalDateTime startTime;
+//    @Column(nullable = false)
+//    private LocalDateTime startTime;
+//
+//    @Column(nullable = false)
+//    private LocalDateTime endTime;
 
-    @Column(nullable = false)
-    private LocalDateTime endTime;
+//    @Column(nullable = false)
+//    private Long teacherId;
 
-    @Column(nullable = false)
-    private Long teacherId;
-
-    @ManyToOne(optional = false)
-    private Subject subject;
+    @OneToMany(mappedBy = "learningTrack")
+    private Set<Course> course=new HashSet<>();
 }

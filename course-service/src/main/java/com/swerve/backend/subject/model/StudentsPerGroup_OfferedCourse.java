@@ -8,36 +8,24 @@ import lombok.Setter;
 
 //import javax.persistence.Column;
 //import javax.persistence.Entity;
-//import javax.persistence.Lob;
 //import javax.persistence.ManyToOne;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.*;
-
-import java.time.LocalDateTime;
-
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
-public class SubjectMaterial extends BaseEntity<Long> {
+public class StudentsPerGroup_OfferedCourse extends BaseEntity<Long> {
     @Column(nullable = false)
-    private String name;
-
-    @Lob
-    @Column(nullable = false)
-    private String description;
-
-    @Column(nullable = false)
-    private String resourceUrl;
-
-    @Column(nullable = false)
-    private LocalDateTime publicationDate;
-
-    @Column(nullable = false)
-    private Long teacherId;
+    private Long studentId;
 
     @ManyToOne(optional = false)
-    private Subject subject;
+    private OfferedCourse offeredCourse;
+
+    @ManyToOne(optional = false)
+    private Group group;
+
+    @Column(nullable = false,columnDefinition = "boolean default true")
+    private Boolean isEnrolled;
 }

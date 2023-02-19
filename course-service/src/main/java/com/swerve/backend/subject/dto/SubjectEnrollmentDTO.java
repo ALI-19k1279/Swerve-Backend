@@ -18,7 +18,7 @@ public class SubjectEnrollmentDTO extends BaseDTO<Long> {
     @NotNull(message = "Student is mandatory")
     private StudentDTO student;
 
-    @NotNull(message = "Subject is mandatory")
+    @NotNull(message = "Course is mandatory")
     private SubjectDTO subject;
 
     @Min(value = 0, message = "Extra points must be greater than or equal to 0")

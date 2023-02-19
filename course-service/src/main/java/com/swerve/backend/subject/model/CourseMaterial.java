@@ -10,8 +10,10 @@ import lombok.Setter;
 //import javax.persistence.Entity;
 //import javax.persistence.Lob;
 //import javax.persistence.ManyToOne;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.*;
+
 import java.time.LocalDateTime;
 
 @Entity
@@ -19,13 +21,16 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Getter
 @Setter
-public class SubjectNotification extends BaseEntity<Long> {
+public class CourseMaterial extends BaseEntity<Long> {
     @Column(nullable = false)
     private String name;
 
-    @Lob
+
     @Column(nullable = false)
     private String description;
+
+    @Column(nullable = false)
+    private String resourceUrl;
 
     @Column(nullable = false)
     private LocalDateTime publicationDate;
@@ -33,6 +38,6 @@ public class SubjectNotification extends BaseEntity<Long> {
     @Column(nullable = false)
     private Long teacherId;
 
-//    @ManyToOne(optional = false)
-//    private Course course;
+    @ManyToOne(optional = false)
+    private Course course;
 }

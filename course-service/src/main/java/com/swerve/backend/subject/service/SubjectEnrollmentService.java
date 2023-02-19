@@ -7,8 +7,8 @@ import com.swerve.backend.subject.client.FacultyFeignClient;
 import com.swerve.backend.subject.dto.SubjectDTO;
 import com.swerve.backend.subject.dto.SubjectEnrollmentDTO;
 import com.swerve.backend.subject.mapper.SubjectEnrollmentMapper;
-import com.swerve.backend.subject.model.Subject;
-import com.swerve.backend.subject.model.SubjectEnrollment;
+import com.swerve.backend.subject.model.Course;
+import com.swerve.backend.subject.model.StudentsPerGroup_OfferedCourse;
 import com.swerve.backend.subject.repository.SubjectEnrollmentRepository;
 import com.swerve.backend.subject.util.Utility;
 import org.springframework.data.domain.Page;
@@ -25,7 +25,7 @@ import static com.swerve.backend.shared.security.SecurityUtils.*;
 
 @Service
 public class SubjectEnrollmentService
-        extends ExtendedService<SubjectEnrollment, SubjectEnrollmentDTO, Long> {
+        extends ExtendedService<StudentsPerGroup_OfferedCourse, SubjectEnrollmentDTO, Long> {
     private final SubjectEnrollmentRepository repository;
     private final SubjectEnrollmentMapper mapper;
     private final SubjectService subjectService;
@@ -45,13 +45,13 @@ public class SubjectEnrollmentService
 
     @Override
     public List<SubjectEnrollmentDTO> findById(Set<Long> ids) {
-        List<SubjectEnrollment> subjectEnrollments =
-                (List<SubjectEnrollment>) repository.findAllById(ids);
+        List<StudentsPerGroup_OfferedCourse> studentsPerGroupOfferedCourses =
+                (List<StudentsPerGroup_OfferedCourse>) repository.findAllById(ids);
 
         if (hasAuthority(ROLE_STUDENT)) {
             Long studentId = getStudentId();
             boolean forbidden =
-                    subjectEnrollments.stream()
+                    studentsPerGroupOfferedCourses.stream()
                             .anyMatch(
                                     subjectEnrollment ->
                                             !subjectEnrollment.getStudentId().equals(studentId));
@@ -62,12 +62,12 @@ public class SubjectEnrollmentService
         }
 
         if (hasAuthority(ROLE_TEACHER)) {
-            List<Subject> subjects =
-                    subjectEnrollments.stream().map(SubjectEnrollment::getSubject).toList();
+            List<Course> courses =
+                    studentsPerGroupOfferedCourses.stream().map(StudentsPerGroup_OfferedCourse::getCourse).toList();
 
             Long teacherId = getTeacherId();
             boolean forbidden =
-                    subjects.stream()
+                    courses.stream()
                             .anyMatch(
                                     subject ->
                                             !subject.getProfessorId().equals(teacherId)
@@ -78,7 +78,7 @@ public class SubjectEnrollmentService
             }
         }
 
-        List<SubjectEnrollmentDTO> subjectEnrollmentsDTO = mapper.toDTO(subjectEnrollments);
+        List<SubjectEnrollmentDTO> subjectEnrollmentsDTO = mapper.toDTO(studentsPerGroupOfferedCourses);
         return subjectEnrollmentsDTO.isEmpty()
                 ? subjectEnrollmentsDTO
                 : this.mapMissingValues(subjectEnrollmentsDTO);
@@ -124,7 +124,7 @@ public class SubjectEnrollmentService
         if (hasAuthority(ROLE_TEACHER)) {
             List<SubjectDTO> subjects = subjectService.findById(Set.of(id));
             if (subjects.isEmpty()) {
-                throw new NotFoundException("Subject not found");
+                throw new NotFoundException("Course not found");
             }
 
             SubjectDTO subject = subjects.get(0);
@@ -171,7 +171,7 @@ public class SubjectEnrollmentService
         if (hasAuthority(ROLE_TEACHER)) {
             List<SubjectDTO> subjects = subjectService.findById(Set.of(id));
             if (subjects.isEmpty()) {
-                throw new NotFoundException("Subject not found");
+                throw new NotFoundException("Course not found");
             }
 
             SubjectDTO subject = subjects.get(0);
@@ -183,7 +183,7 @@ public class SubjectEnrollmentService
         }
 
         return repository.findBySubjectIdAndDeletedFalse(id).stream()
-                .map(SubjectEnrollment::getStudentId)
+                .map(StudentsPerGroup_OfferedCourse::getStudentId)
                 .toList();
     }
 
@@ -196,7 +196,7 @@ public class SubjectEnrollmentService
         List<Double> averageGrades = new ArrayList<>(ids.size());
         ids.forEach(
                 id -> {
-                    List<SubjectEnrollment> subjectEnrollments =
+                    List<StudentsPerGroup_OfferedCourse> studentsPerGroupOfferedCourses =
                             repository.findByStudentIdAndDeletedFalse(id).stream()
                                     .filter(
                                             subjectEnrollment ->
@@ -204,16 +204,16 @@ public class SubjectEnrollmentService
                                     .toList();
 
                     averageGrades.add(
-                            subjectEnrollments.isEmpty()
+                            studentsPerGroupOfferedCourses.isEmpty()
                                     ? null
                                     : Utility.roundToTwoDecimals(
                                             Double.valueOf(
-                                                            subjectEnrollments.stream()
+                                                            studentsPerGroupOfferedCourses.stream()
                                                                     .map(
-                                                                            SubjectEnrollment
+                                                                            StudentsPerGroup_OfferedCourse
                                                                                     ::getGrade)
                                                                     .reduce(0, Integer::sum))
-                                                    / subjectEnrollments.size()));
+                                                    / studentsPerGroupOfferedCourses.size()));
                 });
         return averageGrades;
     }
@@ -226,7 +226,7 @@ public class SubjectEnrollmentService
         List<Integer> totalECTS = new ArrayList<>(ids.size());
         ids.forEach(
                 id -> {
-                    List<SubjectEnrollment> subjectEnrollments =
+                    List<StudentsPerGroup_OfferedCourse> studentsPerGroupOfferedCourses =
                             repository.findByStudentIdAndDeletedFalse(id).stream()
                                     .filter(
                                             subjectEnrollment ->
@@ -234,9 +234,9 @@ public class SubjectEnrollmentService
                                     .toList();
 
                     totalECTS.add(
-                            subjectEnrollments.stream()
-                                    .map(SubjectEnrollment::getSubject)
-                                    .map(Subject::getEcts)
+                            studentsPerGroupOfferedCourses.stream()
+                                    .map(StudentsPerGroup_OfferedCourse::getCourse)
+                                    .map(Course::getEcts)
                                     .reduce(0, Integer::sum));
                 });
         return totalECTS;
@@ -244,24 +244,24 @@ public class SubjectEnrollmentService
 
     @Transactional
     public SubjectEnrollmentDTO updateGrade(Long id, SubjectEnrollmentDTO subjectEnrollmentDTO) {
-        SubjectEnrollment subjectEnrollment =
+        StudentsPerGroup_OfferedCourse studentsPerGroupOfferedCourse =
                 repository
                         .findById(id)
-                        .orElseThrow(() -> new NotFoundException("Subject enrollment not found"));
+                        .orElseThrow(() -> new NotFoundException("Course enrollment not found"));
 
         if (hasAuthority(ROLE_TEACHER)) {
-            Subject subject = subjectEnrollment.getSubject();
+            Course course = studentsPerGroupOfferedCourse.getCourse();
             Long teacherId = getTeacherId();
-            if (!subject.getProfessorId().equals(teacherId)
-                    && !subject.getAssistantId().equals(teacherId)) {
+            if (!course.getProfessorId().equals(teacherId)
+                    && !course.getAssistantId().equals(teacherId)) {
                 throw new ForbiddenException(
-                        "You are not allowed to update grade for this subject enrollment");
+                        "You are not allowed to update grade for this course enrollment");
             }
         }
 
-        subjectEnrollment.setExtraPoints(subjectEnrollmentDTO.getExtraPoints());
-        subjectEnrollment.setGrade(subjectEnrollmentDTO.getGrade());
+        studentsPerGroupOfferedCourse.setExtraPoints(subjectEnrollmentDTO.getExtraPoints());
+        studentsPerGroupOfferedCourse.setGrade(subjectEnrollmentDTO.getGrade());
 
-        return mapper.toDTO(repository.save(subjectEnrollment));
+        return mapper.toDTO(repository.save(studentsPerGroupOfferedCourse));
     }
 }

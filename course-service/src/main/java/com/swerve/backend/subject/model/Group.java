@@ -6,9 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-//import javax.persistence.Column;
-//import javax.persistence.Entity;
-//import javax.persistence.ManyToOne;
+import java.util.HashSet;
+import java.util.Set;
 import jakarta.persistence.Entity;
 import jakarta.persistence.*;
 @Entity
@@ -16,13 +15,15 @@ import jakarta.persistence.*;
 @AllArgsConstructor
 @Getter
 @Setter
-public class SubjectEnrollment extends BaseEntity<Long> {
+public class Group extends BaseEntity<Long>{
+
     @Column(nullable = false)
-    private Long studentId;
+    private String groupCode;
 
-    @ManyToOne(optional = false)
-    private Subject subject;
+    @Column(nullable = false)
+    private String groupName;
 
-    private Integer extraPoints;
-    private Integer grade;
+    @OneToMany(mappedBy = "group")
+    private Set<StudentsPerGroup_OfferedCourse> studentsPerGroupOfferedCourses=new HashSet<>();
+
 }

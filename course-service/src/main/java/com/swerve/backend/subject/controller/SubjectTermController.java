@@ -2,7 +2,7 @@ package com.swerve.backend.subject.controller;
 
 import com.swerve.backend.shared.controller.BaseController;
 import com.swerve.backend.subject.dto.SubjectTermDTO;
-import com.swerve.backend.subject.model.SubjectTerm;
+import com.swerve.backend.subject.model.LearningTrack;
 import com.swerve.backend.subject.service.SubjectTermService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,7 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/subject-terms")
-public class SubjectTermController extends BaseController<SubjectTerm, SubjectTermDTO, Long> {
+public class SubjectTermController extends BaseController<LearningTrack, SubjectTermDTO, Long> {
     private final SubjectTermService service;
 
     public SubjectTermController(SubjectTermService service) {

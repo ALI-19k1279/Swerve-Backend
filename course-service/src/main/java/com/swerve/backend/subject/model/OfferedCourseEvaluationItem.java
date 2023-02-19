@@ -1,38 +1,39 @@
 package com.swerve.backend.subject.model;
 
+
 import com.swerve.backend.shared.model.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-//import javax.persistence.Column;
-//import javax.persistence.Entity;
-//import javax.persistence.Lob;
-//import javax.persistence.ManyToOne;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 import jakarta.persistence.Entity;
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
-
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
-public class SubjectNotification extends BaseEntity<Long> {
-    @Column(nullable = false)
-    private String name;
-
-    @Lob
-    @Column(nullable = false)
-    private String description;
+public class OfferedCourseEvaluationItem extends BaseEntity<Long>{
 
     @Column(nullable = false)
-    private LocalDateTime publicationDate;
+    private String title;
+
+    //Attachments left
 
     @Column(nullable = false)
-    private Long teacherId;
+    public boolean canReattempt;
 
-//    @ManyToOne(optional = false)
-//    private Course course;
+    @Column(nullable = false)
+    private int totalMarks;
+
+
+    @Column(nullable = false)
+    private int passingMarks;
+
+    @ManyToOne(optional = false)
+    private OfferedCourseEvaluation offeredCourseEvaluation;
+
 }

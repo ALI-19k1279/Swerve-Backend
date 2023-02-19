@@ -57,6 +57,11 @@ public class SecurityConfig {
                         "/subject-materials/**",
                         "/subject-notifications/**",
                         "/subject-terms/**").hasAnyAuthority(ROLE_TEACHER, ROLE_ADMIN)
+                .requestMatchers(
+                        HttpMethod.GET,
+                        "/hello"
+
+                ).permitAll()
                 .anyRequest().hasAuthority(ROLE_ADMIN)
                 .and()
                 .build();

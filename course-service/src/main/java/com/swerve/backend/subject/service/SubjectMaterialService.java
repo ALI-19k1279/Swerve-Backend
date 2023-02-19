@@ -8,8 +8,8 @@ import com.swerve.backend.subject.dto.SubjectDTO;
 import com.swerve.backend.subject.dto.SubjectMaterialDTO;
 import com.swerve.backend.subject.dto.TeacherDTO;
 import com.swerve.backend.subject.mapper.SubjectMaterialMapper;
-import com.swerve.backend.subject.model.Subject;
-import com.swerve.backend.subject.model.SubjectMaterial;
+import com.swerve.backend.subject.model.Course;
+import com.swerve.backend.subject.model.CourseMaterial;
 import com.swerve.backend.subject.repository.SubjectMaterialRepository;
 import com.swerve.backend.subject.repository.SubjectRepository;
 import org.springframework.data.domain.Page;
@@ -25,7 +25,7 @@ import static com.swerve.backend.shared.security.SecurityUtils.*;
 
 @Service
 public class SubjectMaterialService
-        extends ExtendedService<SubjectMaterial, SubjectMaterialDTO, Long> {
+        extends ExtendedService<CourseMaterial, SubjectMaterialDTO, Long> {
     private final SubjectMaterialRepository repository;
     private final SubjectMaterialMapper mapper;
     private final SubjectRepository subjectRepository;
@@ -68,15 +68,15 @@ public class SubjectMaterialService
     public void delete(Set<Long> id) {
         if (hasAuthority(ROLE_TEACHER)) {
             Long teacherId = getTeacherId();
-            List<SubjectMaterial> subjectMaterials =
-                    (List<SubjectMaterial>) repository.findAllById(id);
+            List<CourseMaterial> courseMaterials =
+                    (List<CourseMaterial>) repository.findAllById(id);
             boolean forbidden =
-                    subjectMaterials.stream()
+                    courseMaterials.stream()
                             .anyMatch(
                                     subjectMaterial -> {
-                                        Subject subject = subjectMaterial.getSubject();
-                                        return !subject.getProfessorId().equals(teacherId)
-                                                && !subject.getAssistantId().equals(teacherId);
+                                        Course course = subjectMaterial.getCourse();
+                                        return !course.getProfessorId().equals(teacherId)
+                                                && !course.getAssistantId().equals(teacherId);
                                     });
             if (forbidden) {
                 throw new ForbiddenException(
@@ -100,7 +100,7 @@ public class SubjectMaterialService
 
     public List<SubjectMaterialDTO> findBySubjectId(Long id) {
         if (!subjectRepository.existsById(id)) {
-            throw new NotFoundException("Subject not found");
+            throw new NotFoundException("Course not found");
         }
 
         List<SubjectMaterialDTO> subjectMaterials =
@@ -113,7 +113,7 @@ public class SubjectMaterialService
 
     public Page<SubjectMaterialDTO> findBySubjectId(Long id, Pageable pageable, String search) {
         if (!subjectRepository.existsById(id)) {
-            throw new NotFoundException("Subject not found");
+            throw new NotFoundException("Course not found");
         }
 
         Page<SubjectMaterialDTO> subjectMaterials =

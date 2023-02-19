@@ -1,7 +1,7 @@
 package com.swerve.backend.subject.repository;
 
 import com.swerve.backend.shared.repository.BaseRepository;
-import com.swerve.backend.subject.model.SubjectTerm;
+import com.swerve.backend.subject.model.LearningTrack;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
@@ -10,21 +10,21 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface SubjectTermRepository extends BaseRepository<SubjectTerm, Long> {
+public interface SubjectTermRepository extends BaseRepository<LearningTrack, Long> {
     @Override
     @Query(
             "select x from #{#entityName} x where x.deleted = false "
                     + "and (cast(x.id as string) like :search "
                     + "or x.name like :search or x.description like :search "
                     + "or cast(x.startTime as string) like :search or cast(x.endTime as string) like :search)")
-    Page<SubjectTerm> findContaining(Pageable pageable, String search);
+    Page<LearningTrack> findContaining(Pageable pageable, String search);
 
     @Query(
             "select x from #{#entityName} x where x.deleted = false and x.subject.id = :subjectId "
                     + "and (cast(x.id as string) like :search "
                     + "or x.name like :search or x.description like :search "
                     + "or cast(x.startTime as string) like :search or cast(x.endTime as string) like :search)")
-    Page<SubjectTerm> findBySubjectIdContaining(Long subjectId, Pageable pageable, String search);
+    Page<LearningTrack> findBySubjectIdContaining(Long subjectId, Pageable pageable, String search);
 
-    List<SubjectTerm> findBySubjectIdAndDeletedFalseOrderByStartTimeDesc(Long subjectId);
+    List<LearningTrack> findBySubjectIdAndDeletedFalseOrderByStartTimeDesc(Long subjectId);
 }
