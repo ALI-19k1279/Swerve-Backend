@@ -1,6 +1,7 @@
 package com.swerve.backend.subject.dto;
 
 import com.swerve.backend.shared.dto.BaseDTO;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,8 +11,9 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class StudyProgramDTO extends BaseDTO<Long> {
+public class LearningTrackDTO extends BaseDTO<Long>{
+    @NotBlank(message = "Category name is mandatory")
     private String name;
-    private String acronym;
+    @NotBlank(message = "Category description is mandatory")
     private String description;
 }

@@ -1,18 +1,21 @@
 package com.swerve.backend.subject.dto;
 
 import com.swerve.backend.shared.dto.BaseDTO;
-import com.swerve.backend.shared.dto.UserDTO;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
-public class TeacherDTO extends BaseDTO<Long> {
-    private UserDTO user;
-    private String firstName;
-    private String lastName;
+public class CourseModuleDTO extends BaseDTO<Long> {
+    @NotBlank(message = "Sequence Number is mandatory")
+    private int sequenceNum;
+
+    private String content;
 }

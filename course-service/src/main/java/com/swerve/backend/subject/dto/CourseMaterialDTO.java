@@ -1,31 +1,28 @@
 package com.swerve.backend.subject.dto;
 
 import com.swerve.backend.shared.dto.BaseDTO;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-//import javax.validation.constraints.NotBlank;
-//import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
-import jakarta.validation.constraints.*;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
-public class SubjectNotificationDTO extends BaseDTO<Long> {
+public class CourseMaterialDTO extends BaseDTO<Long> {
     @NotBlank(message = "Name is mandatory")
     private String name;
-
     @NotBlank(message = "Description is mandatory")
     private String description;
-
-    @NotNull(message = "Publication date is mandatory")
+    @NotBlank(message = "Resource URL is mandatory")
+    private String resourceUrl;
+    @NotBlank(message = "Publication Date is mandatory")
     private LocalDateTime publicationDate;
+    @NotBlank(message = "TeacherID is mandatory")
+    private Long teacherID;
 
-    private TeacherDTO teacher;
-
-    @NotNull(message = "Course is mandatory")
-    private SubjectDTO subject;
 }
