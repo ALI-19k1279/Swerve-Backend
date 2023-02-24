@@ -19,6 +19,7 @@ import jakarta.persistence.*;
 public class CourseModule extends BaseEntity<Long>{
 
     @ManyToOne(optional = false)
+    @JoinColumn(name="offeredCourse_ID", nullable=false)
     private OfferedCourse offeredCourse;
 
     @Column(nullable = false)

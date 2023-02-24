@@ -39,5 +39,6 @@ public class CourseMaterial extends BaseEntity<Long> {
     private Long teacherId;
 
     @ManyToOne(optional = false)
-    private Course course;
+    @JoinColumn(name="offeredCourse_ID", nullable=false)
+    private OfferedCourse offeredCourse;
 }

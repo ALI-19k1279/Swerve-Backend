@@ -21,9 +21,11 @@ public class StudentsPerGroup_OfferedCourse extends BaseEntity<Long> {
     private Long studentId;
 
     @ManyToOne(optional = false)
+    @JoinColumn(name="offeredCourse_ID", nullable=false)
     private OfferedCourse offeredCourse;
 
     @ManyToOne(optional = false)
+    @JoinColumn(name="group_ID", nullable=false)
     private Group group;
 
     @Column(nullable = false,columnDefinition = "boolean default true")

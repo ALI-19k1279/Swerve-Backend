@@ -39,6 +39,7 @@ public class Course extends BaseEntity<Long> {
 //    private Set<CourseModule> courseModule=new HashSet<>();
 
     @ManyToOne(optional = false)
+    @JoinColumn(name="learningTrack_ID", nullable=false)
     private LearningTrack learningTrack;
 
 

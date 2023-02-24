@@ -28,6 +28,7 @@ public class CourseLearnerProgress extends BaseEntity<Long> {
 
 
     @ManyToOne(optional = false)
+    @JoinColumn(name="courseModule_ID", nullable=false)
     private CourseModule courseModule;
 
 

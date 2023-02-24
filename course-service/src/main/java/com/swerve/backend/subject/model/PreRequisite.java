@@ -3,6 +3,7 @@ package com.swerve.backend.subject.model;
 import com.swerve.backend.shared.model.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,9 +21,11 @@ public class PreRequisite extends BaseEntity<Long> {
     private String code;
 
     @ManyToOne(optional = false)
+    @JoinColumn(name="preReqIs_ID", nullable=false)
     private Course preReqIs;
 
     @ManyToOne(optional = false)
+    @JoinColumn(name="preReqFor_ID", nullable=false)
     private Course preReqFor;
 
 

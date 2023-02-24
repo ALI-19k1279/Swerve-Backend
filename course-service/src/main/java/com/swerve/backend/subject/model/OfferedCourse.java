@@ -34,6 +34,10 @@ public class OfferedCourse extends BaseEntity<Long>{
     private String instructorId;
 
     @ManyToOne(optional = false)
+    @JoinColumn(name="cycle_ID", nullable=false)
     private Cycle cycle;
+
+    @OneToMany(mappedBy = "offeredCourse")
+    private Set<CourseMaterial> courseMaterials=new HashSet<>();
 
 }

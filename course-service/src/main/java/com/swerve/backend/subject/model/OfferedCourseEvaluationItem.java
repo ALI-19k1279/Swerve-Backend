@@ -34,6 +34,7 @@ public class OfferedCourseEvaluationItem extends BaseEntity<Long>{
     private int passingMarks;
 
     @ManyToOne(optional = false)
+    @JoinColumn(name="OfferedCourseEvaluation_ID", nullable=false)
     private OfferedCourseEvaluation offeredCourseEvaluation;
 
 }
