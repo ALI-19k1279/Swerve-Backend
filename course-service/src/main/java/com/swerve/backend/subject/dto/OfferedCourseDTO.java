@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 public class OfferedCourseDTO extends BaseDTO<Long> {
 
     @NotBlank(message = "Course is mandatory")
-    private CourseDTO course;
+    private CourseDTO courseID;
     @NotBlank(message = "Fee is mandatory")
     private int fee;
 

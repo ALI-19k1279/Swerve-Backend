@@ -15,7 +15,7 @@ import jakarta.persistence.*;
 @AllArgsConstructor
 @Getter
 @Setter
-public class    Course extends BaseEntity<Long> {
+public class Course extends BaseEntity<Long> {
 
     @Column(nullable = false)
     private String courseCode;

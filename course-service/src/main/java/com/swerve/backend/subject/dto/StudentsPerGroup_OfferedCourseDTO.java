@@ -27,4 +27,6 @@ public class StudentsPerGroup_OfferedCourseDTO extends BaseDTO<Long> {
     @NotBlank(message = "isEnrolled is mandatory")
     private boolean isEnrolled;
 
+
+
 }

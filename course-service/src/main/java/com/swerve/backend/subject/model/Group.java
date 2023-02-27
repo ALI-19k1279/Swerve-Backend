@@ -15,6 +15,8 @@ import jakarta.persistence.*;
 @AllArgsConstructor
 @Getter
 @Setter
+
+@Table(name="_group")
 public class Group extends BaseEntity<Long>{
 
     @Column(nullable = false)
