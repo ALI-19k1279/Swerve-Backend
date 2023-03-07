@@ -29,4 +29,5 @@ public class CourseController extends BaseController<Course, CourseDTO,Long> {
         System.out.println("IDDD:::"+Id);
         return new ResponseEntity<>(this.courseService.GetCourseById(Id), HttpStatus.OK);
     }
+
 }

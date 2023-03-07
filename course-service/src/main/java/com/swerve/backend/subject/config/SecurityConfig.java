@@ -25,10 +25,10 @@ public class SecurityConfig {
                 .and()
                 .csrf().disable()
                 .authorizeRequests()
-//                .requestMatchers(
-//                        HttpMethod.GET,
-//                        "/actuator/**",
-//                        "/docs/**").permitAll()
+                .requestMatchers(
+                        HttpMethod.GET,
+                        "/actuator/**",
+                        "/docs/**").permitAll()
 //                .requestMatchers(
 //                        HttpMethod.GET,
 //                        "/subjects/student/*/all").hasAnyAuthority(ROLE_STUDENT, ROLE_ADMIN)

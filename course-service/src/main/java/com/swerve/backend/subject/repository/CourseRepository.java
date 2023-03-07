@@ -19,6 +19,8 @@ public interface CourseRepository extends BaseRepository<Course,Long> {
 
     List<Course> findByIdAndDeletedFalse(Long id);
 
+    List<Course> findAll();
+
 //    List<Course> findByProfessorIdOrAssistantIdAndDeletedFalseOrderBySemesterAscNameAsc(
 //            Long professorId, Long assistantId);
 //
