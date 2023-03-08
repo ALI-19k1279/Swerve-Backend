@@ -14,17 +14,17 @@ import lombok.Setter;
 @Setter
 public class CourseDTO extends BaseDTO<Long> {
     @NotBlank(message = "Code is mandatory")
-    private String courseCode;
+    private String course_code;
 
     @NotBlank(message = "Course title is mandatory")
     private String title;
 
 
-    private String shortDescription;
+    private String short_description;
     @NotBlank(message = "Credit is mandatory")
     private String credits;
     @NotBlank(message = "Learning Track is mandatory")
-    private LearningTrackDTO learningTrack;
+    private LearningTrackDTO learning_track_id;
 
 
 }

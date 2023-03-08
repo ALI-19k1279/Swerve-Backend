@@ -25,9 +25,14 @@ public class CourseController extends BaseController<Course, CourseDTO,Long> {
     }
 
     @GetMapping("/{id}/course")
-    public ResponseEntity<List<CourseDTO>> getCourseByID(@PathVariable Long Id){
-        System.out.println("IDDD:::"+Id);
-        return new ResponseEntity<>(this.courseService.GetCourseById(Id), HttpStatus.OK);
+    public ResponseEntity<List<CourseDTO>> getCourseByID(@PathVariable Long id){
+        System.out.println("IDDD:::"+id);
+        return new ResponseEntity<>(this.courseService.GetCourseById(id), HttpStatus.OK);
+    }
+    @GetMapping("/all/course")
+    public ResponseEntity<List<CourseDTO>> getCourses(){
+        System.out.println("all:::");
+        return new ResponseEntity<>(this.courseService.GetAllCourses(), HttpStatus.OK);
     }
 
 }

@@ -24,7 +24,7 @@ public class CourseService extends BaseService<Course,CourseDTO,Long> {
         this.courseMapper=courseMapper;
     }
     public List<CourseDTO> GetCourseById(Long id){
-        System.out.println("Service"+id);
+        System.out.println("Service : "+id);
         List<CourseDTO> courseDTOS=courseMapper.toDTO(
                 courseRepository.findByIdAndDeletedFalse(id)
         );

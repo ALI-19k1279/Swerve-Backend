@@ -34,6 +34,7 @@ public class SecurityConfig {
 //                        "/subjects/student/*/all").hasAnyAuthority(ROLE_STUDENT, ROLE_ADMIN)
                 .requestMatchers(
                         HttpMethod.GET,
+                        "cycles/*/cycle",
                         "/courses/*/course").permitAll()
 //                .requestMatchers(
 //                        HttpMethod.GET,
