@@ -6,6 +6,7 @@ import com.swerve.backend.subject.dto.CourseDTO;
 import com.swerve.backend.subject.dto.LearningTrackDTO;
 import com.swerve.backend.subject.model.Course;
 import com.swerve.backend.subject.model.LearningTrack;
+import com.swerve.backend.subject.model.OfferedCourse;
 import com.swerve.backend.subject.model.PreRequisite;
 import com.swerve.backend.subject.service.CourseService;
 import org.springframework.http.HttpStatus;
@@ -49,6 +50,11 @@ public class CourseController extends BaseController<Course, CourseDTO,Long> {
     public ResponseEntity<List<PreRequisite>> getCoursePreRequisite(@PathVariable Long id){
         System.out.println("all:::");
         return new ResponseEntity<>(this.courseService.getPreRequisitebyCourseID(id), HttpStatus.OK);
+    }
+    @GetMapping("/offeredcourses")
+    public ResponseEntity<List<OfferedCourse>> getAllOfferedCourses(){
+        System.out.println("all:::");
+        return new ResponseEntity<>(this.courseService.GetAllOfferedCourses(), HttpStatus.OK);
     }
 
 }

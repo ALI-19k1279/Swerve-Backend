@@ -9,6 +9,7 @@ import com.swerve.backend.subject.dto.OfferedCourseDTO;
 import com.swerve.backend.subject.mapper.CourseMapper;
 import com.swerve.backend.subject.model.Course;
 import com.swerve.backend.subject.model.LearningTrack;
+import com.swerve.backend.subject.model.OfferedCourse;
 import com.swerve.backend.subject.model.PreRequisite;
 import com.swerve.backend.subject.repository.CourseRepository;
 import org.springframework.stereotype.Service;
@@ -60,5 +61,9 @@ public class CourseService extends BaseService<Course,CourseDTO,Long> {
         System.out.println(preRequisites.get(0).getPreReqIs());
         return preRequisites.isEmpty()?null: preRequisites;
 
+    }
+    public List<OfferedCourse> GetAllOfferedCourses(){
+        List<OfferedCourse> offeredCourses=courseRepository.GetAllOfferedCourses();
+        return offeredCourses.isEmpty()?null:offeredCourses;
     }
 }

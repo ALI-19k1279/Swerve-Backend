@@ -3,6 +3,7 @@ package com.swerve.backend.subject.repository;
 import com.swerve.backend.shared.repository.BaseRepository;
 import com.swerve.backend.subject.model.Course;
 import com.swerve.backend.subject.model.LearningTrack;
+import com.swerve.backend.subject.model.OfferedCourse;
 import com.swerve.backend.subject.model.PreRequisite;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -29,6 +30,8 @@ public interface CourseRepository extends BaseRepository<Course,Long> {
 //            "and c.learning_track_id=x.id")
 //    LearningTrack findLearningTrackByCourseId(Long id);
 
+    @Query("select oc from Course c,OfferedCourse oc where c.id=oc.courseID")
+    List<OfferedCourse> GetAllOfferedCourses();
     List<Course> findAll();
 
 //    List<Course> findByProfessorIdOrAssistantIdAndDeletedFalseOrderBySemesterAscNameAsc(

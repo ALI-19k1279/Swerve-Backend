@@ -37,7 +37,8 @@ public class SecurityConfig {
                         "cycles/*/cycle",
                 "/courses/*/learningtrack",
                         "/courses/*/prereq",
-                        "/courses/*/course").permitAll()
+                        "/courses/*/course",
+                        "/courses/offeredcourses").permitAll()
 //                .requestMatchers(
 //                        HttpMethod.GET,
 //                        "/subject-enrollments/*",
