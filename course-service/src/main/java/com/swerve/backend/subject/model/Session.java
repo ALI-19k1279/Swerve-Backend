@@ -1,5 +1,6 @@
 package com.swerve.backend.subject.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.swerve.backend.shared.model.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -16,10 +17,12 @@ public class Session extends BaseEntity<Long>{
 
     @ManyToOne(optional = false)
     @JoinColumn(name="offeredCourse_ID", nullable=false)
+    @JsonIgnore
     private OfferedCourse offeredCourse;
 
     @ManyToOne(optional = false)
     @JoinColumn(name="group_ID", nullable=false)
+    @JsonIgnore
     private Group group;
 
     @Lob

@@ -31,6 +31,6 @@ public class CycleService extends BaseService<Cycle, CycleDTO,Long>{
                 cycleRepository.findByIdAndDeletedFalse(id)
         );
         System.out.println("cycle::"+cycleDTOS.get(0).getId());
-        return cycleDTOS.isEmpty()?cycleDTOS:null;
+        return cycleDTOS.isEmpty()?null:cycleDTOS;
     }
 }

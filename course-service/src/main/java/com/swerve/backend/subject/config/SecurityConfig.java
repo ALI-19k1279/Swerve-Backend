@@ -35,6 +35,7 @@ public class SecurityConfig {
                 .requestMatchers(
                         HttpMethod.GET,
                         "cycles/*/cycle",
+                "/courses/*/courselt",
                         "/courses/*/course").permitAll()
 //                .requestMatchers(
 //                        HttpMethod.GET,

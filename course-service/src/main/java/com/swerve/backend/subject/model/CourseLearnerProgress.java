@@ -1,6 +1,7 @@
 package com.swerve.backend.subject.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.swerve.backend.shared.model.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -29,6 +30,7 @@ public class CourseLearnerProgress extends BaseEntity<Long> {
 
     @ManyToOne(optional = false)
     @JoinColumn(name="courseModule_ID", nullable=false)
+    @JsonIgnore
     private CourseModule courseModule;
 
 
