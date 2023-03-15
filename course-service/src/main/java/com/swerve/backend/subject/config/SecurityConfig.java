@@ -38,7 +38,10 @@ public class SecurityConfig {
                 "/courses/*/learningtrack",
                         "/courses/*/prereq",
                         "/courses/*/course",
-                        "/courses/offeredcourses").permitAll()
+                        "/courses/offeredcourses",
+                        "/spgoc/*/offeredcourses/gid",
+                        "/spgoc/*/offeredcourses/stdid",
+                        "/spgoc/*/evaluationitems/stdid").permitAll()
 //                .requestMatchers(
 //                        HttpMethod.GET,
 //                        "/subject-enrollments/*",

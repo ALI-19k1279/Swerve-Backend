@@ -27,7 +27,6 @@ public class CourseModule extends BaseEntity<Long>{
     @Column(nullable = false)
     private int sequenceNum;
 
-    @Lob
     @Column()
     private String content;
 

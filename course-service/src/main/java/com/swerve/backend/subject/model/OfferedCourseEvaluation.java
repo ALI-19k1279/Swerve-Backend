@@ -30,7 +30,7 @@ public class OfferedCourseEvaluation extends BaseEntity<Long>{
 
 
     @Column(nullable = false)
-    private String studentID;
+    private Long studentID;
 
     @Column()
     private int marksObtained;

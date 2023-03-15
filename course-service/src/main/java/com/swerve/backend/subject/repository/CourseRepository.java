@@ -32,6 +32,8 @@ public interface CourseRepository extends BaseRepository<Course,Long> {
 
     @Query("select oc from Course c,OfferedCourse oc where c.id=oc.courseID")
     List<OfferedCourse> GetAllOfferedCourses();
+
+
     List<Course> findAll();
 
 //    List<Course> findByProfessorIdOrAssistantIdAndDeletedFalseOrderBySemesterAscNameAsc(
