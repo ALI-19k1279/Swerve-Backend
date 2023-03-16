@@ -19,6 +19,8 @@
         <module>auth-service</module>
         <module>shared-library</module>
         <module>course-service</module>
+        <module>discovery-server</module>
+        <module>api-gateway</module>
     </modules>
 
     <properties>

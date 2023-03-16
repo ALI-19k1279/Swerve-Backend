@@ -1,10 +1,8 @@
 package com.swerve.backend.subject.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.swerve.backend.shared.model.BaseEntity;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -40,6 +38,7 @@ public class Course extends BaseEntity<Long> {
 
     @ManyToOne(optional = false)
     @JoinColumn(name="learningTrack_ID", nullable=false)
+    @JsonIgnore
     private LearningTrack learningTrack;
 
 

@@ -1,0 +1,77 @@
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+  instance:
+    hostname: localhost
+
+
+spring:
+  application:
+    name: Api-gateway
+  cloud:
+    gateway:
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: '*'
+            allowedHeaders: '*'
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - PATCH
+              - DELETE
+      routes:
+        - id: auth-service
+          uri: lb://AUTH-SERVICE
+          predicates:
+            - Path=/api/auth-service/**
+          filters:
+            - RewritePath=/api/auth-service/(?<path>.*), /$\{path}
+        - id: discussionforum-service
+          uri: lb://DISCUSSIONFORUM-SERVICE
+          predicates:
+            - Path=/api/forum/**
+          filters:
+            - RewritePath=/api/forum/(?<path>.*), /$\{path}
+        - id: announcement-service
+          uri: lb://ANNOUNCEMENT-SERVICE
+          predicates:
+            - Path=/api/announcement/**
+          filters:
+            - RewritePath=/api/announcement/(?<path>.*), /$\{path}
+
+
+server:
+  port: '8080'
+logging:
+  level:
+    org:
+      springframework:
+        cloud:
+          gateway:
+            route:
+              RouteDefinitionRouteLocator: INFO
+            nodeValue: TRACE
+    root: INFO
+
+springdoc:
+  swagger-ui:
+    path: docs
+    urls:
+      - name: auth-service
+        url: /api/auth-service/docs
+      - name: faculty-service
+        url: /api/faculty-service/docs
+      - name: subject-service
+        url: /api/subject-service/docs
+      - name: exam-service
+        url: /api/exam-service/docs
+
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"

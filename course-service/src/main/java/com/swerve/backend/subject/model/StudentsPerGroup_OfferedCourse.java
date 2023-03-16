@@ -1,5 +1,6 @@
 package com.swerve.backend.subject.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.swerve.backend.shared.model.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -22,10 +23,12 @@ public class StudentsPerGroup_OfferedCourse extends BaseEntity<Long> {
 
     @ManyToOne(optional = false)
     @JoinColumn(name="offeredCourse_ID", nullable=false)
+    @JsonIgnore
     private OfferedCourse offeredCourse;
 
     @ManyToOne(optional = false)
     @JoinColumn(name="group_ID", nullable=false)
+    @JsonIgnore
     private Group group;
 
     @Column(nullable = false,columnDefinition = "boolean default true")

@@ -1,5 +1,6 @@
 package com.swerve.backend.subject.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.swerve.backend.shared.model.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,6 +19,7 @@ import jakarta.persistence.*;
 public class OfferedCourse extends BaseEntity<Long>{
 
     @ManyToOne(optional = false)
+    @JsonIgnore
     private Course courseID;
     @Column()
     private int fee;
@@ -35,6 +37,7 @@ public class OfferedCourse extends BaseEntity<Long>{
 
     @ManyToOne(optional = false)
     @JoinColumn(name="cycle_ID", nullable=false)
+    @JsonIgnore
     private Cycle cycle;
 
     @OneToMany(mappedBy = "offeredCourse")
