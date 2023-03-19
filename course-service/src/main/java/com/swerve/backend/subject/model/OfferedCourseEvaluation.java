@@ -21,12 +21,9 @@ import jakarta.persistence.*;
 public class OfferedCourseEvaluation extends BaseEntity<Long>{
 
     @ManyToOne(optional = false)
-    @JoinColumn(name="offeredCourse_ID", nullable=false)
+    @JoinColumn(name="OCE_ID", nullable=false)
     @JsonIgnore
-    private OfferedCourse offeredCourse;
-
-    @Column(nullable = false)
-    private  String code;
+    private OfferedCourseEvaluationItem offeredCourse_EvaluationItem;
 
 
     @Column(nullable = false)
@@ -39,6 +36,4 @@ public class OfferedCourseEvaluation extends BaseEntity<Long>{
     @Column()
     private int noOfAttempts;
 
-    @OneToMany(mappedBy = "offeredCourseEvaluation")
-    private Set<OfferedCourseEvaluationItem> offeredCourseEvaluationItems=new HashSet<>();
 }

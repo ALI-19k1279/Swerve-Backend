@@ -1,18 +1,17 @@
 package com.swerve.backend.auth.model;
 
 import com.swerve.backend.shared.model.BaseEntity;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.*;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-import org.springframework.security.core.GrantedAuthority;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -21,13 +20,12 @@ import java.util.Set;
 @Getter
 @Setter
 @SuperBuilder
-public class Role extends BaseEntity<Long> implements GrantedAuthority {
-    @Column(nullable = false, unique = true)
-    private String authority;
+public class System_Features extends BaseEntity<Long> {
 
-    @ManyToMany(mappedBy = "authorities")
-    private List<User> users = new ArrayList<>();
+    @Column(nullable = false)
+    private String description;
 
-    @OneToMany(mappedBy = "role")
+    @OneToMany(mappedBy = "systemFeatures")
     private Set<Role_Features> roleFeatures=new HashSet<>();
+
 }

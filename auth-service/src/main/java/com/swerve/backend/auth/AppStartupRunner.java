@@ -31,8 +31,9 @@ public class AppStartupRunner implements ApplicationRunner {
         UserDetailsDTO user =
                 UserDetailsDTO.builder()
                         .id(ROOT_USER_ID)
-                        .username("admin@utoronto.ca")
+                        .username("std@swerve.com")
                         .password(passwordEncoder.encode("password"))
+                        .portal("learner")
                         .authorities(Set.of(root, admin))
                         .accountNonExpired(true)
                         .accountNonLocked(true)

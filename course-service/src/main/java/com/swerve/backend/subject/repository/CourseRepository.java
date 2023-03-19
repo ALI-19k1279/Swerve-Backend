@@ -26,9 +26,6 @@ public interface CourseRepository extends BaseRepository<Course,Long> {
             "and c.id=:id")
     List<PreRequisite> findPreRequisiteByCourseID(Long id);
 
-//    @Query("select x from learning_track x, course c where x.deleted=false " +
-//            "and c.learning_track_id=x.id")
-//    LearningTrack findLearningTrackByCourseId(Long id);
 
     @Query("select oc from Course c,OfferedCourse oc where c.id=oc.courseID")
     List<OfferedCourse> GetAllOfferedCourses();

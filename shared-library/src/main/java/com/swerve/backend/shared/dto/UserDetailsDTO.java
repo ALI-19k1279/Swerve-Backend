@@ -31,6 +31,8 @@ public class UserDetailsDTO extends BaseDTO<Long> implements UserDetails {
     private boolean credentialsNonExpired = true;
     private boolean enabled = true;
 
+    private String portal;
+
     @NotEmpty(message = "Authorities are mandatory")
     private Set<RoleDTO> authorities;
 }

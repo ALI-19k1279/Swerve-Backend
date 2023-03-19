@@ -26,8 +26,7 @@ public class OfferedCourse extends BaseEntity<Long>{
 
     @OneToMany(mappedBy = "offeredCourse")
     private Set<CourseModule> courseModules=new HashSet<>();
-    @OneToMany(mappedBy = "offeredCourse")
-    private Set<OfferedCourseEvaluation> offeredCourseEvaluations=new HashSet<>();
+
 
     @Column()
     private String postsAndAnnouncements;
@@ -42,5 +41,8 @@ public class OfferedCourse extends BaseEntity<Long>{
 
     @OneToMany(mappedBy = "offeredCourse")
     private Set<CourseMaterial> courseMaterials=new HashSet<>();
+
+    @OneToMany(mappedBy = "offeredCourse")
+    private Set<OfferedCourseOutline> offeredCourseOutlines=new HashSet<>();
 
 }

@@ -21,6 +21,8 @@ public class OfferedCourseEvaluationItem extends BaseEntity<Long>{
 
     @Column(nullable = false)
     private String title;
+    @Column(nullable = false)
+    private String type;
 
     //Attachments left
 
@@ -35,8 +37,11 @@ public class OfferedCourseEvaluationItem extends BaseEntity<Long>{
     private int passingMarks;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name="OfferedCourseEvaluation_ID", nullable=false)
+    @JoinColumn(name="SPG_ID", nullable=false)
     @JsonIgnore
-    private OfferedCourseEvaluation offeredCourseEvaluation;
+    private StudentsPerGroup_OfferedCourse studentsPerGroup_OfferedCourse;
+
+    @OneToMany(mappedBy = "offeredCourse_EvaluationItem")
+    Set<OfferedCourseEvaluation> offeredCourseEvaluations=new HashSet<>();
 
 }

@@ -37,6 +37,11 @@ public class User extends BaseEntity<Long> implements UserDetails {
     @Column(nullable = false, columnDefinition = "boolean default true")
     private boolean enabled = true;
 
+    @Column(nullable = false)
+    private String portal;
+
+    @Column(nullable = true)
+    private String associations;
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @JoinTable(
             name = "user_role",

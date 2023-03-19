@@ -15,7 +15,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-
+import com.swerve.backend.subject.dto.LearnerEvaluationDTO;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -40,8 +40,17 @@ public class GroupController extends BaseController<StudentsPerGroup_OfferedCour
         return new ResponseEntity<>(groupService.GetOfferedCourseByStudentID(id),HttpStatus.OK);
     }
 
-    @GetMapping("/{id}/evaluationitems/stdid")
-    public ResponseEntity<Collection<Set<OfferedCourseEvaluationItem>>> getEvaluationItemsByStudentID(@PathVariable Long id){
-        return new ResponseEntity<>(groupService.GetEvaluationItemsByStudentID(id),HttpStatus.OK);
-    }
+//    @GetMapping("/{id}/evaluationitems/stdid")
+//    public ResponseEntity<Collection<Set<OfferedCourseEvaluationItem>>> getEvaluationItemsByStudentID(@PathVariable Long id){
+//        return new ResponseEntity<>(groupService.GetEvaluationItemsByStudentID(id),HttpStatus.OK);
+//    }
+//    @GetMapping("/{stdid}/{crcid}/evaluations/stdid")
+//    public ResponseEntity<LearnerEvaluationDTO> getEvaluationsByStudentID(@PathVariable Long stdid,@PathVariable Long crcid){
+//        return new ResponseEntity<>(groupService.getEvaluationsByStudentIDandOfferedCourseID(stdid,crcid),HttpStatus.OK);
+//    }
+//
+//    @GetMapping("/{id}/students")
+//    public ResponseEntity<List<Integer>> getStudentsDetails(){
+//            return new ResponseEntity<>(groupService.getStudentsDetail(),HttpStatus.OK);
+//    }
 }

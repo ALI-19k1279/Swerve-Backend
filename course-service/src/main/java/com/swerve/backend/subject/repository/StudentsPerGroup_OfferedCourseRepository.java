@@ -23,6 +23,13 @@ public interface StudentsPerGroup_OfferedCourseRepository extends BaseRepository
             +"(select spgoc.offeredCourse from StudentsPerGroup_OfferedCourse spgoc where spgoc.studentId=:id)")
     List<OfferedCourse> findOfferedCoursesByStudentId(Long id);
 
-    @Query("select ev from OfferedCourseEvaluation ev where ev.studentID=:id")
-    List<OfferedCourseEvaluation> findEvaluationItemsByStudentId(Long id);
+//    @Query("select ev from OfferedCourseEvaluation ev where ev.studentID=:id")
+//    List<OfferedCourseEvaluation> findEvaluationItemsByStudentId(Long id);
+//    @Query("select ev from OfferedCourseEvaluation ev where ev.studentID=:id " +
+//            "and ev.offeredCourse.id=:crcid")
+//    List<OfferedCourseEvaluation> findEvaluationItemsByStudentIdandOfferedCourseID(Long id,Long crcid);
+//
+//    @Query("select oc from  OfferedCourseEvaluation oc")
+//    List<Integer> findStudentsByGroupID();
+
 }
