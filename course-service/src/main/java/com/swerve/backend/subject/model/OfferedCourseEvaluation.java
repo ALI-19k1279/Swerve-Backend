@@ -1,6 +1,7 @@
 package com.swerve.backend.subject.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.swerve.backend.shared.model.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,15 +21,13 @@ import jakarta.persistence.*;
 public class OfferedCourseEvaluation extends BaseEntity<Long>{
 
     @ManyToOne(optional = false)
-    @JoinColumn(name="offeredCourse_ID", nullable=false)
-    private OfferedCourse offeredCourse;
-
-    @Column(nullable = false)
-    private  String code;
+    @JoinColumn(name="OCE_ID", nullable=false)
+    @JsonIgnore
+    private OfferedCourseEvaluationItem offeredCourse_EvaluationItem;
 
 
     @Column(nullable = false)
-    private String studentID;
+    private Long studentID;
 
     @Column()
     private int marksObtained;
@@ -37,6 +36,4 @@ public class OfferedCourseEvaluation extends BaseEntity<Long>{
     @Column()
     private int noOfAttempts;
 
-    @OneToMany(mappedBy = "offeredCourseEvaluation")
-    private Set<OfferedCourseEvaluationItem> offeredCourseEvaluationItems=new HashSet<>();
 }

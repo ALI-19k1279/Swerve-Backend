@@ -1,5 +1,6 @@
 package com.swerve.backend.subject.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.swerve.backend.shared.model.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,6 +12,10 @@ import lombok.Setter;
 //import javax.persistence.ManyToOne;
 import jakarta.persistence.Entity;
 import jakarta.persistence.*;
+
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
@@ -21,13 +26,19 @@ public class StudentsPerGroup_OfferedCourse extends BaseEntity<Long> {
     private Long studentId;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name="offeredCourse_ID", nullable=false)
+    @JoinColumn(name="offered_course_id", nullable=false)
+    @JsonIgnore
     private OfferedCourse offeredCourse;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name="group_ID", nullable=false)
+    @JoinColumn(name="group_id", nullable=false)
+    @JsonIgnore
     private Group group;
 
     @Column(nullable = false,columnDefinition = "boolean default true")
     private Boolean isEnrolled;
+
+    @OneToMany(mappedBy = "studentsPerGroup_OfferedCourse")
+    private Set<OfferedCourseEvaluationItem> offeredCourseEvaluationItems=new HashSet<>();
+
 }

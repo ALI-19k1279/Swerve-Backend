@@ -14,4 +14,6 @@ import java.util.List;
 public interface GroupRepository extends BaseRepository<Group,Long> {
 
     List<Group> findByIdAndDeletedFalse(Long id);
+
+
 }

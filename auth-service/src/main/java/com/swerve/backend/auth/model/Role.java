@@ -11,7 +11,9 @@ import lombok.experimental.SuperBuilder;
 import org.springframework.security.core.GrantedAuthority;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @NoArgsConstructor
@@ -25,4 +27,7 @@ public class Role extends BaseEntity<Long> implements GrantedAuthority {
 
     @ManyToMany(mappedBy = "authorities")
     private List<User> users = new ArrayList<>();
+
+    @OneToMany(mappedBy = "role")
+    private Set<Role_Features> roleFeatures=new HashSet<>();
 }

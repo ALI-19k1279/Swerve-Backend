@@ -1,5 +1,6 @@
 package com.swerve.backend.subject.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.swerve.backend.shared.model.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -22,10 +23,12 @@ public class PreRequisite extends BaseEntity<Long> {
 
     @ManyToOne(optional = false)
     @JoinColumn(name="preReqIs_ID", nullable=false)
+    @JsonIgnore
     private Course preReqIs;
 
     @ManyToOne(optional = false)
     @JoinColumn(name="preReqFor_ID", nullable=false)
+    @JsonIgnore
     private Course preReqFor;
 
 

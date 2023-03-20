@@ -25,7 +25,7 @@ public class LearningTrack extends BaseEntity<Long> {
     @Column(nullable = false)
     private String name;
 
-    @Lob
+//    @Lob
     @Column(nullable = false)
     private String description;
 

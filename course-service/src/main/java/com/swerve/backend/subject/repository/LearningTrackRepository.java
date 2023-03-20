@@ -11,4 +11,6 @@ import java.util.List;
 
 @Repository
 public interface LearningTrackRepository extends BaseRepository<LearningTrack,Long> {
+
+
 }
