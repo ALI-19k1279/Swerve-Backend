@@ -15,6 +15,7 @@ import jakarta.validation.Valid;
 import java.util.List;
 import java.util.Set;
 
+@CrossOrigin(origins = {})
 @RequiredArgsConstructor
 public abstract class BaseController<Model extends BaseEntity<ID>, DTO extends BaseDTO<ID>, ID> {
     private final BaseService<Model, DTO, ID> service;

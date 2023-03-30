@@ -9,15 +9,20 @@ import com.swerve.backend.subject.model.LearningTrack;
 import com.swerve.backend.subject.model.OfferedCourse;
 import com.swerve.backend.subject.model.PreRequisite;
 import com.swerve.backend.subject.service.CourseService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
+import java.rmi.ServerException;
 import java.util.Collection;
 import java.util.List;
+
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
+
+
 @Controller
 @RequestMapping("/courses")
 public class CourseController extends BaseController<Course, CourseDTO,Long> {
@@ -55,6 +60,30 @@ public class CourseController extends BaseController<Course, CourseDTO,Long> {
     public ResponseEntity<List<OfferedCourse>> getAllOfferedCourses(){
         System.out.println("all:::");
         return new ResponseEntity<>(this.courseService.GetAllOfferedCourses(), HttpStatus.OK);
+    }
+    @RequestMapping(path = "/create", method = POST, consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
+    public ResponseEntity<CourseDTO> create(@RequestParam String course_code,
+                                         @RequestParam String credits,
+                                         @RequestParam String short_description,
+                                         @RequestParam String title,
+                                         @RequestParam String learning_track_id) {
+        System.out.println(course_code);
+        System.out.println(credits);
+        System.out.println(short_description);
+        System.out.println(title);
+        System.out.println(learning_track_id);
+        CourseDTO courseDTO= new CourseDTO(course_code,credits,
+                short_description,title,learning_track_id);
+
+//        CourseDTO course = courseService.save(courseDTO);
+        courseService.CreateCourse(course_code,credits,short_description
+                ,title,Long.parseLong(learning_track_id));
+//        if (course == null) {
+//            throw new ServerException;
+//        } else {
+//            return new ResponseEntity<>(course, HttpStatus.CREATED);
+//        }
+        return new ResponseEntity<>(courseDTO, HttpStatus.CREATED);
     }
 
 }

@@ -12,17 +12,17 @@ import lombok.Setter;
 @Setter
 public class LearnerEvaluationDTO extends BaseDTO<Long> {
 
-    private Long learnerID;
+    private String evaluationTitle;
 
-    private String evaluationItem;
+    private String evaluationType;
+
 
     private int totalMarks;
     private int marksObtained;
 
-    private int noOfAttempts;
 
-    private int minMarks;
+    private int minMarks=0;
 
-    private int maxMarks;
+    private int maxMarks=0;
 
 }

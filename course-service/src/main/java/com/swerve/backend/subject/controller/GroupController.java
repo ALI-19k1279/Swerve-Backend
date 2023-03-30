@@ -2,6 +2,7 @@ package com.swerve.backend.subject.controller;
 
 
 
+import com.fasterxml.jackson.databind.util.JSONPObject;
 import com.swerve.backend.shared.controller.BaseController;
 import com.swerve.backend.subject.dto.CourseDTO;
 import com.swerve.backend.subject.dto.LearningTrackDTO;
@@ -40,9 +41,11 @@ public class GroupController extends BaseController<StudentsPerGroup_OfferedCour
         return new ResponseEntity<>(groupService.GetOfferedCourseByStudentID(id),HttpStatus.OK);
     }
 
-    @GetMapping("/{id}/evaluationitems/stdid")
-    public ResponseEntity<List<OfferedCourseEvaluation>> getEvaluationItemsByStudentID(@PathVariable Long id){
-        return new ResponseEntity<>(groupService.GetEvaluationItemsByStudentID(id),HttpStatus.OK);
+    @GetMapping("/{stdid}/{gid}/{ocid}/evaluationitems")
+    public ResponseEntity<List<String>> getEvaluationItemsByStudentID(@PathVariable  Long stdid,
+                                                                     @PathVariable Long gid,
+                                                                     @PathVariable Long ocid){
+        return new ResponseEntity<>(groupService.GetEvaluationItemsByStudentID(stdid,gid,ocid),HttpStatus.OK);
     }
 //    @GetMapping("/{stdid}/{crcid}/evaluations/stdid")
 //    public ResponseEntity<LearnerEvaluationDTO> getEvaluationsByStudentID(@PathVariable Long stdid,@PathVariable Long crcid){

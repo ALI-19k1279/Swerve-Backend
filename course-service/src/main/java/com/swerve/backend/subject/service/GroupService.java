@@ -2,6 +2,7 @@ package com.swerve.backend.subject.service;
 
 
 
+import com.fasterxml.jackson.databind.util.JSONPObject;
 import com.swerve.backend.shared.service.BaseService;
 import com.swerve.backend.subject.dto.LearnerEvaluationDTO;
 import com.swerve.backend.subject.dto.StudentsPerGroup_OfferedCourseDTO;
@@ -38,14 +39,16 @@ public class GroupService extends BaseService<StudentsPerGroup_OfferedCourse, St
         return offeredCourses.isEmpty()? null:offeredCourses;
     }
 
-    public List<OfferedCourseEvaluation> GetEvaluationItemsByStudentID(Long id) {
-        List<OfferedCourseEvaluation> offeredCourseEvaluations = studentsPerGroupOfferedCourseRepository.findEvaluationItemsByStudentId(id);
-//        Set<OfferedCourseEvaluationItem> offeredCourseEvaluationItemSet = new HashSet<>();
-//        for (OfferedCourseEvaluation ev : offeredCourseEvaluations) {
-//            offeredCourseEvaluationItemSet.add(ev.);
+    public List<String> GetEvaluationItemsByStudentID(Long stdid,Long gid,Long ocid) {
+        List<String> learnerEvaluationDTOS = studentsPerGroupOfferedCourseRepository.findEvaluationItemsByStudentId(stdid,gid,ocid);
+        List<String> maxMinAvg=studentsPerGroupOfferedCourseRepository.findMaxMinAvgbyOfferedCourseID(ocid);
+        //        List<LearnerEvaluationDTO> evaluationDTOS=new ArrayList<LearnerEvaluationDTO>();
+//        int size=evaluationDTOS.size();
+//        for(int i=0;i<size;i++){
+//            evalua
 //        }
-
-        return offeredCourseEvaluations.isEmpty() ? null : offeredCourseEvaluations;
+        System.out.println(maxMinAvg.get(0));
+        return maxMinAvg.isEmpty()? null:maxMinAvg;
     }
 //
 //    public LearnerEvaluationDTO getEvaluationsByStudentIDandOfferedCourseID(Long stdID,Long offeredCourseID) {

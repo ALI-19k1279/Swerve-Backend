@@ -41,9 +41,13 @@ public class SecurityConfig {
                         "/courses/offeredcourses",
                         "/spgoc/*/offeredcourses/gid",
                         "/spgoc/*/offeredcourses/stdid",
-                        "/spgoc/*/evaluationitems/stdid",
+                        "/spgoc/*/*/*/evaluationitems",
                         "/spgoc/*/*/evaluations/stdid",
                         "/spgoc/*/students").permitAll()
+                .requestMatchers(
+                        HttpMethod.POST,
+                        "/courses/create"
+                ).permitAll()
 //                .requestMatchers(
 //                        HttpMethod.GET,
 //                        "/subject-enrollments/*",

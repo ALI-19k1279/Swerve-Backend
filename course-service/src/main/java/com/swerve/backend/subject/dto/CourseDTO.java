@@ -16,15 +16,16 @@ public class CourseDTO extends BaseDTO<Long> {
     @NotBlank(message = "Code is mandatory")
     private String course_code;
 
+    @NotBlank(message = "Credit is mandatory")
+    private String credits;
+
+    private String short_description;
     @NotBlank(message = "Course title is mandatory")
     private String title;
 
-
-    private String short_description;
-    @NotBlank(message = "Credit is mandatory")
-    private String credits;
     @NotBlank(message = "Learning Track is mandatory")
-    private LearningTrackDTO learning_track_id;
+    private String learning_track_id;
 
+    //Detail: Failing row contains (10, f, null, 3, null, FSE, null).
 
 }
