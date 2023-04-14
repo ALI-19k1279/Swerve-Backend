@@ -34,7 +34,7 @@ public class AppStartupRunner implements ApplicationRunner {
                         .username("std@swerve.com")
                         .password(passwordEncoder.encode("password"))
                         .portal("learner")
-                        .authorities(Set.of(root, admin))
+                        .roles(Set.of(root, admin))
                         .accountNonExpired(true)
                         .accountNonLocked(true)
                         .credentialsNonExpired(true)

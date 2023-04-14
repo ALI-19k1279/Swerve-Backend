@@ -86,9 +86,9 @@ public class UserService extends BaseService<User, UserDetailsDTO, Long> {
     }
 
     public UserDetailsDTO findByUsername(String username) throws UsernameNotFoundException {
-        if (!getUsername().equals(username) && !hasAuthority(ROLE_ADMIN)) {
-            throw new ForbiddenException("You are not allowed to view this user's details");
-        }
+//        if (!getUsername().equals(username) && !hasAuthority(ROLE_ADMIN)) {
+//            throw new ForbiddenException("You are not allowed to view this user's details");
+//        }
         System.out.println(getUsername());
         System.out.println(username);
         return (UserDetailsDTO) userDetailsService.loadUserByUsername(username);
@@ -102,17 +102,22 @@ public class UserService extends BaseService<User, UserDetailsDTO, Long> {
     }
 
     public TokensDTO login(UserDTO userDTO) {
+        System.out.println("in login function");
         System.out.println(userDTO.getUsername());
         System.out.println(userDTO.getPassword());
         UsernamePasswordAuthenticationToken token =
                 new UsernamePasswordAuthenticationToken(
                         userDTO.getUsername(), userDTO.getPassword());
+        System.out.println("token");
         System.out.println(token);
         Authentication authentication = authenticationManager.authenticate(token);
+        System.out.println("userDTO.getPassword()");
         System.out.println(userDTO.getPassword());
         SecurityContextHolder.getContext().setAuthentication(authentication);
+        System.out.println("userDTO.getPassword()");
         System.out.println(userDTO.getPassword());
         String username = userDTO.getUsername();
+        System.out.println("userDTO.getPassword()");
         System.out.println(userDTO.getPassword());
         return new TokensDTO(
                 tokenGenerator.generateAccessToken(username),

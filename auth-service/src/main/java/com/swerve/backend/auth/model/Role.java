@@ -25,7 +25,7 @@ public class Role extends BaseEntity<Long> implements GrantedAuthority {
     @Column(nullable = false, unique = true)
     private String authority;
 
-    @ManyToMany(mappedBy = "authorities")
+    @ManyToMany(mappedBy = "roles")
     private List<User> users = new ArrayList<>();
 
     @OneToMany(mappedBy = "role")

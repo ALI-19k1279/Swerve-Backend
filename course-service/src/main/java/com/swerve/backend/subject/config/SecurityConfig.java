@@ -4,6 +4,7 @@ import com.swerve.backend.shared.security.AuthenticationTokenFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -13,7 +14,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import static com.swerve.backend.shared.security.SecurityUtils.*;
 
 @Configuration
-@EnableWebSecurity
+//@EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http, AuthenticationTokenFilter authenticationTokenFilter)
@@ -73,7 +75,7 @@ public class SecurityConfig {
                         "/hello"
 
                 ).permitAll()
-                .anyRequest().hasAuthority(ROLE_ADMIN)
+                .anyRequest().authenticated()
                 .and()
                 .build();
     }

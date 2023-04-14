@@ -84,6 +84,7 @@ public class AdministratorService extends ExtendedService<Administrator, Adminis
                 repository
                         .findByUserId(userId)
                         .orElseThrow(() -> new NotFoundException("User id not found"));
+        System.out.println(administrator.getFirstName());
         return mapper.toDTO(administrator);
     }
 }

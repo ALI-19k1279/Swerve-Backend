@@ -22,8 +22,10 @@ public class TokenUtils {
     }
     public Claims getClaims(String token) {
         try {
-            return Jwts.parser().setSigningKey(getSignInKey()).parseClaimsJws(token).getBody();
+            Claims body = Jwts.parser().setSigningKey(getSignInKey()).parseClaimsJws(token).getBody();
+            return body;
         } catch (Exception exception) {
+            System.out.println(exception.getMessage());
             return null;
         }
     }
@@ -39,8 +41,15 @@ public class TokenUtils {
     public String getUsername(String token) {
         System.out.println("token:" + token);
         try {
-            return getClaims(token).getSubject();
+            System.out.println("token2:" + token);
+            Claims claims = getClaims(token);
+            String subject = claims.getSubject();
+            System.out.println("sub:");
+            System.out.println("sub:" + subject);
+            return subject;
+
         } catch (Exception exception) {
+            System.out.println("exxx");
             return null;
         }
     }

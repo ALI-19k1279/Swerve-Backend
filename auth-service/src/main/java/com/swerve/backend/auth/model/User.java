@@ -6,9 +6,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import jakarta.persistence.*;
+
+import java.util.Collection;
 import java.util.Set;
 
 @Entity
@@ -47,5 +51,8 @@ public class User extends BaseEntity<Long> implements UserDetails {
             name = "user_role",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<Role> authorities;
+    private Set<Role> roles;
+
+    @Transient
+    private Collection<? extends GrantedAuthority> authorities;
 }

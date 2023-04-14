@@ -16,10 +16,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.security.Key;
 
 import static com.swerve.backend.shared.security.SecurityUtils.*;
@@ -82,8 +79,22 @@ public class TokenGenerator {
         claims.put("userId", userId);
 
         List<String> authorities =
-                user.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
-        claims.put("roles", authorities);
+                user.getRoles().stream().map(GrantedAuthority::getAuthority).toList();
+        System.out.println("tokenGenerator22");
+        System.out.println(authorities.isEmpty());
+//        claims.put("roles", authorities);
+
+        List<String> permissions=getDescriptionsForAuthorizedRoles(authorities);
+//        claims.put("permissions",permissions);
+
+        List<String> combinedList = new ArrayList<>();
+        combinedList.addAll(authorities);
+        combinedList.addAll(permissions);
+
+        claims.put("roles", combinedList);
+
+
+
 
 //        if (authorities.contains(ROLE_ADMIN)) {
 //            claims.put("adminId", facultyFeignClient.getAdministratorIdByUserId(userId));
@@ -94,6 +105,11 @@ public class TokenGenerator {
 //        }
 
         return claims;
+    }
+
+    private List<String> getDescriptionsForAuthorizedRoles(List<String> authorities) {
+        List<String> description= userRepository.findByRolesAuthorityIn(authorities);
+        return description.isEmpty()? null:description;
     }
 
     private User validateUser(String username) {

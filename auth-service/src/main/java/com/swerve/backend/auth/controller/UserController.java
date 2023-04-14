@@ -7,6 +7,7 @@ import com.swerve.backend.shared.dto.UserDTO;
 import com.swerve.backend.shared.dto.UserDetailsDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,9 +25,11 @@ public class UserController extends BaseController<User, UserDetailsDTO, Long> {
     }
 
     @GetMapping("/")
-    public String getPuc(@PathVariable Set<Long> id) {
+    @PreAuthorize("hasAnyAuthority('auth:hello','auth:read')")
+    public String getPuc() {
         return "hello";
     }
+
     @GetMapping("/{id}/public")
     public ResponseEntity<List<UserDTO>> getPublic(@PathVariable Set<Long> id) {
         System.out.println(id);

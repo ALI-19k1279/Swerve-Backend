@@ -8,7 +8,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
-//@EnableFeignClients({"com.swerve.backend.auth", "com.swerve.backend.shared"})
+@EnableFeignClients({"com.swerve.backend.auth", "com.swerve.backend.shared"})
 @ComponentScan({"com.swerve.backend.auth", "com.swerve.backend.shared"})
 @OpenAPIDefinition(
         info =

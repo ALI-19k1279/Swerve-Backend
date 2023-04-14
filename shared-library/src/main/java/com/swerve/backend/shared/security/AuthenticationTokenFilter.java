@@ -1,11 +1,11 @@
 package com.swerve.backend.shared.security;
 
-import com.swerve.backend.shared.security.TokenUtils;
+import com.swerve.backend.shared.dto.UserDetailsDTO;
 import com.swerve.backend.shared.client.AuthFeignClient;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -26,6 +26,7 @@ import static com.swerve.backend.shared.security.SecurityUtils.BEARER_PREFIX;
 @RequiredArgsConstructor
 public class AuthenticationTokenFilter extends OncePerRequestFilter {
 
+    private final AuthFeignClient authFeignClient;
     private final TokenUtils tokenUtils;
 
     @Override
@@ -39,6 +40,8 @@ public class AuthenticationTokenFilter extends OncePerRequestFilter {
         System.out.println(username);
         if ((username != null && SecurityContextHolder.getContext().getAuthentication() == null)) {
             UserDetails userDetails = getUserDetails(username);
+            System.out.println("userdetails");
+            System.out.println(userDetails.getAuthorities());
             if (tokenUtils.validateToken(token, userDetails)) {
                 Claims claims = tokenUtils.getClaims(token);
                 UsernamePasswordAuthenticationToken authentication =
@@ -63,6 +66,16 @@ public class AuthenticationTokenFilter extends OncePerRequestFilter {
     }
 
     protected UserDetails getUserDetails(String username) {
-        return null;
+        System.out.println("here");
+        try {
+            ResponseEntity<UserDetailsDTO> user = authFeignClient.getUser(username);
+            System.out.println("here");
+            return user.getBody();
+        }
+        catch (Exception ex){
+            System.out.println(ex.getMessage());
+            return null;
+        }
+
     }
 }

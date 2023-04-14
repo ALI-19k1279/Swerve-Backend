@@ -13,6 +13,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,6 +41,7 @@ public class CourseController extends BaseController<Course, CourseDTO,Long> {
         return new ResponseEntity<>(this.courseService.GetCourseById(id), HttpStatus.OK);
     }
     @GetMapping("/all/course")
+    @PreAuthorize("hasAnyAuthority('auth:hello','auth:read')")
     public ResponseEntity<List<CourseDTO>> getAllCourses(){
         System.out.println("all:::");
         return new ResponseEntity<>(this.courseService.GetAllCourses(), HttpStatus.OK);

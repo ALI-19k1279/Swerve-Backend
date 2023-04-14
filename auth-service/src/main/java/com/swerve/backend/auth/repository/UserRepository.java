@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -18,4 +19,8 @@ public interface UserRepository extends BaseRepository<User, Long> {
     Page<User> findContaining(Pageable pageable, String search);
 
     Optional<User> findByUsername(String username);
+
+    @Query(value = "select s.description from system_features s, role_features r, role ro where ro.authority \n" +
+            "in :authorities and ro.id=r.role_id and s.id=r.system_feature_id",nativeQuery = true)
+    List<String> findByRolesAuthorityIn(List<String> authorities);
 }

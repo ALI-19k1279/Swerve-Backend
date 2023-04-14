@@ -1,6 +1,7 @@
 package com.swerve.backend.auth.config;
 
 import com.swerve.backend.auth.security.AuthTokenFilter;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 import org.springframework.context.annotation.Bean;
@@ -23,7 +24,8 @@ import java.util.Collections;
 import static com.swerve.backend.shared.security.SecurityUtils.*;
 
 @Configuration
-@EnableWebSecurity
+//@EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration)
@@ -60,8 +62,9 @@ public class SecurityConfig {
                 .requestMatchers(
                         HttpMethod.GET,
                         "/users/username/*").authenticated()
-                .requestMatchers("/users/**").hasAuthority(ROLE_ADMIN)
-                .anyRequest().hasAuthority(ROLE_ROOT)
+//                .requestMatchers("/users/**").hasAuthority(ROLE_ADMIN)
+//                .anyRequest().hasAuthority(ROLE_ROOT)
+                .anyRequest().authenticated()
                 .and()
                 .build();
     }

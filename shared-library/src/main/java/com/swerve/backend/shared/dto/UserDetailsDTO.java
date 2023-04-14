@@ -1,5 +1,7 @@
 package com.swerve.backend.shared.dto;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.swerve.backend.shared.util.UserDetailsDeserializer;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
@@ -8,9 +10,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 
+import java.util.Collection;
 import java.util.Set;
 
 @NoArgsConstructor
@@ -18,6 +23,7 @@ import java.util.Set;
 @Getter
 @Setter
 @SuperBuilder
+@JsonDeserialize(using = UserDetailsDeserializer.class)
 public class UserDetailsDTO extends BaseDTO<Long> implements UserDetails {
     @NotBlank(message = "Username is mandatory")
     private String username;
@@ -33,5 +39,7 @@ public class UserDetailsDTO extends BaseDTO<Long> implements UserDetails {
     private String portal;
 
     @NotEmpty(message = "Authorities are mandatory")
-    private Set<RoleDTO> authorities;
+    private Set<RoleDTO> roles;
+
+    private Collection<? extends GrantedAuthority> authorities;
 }
