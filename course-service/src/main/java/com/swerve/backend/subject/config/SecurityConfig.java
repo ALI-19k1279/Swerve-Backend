@@ -48,7 +48,8 @@ public class SecurityConfig {
                         "/spgoc/*/students").permitAll()
                 .requestMatchers(
                         HttpMethod.POST,
-                        "/courses/create"
+                        "/courses/create",
+                        "/batch/importcourses"
                 ).permitAll()
 //                .requestMatchers(
 //                        HttpMethod.GET,

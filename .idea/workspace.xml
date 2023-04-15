@@ -4,30 +4,22 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8b90be3d-2ddb-498b-9cb7-c9997eba456e" name="Changes" comment="">
+    <list default="true" id="e3b09a9e-0488-4344-9c3a-1a8badac1ec4" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/config/BatchConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/config/CourseImport.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/config/CourseProcessor.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/config/JobCompletionNotificationListener.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/controller/BatchController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/course-service/src/main/resources/MOCK_DATA.csv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth-service/src/main/java/com/swerve/backend/auth/AppStartupRunner.java" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/src/main/java/com/swerve/backend/auth/AppStartupRunner.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth-service/src/main/java/com/swerve/backend/auth/AuthServiceApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/src/main/java/com/swerve/backend/auth/AuthServiceApplication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth-service/src/main/java/com/swerve/backend/auth/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/src/main/java/com/swerve/backend/auth/config/SecurityConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth-service/src/main/java/com/swerve/backend/auth/controller/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/src/main/java/com/swerve/backend/auth/controller/UserController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth-service/src/main/java/com/swerve/backend/auth/model/Role.java" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/src/main/java/com/swerve/backend/auth/model/Role.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth-service/src/main/java/com/swerve/backend/auth/model/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/src/main/java/com/swerve/backend/auth/model/User.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth-service/src/main/java/com/swerve/backend/auth/repository/UserRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/src/main/java/com/swerve/backend/auth/repository/UserRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth-service/src/main/java/com/swerve/backend/auth/security/AuthTokenFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/src/main/java/com/swerve/backend/auth/security/AuthTokenFilter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth-service/src/main/java/com/swerve/backend/auth/security/TokenGenerator.java" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/src/main/java/com/swerve/backend/auth/security/TokenGenerator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth-service/src/main/java/com/swerve/backend/auth/service/UserDetailsServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/src/main/java/com/swerve/backend/auth/service/UserDetailsServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth-service/src/main/java/com/swerve/backend/auth/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/src/main/java/com/swerve/backend/auth/service/UserService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/auth-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/course-service/course-final.sql" beforeDir="false" afterPath="$PROJECT_DIR$/course-service/course-final.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/course-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/course-service/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/config/SecurityConfig.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/controller/CourseController.java" beforeDir="false" afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/controller/CourseController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/model/Course.java" beforeDir="false" afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/model/Course.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/course-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/course-service/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/shared-library/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/shared-library/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/shared-library/src/main/java/com/swerve/backend/shared/client/AuthFeignClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/shared-library/src/main/java/com/swerve/backend/shared/client/AuthFeignClient.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/shared-library/src/main/java/com/swerve/backend/shared/dto/UserDetailsDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/shared-library/src/main/java/com/swerve/backend/shared/dto/UserDetailsDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/shared-library/src/main/java/com/swerve/backend/shared/security/AuthenticationTokenFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/shared-library/src/main/java/com/swerve/backend/shared/security/AuthenticationTokenFilter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/shared-library/src/main/java/com/swerve/backend/shared/security/TokenUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/shared-library/src/main/java/com/swerve/backend/shared/security/TokenUtils.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-service/src/main/java/com/swerve/backend/userservice/service/AdministratorService.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/main/java/com/swerve/backend/userservice/service/AdministratorService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/user-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/main/resources/application.properties" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -38,7 +30,6 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Interface" />
         <option value="Class" />
       </list>
     </option>
@@ -46,62 +37,28 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="JpbToolWindowState">
-    <option name="isToolWindowVisible" value="false" />
-  </component>
-  <component name="MarkdownSettingsMigration">
-    <option name="stateVersion" value="1" />
-  </component>
   <component name="MavenImportPreferences">
     <option name="generalSettings">
       <MavenGeneralSettings>
         <option name="useMavenConfig" value="true" />
       </MavenGeneralSettings>
     </option>
-    <option name="importingSettings">
-      <MavenImportingSettings>
-        <option name="workspaceImportEnabled" value="true" />
-      </MavenImportingSettings>
-    </option>
   </component>
-  <component name="ProjectId" id="2NGngNdWhA7pvkXHtGHhCfMTg01" />
+  <component name="ProjectId" id="2OSGKKz27OQhLND9UnwBd10H3kp" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;updated&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;
   }
 }</component>
-  <component name="RunManager" selected="Application.SubjectServiceApplication">
-    <configuration name="ApiGatewayApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="com.swerve.backend.apigateway.ApiGatewayApplication" />
-      <module name="api-gateway" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="com.swerve.backend.apigateway.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="AuthServiceApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="com.swerve.backend.auth.AuthServiceApplication" />
-      <module name="auth-service" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="com.swerve.backend.auth.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
+  <component name="RunManager">
     <configuration name="SubjectServiceApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.swerve.backend.subject.SubjectServiceApplication" />
       <module name="course-service" />
@@ -115,63 +72,21 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="UserServiceApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="com.swerve.backend.userservice.UserServiceApplication" />
-      <module name="user-service" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="com.swerve.backend.userservice.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <recent_temporary>
       <list>
         <item itemvalue="Application.SubjectServiceApplication" />
-        <item itemvalue="Application.AuthServiceApplication" />
-        <item itemvalue="Application.UserServiceApplication" />
-        <item itemvalue="Application.ApiGatewayApplication" />
       </list>
     </recent_temporary>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="8b90be3d-2ddb-498b-9cb7-c9997eba456e" name="Changes" comment="" />
-      <created>1679299411622</created>
+      <changelist id="e3b09a9e-0488-4344-9c3a-1a8badac1ec4" name="Changes" comment="" />
+      <created>1681546504188</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1679299411622</updated>
+      <updated>1681546504188</updated>
     </task>
     <servers />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/auth-service/src/main/java/com/swerve/backend/auth/security/AuthTokenFilter.java</url>
-          <line>22</line>
-          <option name="timeStamp" value="12" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/shared-library/src/main/java/com/swerve/backend/shared/util/UserDetailsDeserializer.java</url>
-          <line>34</line>
-          <option name="timeStamp" value="17" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/shared-library/src/main/java/com/swerve/backend/shared/security/AuthenticationTokenFilter.java</url>
-          <line>68</line>
-          <option name="timeStamp" value="18" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
-  </component>
-  <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/Swerve_Backend$SubjectServiceApplication.ic" NAME="SubjectServiceApplication Coverage Results" MODIFIED="1681389040190" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">
-      <FILTER>com.swerve.backend.subject.*</FILTER>
-    </SUITE>
   </component>
 </project>

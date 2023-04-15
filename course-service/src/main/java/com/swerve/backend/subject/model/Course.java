@@ -33,17 +33,27 @@ public class Course extends BaseEntity<Long> {
     @OneToMany(mappedBy = "preReqFor")
     private Set<PreRequisite> preReqFor=new HashSet<>();
 
-//    @OneToMany(mappedBy = "course")
-//    private Set<CourseModule> courseModule=new HashSet<>();
-
     @ManyToOne(optional = false)
     @JoinColumn(name="learningTrack_ID", nullable=false)
     @JsonIgnore
     private LearningTrack learningTrack;
 
+    public Course(String courseCode, String credits, String shortDescription,String title,String learningTrack){
+        this.courseCode=courseCode;
+        this.credits=credits;
+        this.shortDescription=shortDescription;
+        this.title=title;
+        String id= String.valueOf(this.learningTrack.getId());
+        id=learningTrack;
+    }
+    public static String[] getCourseFields(){
+        return new String[] {"courseCode","title","shortDescription","credits","learningTrack"};
+    }
 
 
-    //    @Column(nullable = false)
+//    @OneToMany(mappedBy = "course")
+//    private Set<CourseModule> courseModule=new HashSet<>();
+//    @Column(nullable = false)
 //    private boolean isOffered;
 //    @Lob
 //    @Column(nullable = false)

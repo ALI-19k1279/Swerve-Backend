@@ -2,7 +2,7 @@ Insert into learning_track(deleted,description,name) values(false,123,'CS');
 Insert into learning_track(deleted,description,name) values(false,124,'MG');
 Insert into course(deleted,course_code,credits,short_description,title,learning_track_id) values(false,'CS123',3,'algorithm related course','DSA',1);
 Insert into course(deleted,course_code,credits,short_description,title,learning_track_id) values(false,'CS124',3,'management fundamentals related course','CPM',2);	
-Insert into course(deleted,course_code,credits,short_description,title,learning_track_id) values(false,'CS123',3,'data structures related course','DS',1);
+Insert into course(deleted,course_code,credits,short_description,title,learning_track_id) values(false,'CS125',3,'data structures related course','DS',1);
 select * from course_learner_progress;
 select * from course_module;
 select * from offered_course;
