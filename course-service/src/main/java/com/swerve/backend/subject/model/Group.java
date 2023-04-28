@@ -25,7 +25,7 @@ public class Group extends BaseEntity<Long>{
     @Column(nullable = false)
     private String groupName;
 
-    @OneToMany(mappedBy = "group")
+    @OneToMany
     private Set<StudentsPerGroup_OfferedCourse> studentsPerGroupOfferedCourses=new HashSet<>();
 
 }

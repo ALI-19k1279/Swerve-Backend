@@ -17,15 +17,12 @@ public class Session extends BaseEntity<Long>{
 
     @ManyToOne(optional = false)
     @JoinColumn(name="offeredCourse_ID", nullable=false)
-    @JsonIgnore
     private OfferedCourse offeredCourse;
 
     @ManyToOne(optional = false)
     @JoinColumn(name="group_ID", nullable=false)
-    @JsonIgnore
     private Group group;
 
-    @Lob
     @Column(nullable = false)
     private String objectives;
 

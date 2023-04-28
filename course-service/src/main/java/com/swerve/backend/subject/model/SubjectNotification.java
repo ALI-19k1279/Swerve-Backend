@@ -23,7 +23,6 @@ public class SubjectNotification extends BaseEntity<Long> {
     @Column(nullable = false)
     private String name;
 
-    @Lob
     @Column(nullable = false)
     private String description;
 

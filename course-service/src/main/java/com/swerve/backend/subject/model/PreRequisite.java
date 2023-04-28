@@ -23,12 +23,10 @@ public class PreRequisite extends BaseEntity<Long> {
 
     @ManyToOne(optional = false)
     @JoinColumn(name="preReqIs_ID", nullable=false)
-    @JsonIgnore
     private Course preReqIs;
 
     @ManyToOne(optional = false)
     @JoinColumn(name="preReqFor_ID", nullable=false)
-    @JsonIgnore
     private Course preReqFor;
 
 

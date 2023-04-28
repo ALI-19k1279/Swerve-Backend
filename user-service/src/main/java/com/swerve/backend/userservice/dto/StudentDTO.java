@@ -31,6 +31,11 @@ public class StudentDTO extends BaseDTO<Long> {
     private String index;
 
     @NotNull(message = "Year of enrollment is mandatory")
-    private Integer yearOfEnrollment;
+    private String yearOfEnrollment;
 
+//    @NotNull(message = "Year of enrollment is mandatory")
+//    private String user_id;
+    public static String[] getStudentFields(){
+        return new String[] {"firstName","lastName","index","yearOfEnrollment","user_id"};
+    }
 }

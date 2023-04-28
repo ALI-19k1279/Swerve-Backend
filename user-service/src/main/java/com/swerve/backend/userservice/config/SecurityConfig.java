@@ -44,6 +44,10 @@ public class SecurityConfig {
                 .requestMatchers(
                         HttpMethod.GET,
                         "/students/**").hasAnyAuthority(ROLE_TEACHER, ROLE_ADMIN)
+                .requestMatchers(
+                        HttpMethod.POST,
+                        "/batch/importstudents"
+                ).permitAll()
                 .anyRequest().hasAuthority(ROLE_ADMIN)
                 .and()
                 .build();

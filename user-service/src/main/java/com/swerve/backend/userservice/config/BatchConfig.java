@@ -1,7 +1,6 @@
-package com.swerve.backend.subject.config;
+package com.swerve.backend.userservice.config;
 
-import com.swerve.backend.subject.dto.CourseDTO;
-import com.swerve.backend.subject.model.Course;
+import com.swerve.backend.userservice.dto.StudentImportDTO;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
@@ -9,6 +8,7 @@ import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
+import org.springframework.batch.item.data.RepositoryItemWriter;
 import org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.batch.item.file.FlatFileItemReader;
@@ -17,14 +17,17 @@ import org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper;
 import org.springframework.batch.item.file.mapping.DefaultLineMapper;
 import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.PathResource;
 import org.springframework.core.io.Resource;
+import org.springframework.core.task.SimpleAsyncTaskExecutor;
+import org.springframework.core.task.TaskExecutor;
 import org.springframework.transaction.PlatformTransactionManager;
-
+import com.swerve.backend.userservice.config.JobCompletionNotificationListener;
 import javax.sql.DataSource;
 
 @Configuration
@@ -34,64 +37,61 @@ public class BatchConfig {
     @Autowired
     private DataSource dataSource;
 
-    @Value("${input}") Resource resource;
-
 
     @Bean
-    public FlatFileItemReader<CourseDTO> reader(){
-        FlatFileItemReader<CourseDTO> itemReader = new FlatFileItemReader<>();
-        itemReader.setResource(new ClassPathResource("MOCK_DATA.csv"));
-        itemReader.setName("CourseItemReader");
+    public FlatFileItemReader<StudentImportDTO> reader(){
+        FlatFileItemReader<StudentImportDTO> itemReader = new FlatFileItemReader<>();
+        itemReader.setResource(new ClassPathResource("MOCK_DATA_std.csv"));
+        itemReader.setName("stdItemReader");
         itemReader.setLinesToSkip(1);
         itemReader.setLineMapper(lineMapper());
         return itemReader;
     }
-    private LineMapper<CourseDTO> lineMapper() {
-        DefaultLineMapper<CourseDTO> lineMapper = new DefaultLineMapper<>();
+    private LineMapper<StudentImportDTO> lineMapper() {
+        DefaultLineMapper<StudentImportDTO> lineMapper = new DefaultLineMapper<>();
 
         DelimitedLineTokenizer lineTokenizer = new DelimitedLineTokenizer();
         lineTokenizer.setDelimiter(",");
         lineTokenizer.setStrict(false);
         lineTokenizer.setNames(
-                Course.getCourseFields()
+                StudentImportDTO.getStudentFields()
         );
 
-        BeanWrapperFieldSetMapper<CourseDTO> fieldSetMapper = new BeanWrapperFieldSetMapper<>();
-        fieldSetMapper.setTargetType(CourseDTO.class);
+        BeanWrapperFieldSetMapper<StudentImportDTO> fieldSetMapper = new BeanWrapperFieldSetMapper<>();
+        fieldSetMapper.setTargetType(StudentImportDTO.class);
 
         lineMapper.setLineTokenizer(lineTokenizer);
         lineMapper.setFieldSetMapper(fieldSetMapper);
         return lineMapper;
     }
     @Bean
-    public CourseProcessor processor() {
-        return new CourseProcessor();
+    public StudentProcessor processor() {
+        return new StudentProcessor();
     }
     @Bean
-    public JdbcBatchItemWriter<CourseImport> writer(){
-        JdbcBatchItemWriter<CourseImport> jdbcBatchItemWriter=new JdbcBatchItemWriter<>();
+    public JdbcBatchItemWriter<StudentImport> writer(){
+        JdbcBatchItemWriter<StudentImport> jdbcBatchItemWriter=new JdbcBatchItemWriter<>();
         jdbcBatchItemWriter.setDataSource(dataSource);
-        jdbcBatchItemWriter.setSql("insert into Course (course_code, credits, short_description, title,learning_track_id) " +
-                "values(:course_code, :credits, :short_description, :title,:learning_track_id)");
-        jdbcBatchItemWriter.setItemSqlParameterSourceProvider(new BeanPropertyItemSqlParameterSourceProvider<CourseImport>());
+        jdbcBatchItemWriter.setSql("insert into student (first_name, s_index, last_name, user_id,year_of_enrollment) " +
+                "values(:first_name, :s_index, :last_name, :user_id,:year_of_enrollment)");
+        jdbcBatchItemWriter.setItemSqlParameterSourceProvider(new BeanPropertyItemSqlParameterSourceProvider<StudentImport>());
         return jdbcBatchItemWriter;
     }
 
     @Bean
     public Step step1(JobRepository jobRepository,
-                      PlatformTransactionManager transactionManager, JdbcBatchItemWriter<CourseImport> writer) {
+                      PlatformTransactionManager transactionManager, JdbcBatchItemWriter<StudentImport> writer) {
         return new StepBuilder("step1", jobRepository)
-                .<CourseDTO, CourseImport> chunk(10, transactionManager)
+                .<StudentImportDTO, StudentImport> chunk(10, transactionManager)
                 .reader(reader())
-              .processor(processor())
+                .processor(processor())
                 .writer(writer)
                 .build();
     }
     @Bean
-    @Qualifier("importCourseJob")
     public Job importCourseJob(JobRepository jobRepository,
-                             JobCompletionNotificationListener listener, Step step1) {
-        return new JobBuilder("importCourseJob", jobRepository)
+                               JobCompletionNotificationListener listener, Step step1) {
+        return new JobBuilder("importStudentJob", jobRepository)
                 .incrementer(new RunIdIncrementer())
                 .listener(listener)
                 .flow(step1)

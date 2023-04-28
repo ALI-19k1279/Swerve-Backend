@@ -38,6 +38,6 @@ public class LearningTrack extends BaseEntity<Long> {
 //    @Column(nullable = false)
 //    private Long teacherId;
 
-    @OneToMany(mappedBy = "learningTrack")
+    @OneToMany
     private Set<Course> course=new HashSet<>();
 }

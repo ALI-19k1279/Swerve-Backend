@@ -21,7 +21,7 @@ public class Cycle extends BaseEntity<Long>{
 
     @Column(nullable = false)
     private Date endDate;
-    @OneToMany(mappedBy = "cycle")
+    @OneToMany
     private Set<OfferedCourse> offeredCourses=new HashSet<>();
 
 }

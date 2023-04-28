@@ -22,7 +22,6 @@ public class OfferedCourseEvaluation extends BaseEntity<Long>{
 
     @ManyToOne(optional = false)
     @JoinColumn(name="OCE_ID", nullable=false)
-    @JsonIgnore
     private OfferedCourseEvaluationItem offeredCourse_EvaluationItem;
 
 

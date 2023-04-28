@@ -19,7 +19,6 @@ public class OfferedCourseOutline extends BaseEntity<Long> {
 
     @ManyToOne(optional = false)
     @JoinColumn(name="offeredCourse_ID", nullable=false)
-    @JsonIgnore
     private OfferedCourse offeredCourse;
 
     private int sequenceNumber;

@@ -38,10 +38,9 @@ public class OfferedCourseEvaluationItem extends BaseEntity<Long>{
 
     @ManyToOne(optional = false)
     @JoinColumn(name="SPG_ID", nullable=false)
-    @JsonIgnore
     private StudentsPerGroup_OfferedCourse studentsPerGroup_OfferedCourse;
 
-    @OneToMany(mappedBy = "offeredCourse_EvaluationItem")
+    @OneToMany
     Set<OfferedCourseEvaluation> offeredCourseEvaluations=new HashSet<>();
 
 }

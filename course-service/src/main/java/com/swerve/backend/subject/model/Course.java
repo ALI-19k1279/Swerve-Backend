@@ -27,15 +27,14 @@ public class Course extends BaseEntity<Long> {
     private String credits;
 
 
-    @OneToMany(mappedBy = "preReqIs")
+    @OneToMany
     private Set<PreRequisite> preReqIs=new HashSet<>();
 
-    @OneToMany(mappedBy = "preReqFor")
+    @OneToMany
     private Set<PreRequisite> preReqFor=new HashSet<>();
 
     @ManyToOne(optional = false)
     @JoinColumn(name="learningTrack_ID", nullable=false)
-    @JsonIgnore
     private LearningTrack learningTrack;
 
     public Course(String courseCode, String credits, String shortDescription,String title,String learningTrack){

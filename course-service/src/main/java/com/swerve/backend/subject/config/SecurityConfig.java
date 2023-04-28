@@ -49,7 +49,8 @@ public class SecurityConfig {
                 .requestMatchers(
                         HttpMethod.POST,
                         "/courses/create",
-                        "/batch/importcourses"
+                        "/batch/importcourses",
+                        "/batch/importenrollments"
                 ).permitAll()
 //                .requestMatchers(
 //                        HttpMethod.GET,

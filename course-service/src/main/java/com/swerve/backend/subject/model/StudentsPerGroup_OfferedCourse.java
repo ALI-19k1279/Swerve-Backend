@@ -27,18 +27,16 @@ public class StudentsPerGroup_OfferedCourse extends BaseEntity<Long> {
 
     @ManyToOne(optional = false)
     @JoinColumn(name="offered_course_id", nullable=false)
-    @JsonIgnore
     private OfferedCourse offeredCourse;
 
     @ManyToOne(optional = false)
     @JoinColumn(name="group_id", nullable=false)
-    @JsonIgnore
     private Group group;
 
     @Column(nullable = false,columnDefinition = "boolean default true")
     private Boolean isEnrolled;
 
-    @OneToMany(mappedBy = "studentsPerGroup_OfferedCourse")
+    @OneToMany
     private Set<OfferedCourseEvaluationItem> offeredCourseEvaluationItems=new HashSet<>();
 
 }

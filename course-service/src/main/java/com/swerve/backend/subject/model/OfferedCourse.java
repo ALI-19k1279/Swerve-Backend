@@ -19,12 +19,12 @@ import jakarta.persistence.*;
 public class OfferedCourse extends BaseEntity<Long>{
 
     @ManyToOne(optional = false)
-    @JsonIgnore
+
     private Course courseID;
     @Column()
     private int fee;
 
-    @OneToMany(mappedBy = "offeredCourse")
+    @OneToMany
     private Set<CourseModule> courseModules=new HashSet<>();
 
 
@@ -36,13 +36,12 @@ public class OfferedCourse extends BaseEntity<Long>{
 
     @ManyToOne(optional = false)
     @JoinColumn(name="cycle_ID", nullable=false)
-    @JsonIgnore
     private Cycle cycle;
 
-    @OneToMany(mappedBy = "offeredCourse")
+    @OneToMany
     private Set<CourseMaterial> courseMaterials=new HashSet<>();
 
-    @OneToMany(mappedBy = "offeredCourse")
+    @OneToMany
     private Set<OfferedCourseOutline> offeredCourseOutlines=new HashSet<>();
 
 }
