@@ -23,6 +23,7 @@ public class SecurityUtils {
     public static String ADMIN_ID_CLAIM = "adminId";
     public static String TEACHER_ID_CLAIM = "teacherId";
     public static String STUDENT_ID_CLAIM = "studentId";
+    public static String FOLDER_PATH="D:/Swerve-Files";
 
     public static String BEARER_PREFIX = "Bearer ";
 

@@ -8,10 +8,9 @@ const router = express.Router();
 router.post("/create-post-comment/:id", auth, async (req, res) => {
   try {
     const post = await Post.findById(req.params.id);
-    if(!post){
+    if (!post) {
       throw "";
     }
-    
   } catch (ex) {
     return res.status(400).send("The Post with given ID doesn't exists!");
   }
@@ -24,10 +23,7 @@ router.post("/create-post-comment/:id", auth, async (req, res) => {
   });
   try {
     await reply.save();
-    const reply_populated = await Reply.find({ _id: reply._id }).populate(
-      "author",
-      "name -_id"
-    );
+    const reply_populated = await Reply.find({ _id: reply._id });
     res.send(reply_populated);
   } catch (ex) {
     console.log("error: ", ex);
@@ -37,7 +33,7 @@ router.post("/create-post-comment/:id", auth, async (req, res) => {
 router.post("/create-reply-comment/:id", auth, async (req, res) => {
   try {
     const post = await Reply.findById(req.params.id);
-    if(!post){
+    if (!post) {
       throw "";
     }
   } catch (ex) {
@@ -48,49 +44,39 @@ router.post("/create-reply-comment/:id", auth, async (req, res) => {
   const reply = new Reply({
     post: req.params.id,
     comment: req.body.comment,
-    author: req.user._id,
+    author: req.user.userId,
   });
   try {
     await reply.save();
-    const reply_populated = await Reply.find({ _id: reply._id }).populate(
-      "author",
-      "name -_id"
-    );
+    const reply_populated = await Reply.find({ _id: reply._id });
     res.send(reply_populated);
   } catch (ex) {
     console.log("error: ", ex);
   }
 });
 
-
 router.get("/:id", async (req, res) => {
   try {
     const post = await Post.findById(req.params.id);
-    if(!post){
+    if (!post) {
       throw "";
     }
   } catch (ex) {
     return res.status(400).send("The Post with given ID doesn't exists!");
   }
-  const replies = await Reply.find({ post: req.params.id }).populate(
-    "author",
-    "name username"
-  );
+  const replies = await Reply.find({ post: req.params.id });
   res.send(replies);
 });
-router.get("comment/:id", async (req, res) => {
+router.get("/comment/:id", async (req, res) => {
   try {
     const post = await Reply.findById(req.params.id);
-    if(!post){
+    if (!post) {
       throw "";
     }
   } catch (ex) {
     return res.status(400).send("The Reply with given ID doesn't exists!");
   }
-  const replies = await Reply.find({ post: req.params.id }).populate(
-    "author",
-    "name username"
-  );
+  const replies = await Reply.find({ post: req.params.id });
   res.send(replies);
 });
 
@@ -108,10 +94,7 @@ router.put("/like/:id", auth, async (req, res) => {
   }
   reply.upvotes = upvoteArray;
   const result = await reply.save();
-  const reply_new = await Reply.find({ _id: reply._id }).populate(
-    "author",
-    "name username"
-  );
+  const reply_new = await Reply.find({ _id: reply._id });
   res.send(reply_new);
 });
 

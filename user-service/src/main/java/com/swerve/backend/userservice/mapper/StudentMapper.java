@@ -22,9 +22,13 @@ public abstract class StudentMapper implements BaseMapper<Student, StudentDTO, L
         this.subjectFeignClient = subjectFeignClient;
     }
 
+    @Override
+    @Named("default")
     @Mapping(source = "userId", target = "user")
     public abstract StudentDTO toDTO(Student student);
 
+    @Override
+    @Named("default")
     @Mapping(source = "user.id", target = "userId")
     public abstract Student toModel(StudentDTO studentDTO);
 

@@ -8,16 +8,13 @@ const auth = require("../middleware/auth");
 const { Tag } = require("../models/tag");
 
 router.get("/", async (req, res) => {
-  let all_posts = await Post.find().populate("author", "name -_id");
+  let all_posts = await Post.find();
   res.send(all_posts);
 });
 
 router.get("/:id", async (req, res) => {
   try {
-    const post = await Post.find({ _id: req.params.id }).populate(
-      "author",
-      "name username"
-    );
+    const post = await Post.find({ _id: req.params.id });
     const views = post[0].views;
     post[0].views = views + 1;
     const result = await post[0].save();

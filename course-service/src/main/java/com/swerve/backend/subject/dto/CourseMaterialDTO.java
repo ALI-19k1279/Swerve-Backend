@@ -26,5 +26,4 @@ public class CourseMaterialDTO extends BaseDTO<Long> {
     private InstructorDTO teacher;
     @NotBlank(message = "Offered Course is mandatory")
     private OfferedCourseDTO offeredCourse;
-
 }

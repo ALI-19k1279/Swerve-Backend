@@ -10,9 +10,10 @@ const announcementSchema = new mongoose.Schema({
     minlength: 10,
     maxlength: 80,
   },
-  recepients: [{
+  recepients: {
     type: String,
-}],
+    required: true,
+  },
   description: {
     type: String,
     required: true,
@@ -28,20 +29,20 @@ const announcementSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
-  activeUntil: {
-    type: Date,
-    required:true,
-  },
+  // activeUntil: {
+  //   type: Date,
+  //   required:true,
+  // },
 });
 
 const Announcement = mongoose.model("Announcement", announcementSchema);
 
 function validateAnnouncement(announcement) {
   const schema = Joi.object({
-    title: Joi.string().required().min(10).max(80),
+    title: Joi.string().required(),
     description: Joi.string().required().min(3).max(1024),
-    recepients: Joi.array(),
-    activeUntil:Joi.date()
+    recepients: Joi.string(),
+    // activeUntil: Joi.date(),
   });
   return schema.validate(announcement);
 }

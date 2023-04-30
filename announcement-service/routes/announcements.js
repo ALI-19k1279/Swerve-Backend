@@ -1,22 +1,22 @@
 const express = require("express");
 const router = express.Router();
 const _ = require("lodash");
-const { Announcement, validateAnnouncement } = require("../models/announcement");
+const {
+  Announcement,
+  validateAnnouncement,
+} = require("../models/announcement");
 const { User } = require("../models/user");
 const auth = require("../middleware/auth");
 const { Tag } = require("../models/tag");
 
 router.get("/", async (req, res) => {
-  let all_announcements = await Announcement.find().populate("author", "name -_id");
+  let all_announcements = await Announcement.find();
   res.send(all_announcements);
 });
 
 router.get("/:id", async (req, res) => {
   try {
-    const announcement = await Announcement.find({ _id: req.params.id }).populate(
-      "author",
-      "name username"
-    );
+    const announcement = await Announcement.find({ _id: req.params.id });
     res.send(announcement[0]);
   } catch (ex) {
     return res.send(ex.message);
@@ -24,7 +24,7 @@ router.get("/:id", async (req, res) => {
 });
 
 router.post("/create", auth, async (req, res) => {
-  console.log("here")
+  console.log("here");
   const { error } = validateAnnouncement(req.body);
   if (error) return res.status(400).send(error.details[0].message);
   // const recepients = req.body.recepients;
@@ -39,7 +39,7 @@ router.post("/create", auth, async (req, res) => {
     recepients: req.body.recepients,
     description: req.body.description,
     author: req.user.userId,
-    activeUntil: req.body.activeUntil,
+    // activeUntil: req.body.activeUntil,
   });
   try {
     await announcement.save();
