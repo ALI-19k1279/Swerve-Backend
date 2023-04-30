@@ -47,8 +47,8 @@ public class GroupService extends BaseService<StudentsPerGroup_OfferedCourse, St
 //        for(int i=0;i<size;i++){
 //            evalua
 //        }
-        System.out.println(maxMinAvg.get(0));
-        return maxMinAvg.isEmpty()? null:maxMinAvg;
+//        System.out.println(maxMinAvg.get(0));
+        return learnerEvaluationDTOS.isEmpty()? null:learnerEvaluationDTOS;
     }
 //
 //    public LearnerEvaluationDTO getEvaluationsByStudentIDandOfferedCourseID(Long stdID,Long offeredCourseID) {

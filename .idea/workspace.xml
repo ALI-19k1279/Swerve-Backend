@@ -5,27 +5,33 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e3b09a9e-0488-4344-9c3a-1a8badac1ec4" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/config/EnrollmentBatchConfig.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/config/SPGOC_Import.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/config/SPGOC_Processor.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/dto/SPGOC_DTO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/course-service/src/main/resources/MOCK_DATA_Enroll.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/user-service/src/main/java/com/swerve/backend/userservice/config/BatchConfig.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/user-service/src/main/java/com/swerve/backend/userservice/config/JobCompletionNotificationListener.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/user-service/src/main/java/com/swerve/backend/userservice/config/StudentImport.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/user-service/src/main/java/com/swerve/backend/userservice/config/StudentProcessor.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/user-service/src/main/java/com/swerve/backend/userservice/controller/BatchController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/user-service/src/main/java/com/swerve/backend/userservice/dto/StudentImportDTO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/user-service/src/main/resources/MOCK_DATA_Std.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/controller/AttendanceController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/dto/AttendanceDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/mapper/AttendanceMapper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/model/OfferedCourseAttendance.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/repository/AttendanceRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/service/AttendanceService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/config/BatchConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/config/BatchConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/config/JobCompletionNotificationListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/config/JobCompletionNotificationListener.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/config/SecurityConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/controller/BatchController.java" beforeDir="false" afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/controller/BatchController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-service/src/main/java/com/swerve/backend/userservice/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/main/java/com/swerve/backend/userservice/config/SecurityConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-service/src/main/java/com/swerve/backend/userservice/dto/StudentDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/main/java/com/swerve/backend/userservice/dto/StudentDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/controller/GroupController.java" beforeDir="false" afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/controller/GroupController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/mapper/CourseLearnerProgressMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/mapper/CourseLearnerProgressMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/mapper/CourseMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/mapper/CourseMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/mapper/CourseMaterialMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/mapper/CourseMaterialMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/mapper/CourseModuleMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/mapper/CourseModuleMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/mapper/CycleMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/mapper/CycleMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/mapper/GroupMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/mapper/GroupMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/mapper/LearningTrackMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/mapper/LearningTrackMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/mapper/OfferedCourseEvaluationItemMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/mapper/OfferedCourseEvaluationItemMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/mapper/OfferedCourseEvaluationMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/mapper/OfferedCourseEvaluationMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/mapper/OfferedCourseMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/mapper/OfferedCourseMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/mapper/PreRequisiteMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/mapper/PreRequisiteMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/mapper/SessionMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/mapper/SessionMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/mapper/StudentsPerGroup_OfferedCourseMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/mapper/StudentsPerGroup_OfferedCourseMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/service/GroupService.java" beforeDir="false" afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/service/GroupService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/course-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/course-service/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/shared-library/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/shared-library/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/shared-library/src/main/java/com/swerve/backend/shared/mapper/BaseMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/shared-library/src/main/java/com/swerve/backend/shared/mapper/BaseMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/main/resources/application.properties" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -36,6 +42,7 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Class" />
+        <option value="Interface" />
       </list>
     </option>
   </component>
@@ -132,8 +139,8 @@
     <recent_temporary>
       <list>
         <item itemvalue="Application.SubjectServiceApplication" />
-        <item itemvalue="Application.UserServiceApplication" />
         <item itemvalue="Application.AuthServiceApplication" />
+        <item itemvalue="Application.UserServiceApplication" />
         <item itemvalue="Application.ApiGatewayApplication" />
         <item itemvalue="Application.DiscoveryServerApplication" />
       </list>

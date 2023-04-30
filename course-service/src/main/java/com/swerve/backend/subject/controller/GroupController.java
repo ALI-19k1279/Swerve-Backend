@@ -47,11 +47,11 @@ public class GroupController extends BaseController<StudentsPerGroup_OfferedCour
                                                                      @PathVariable Long ocid){
         return new ResponseEntity<>(groupService.GetEvaluationItemsByStudentID(stdid,gid,ocid),HttpStatus.OK);
     }
-//    @GetMapping("/{stdid}/{crcid}/evaluations/stdid")
-//    public ResponseEntity<LearnerEvaluationDTO> getEvaluationsByStudentID(@PathVariable Long stdid,@PathVariable Long crcid){
-//        return new ResponseEntity<>(groupService.getEvaluationsByStudentIDandOfferedCourseID(stdid,crcid),HttpStatus.OK);
+//    @GetMapping("/{gid}/{ocid}/evaluations/stdid")
+//    public ResponseEntity<LearnerEvaluationDTO> getEvaluationsByGroupID(@PathVariable Long gid,@PathVariable Long ocid){
+//        return new null;
 //    }
-//
+
 //    @GetMapping("/{id}/students")
 //    public ResponseEntity<List<Integer>> getStudentsDetails(){
 //            return new ResponseEntity<>(groupService.getStudentsDetail(),HttpStatus.OK);
