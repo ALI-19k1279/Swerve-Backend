@@ -70,10 +70,10 @@ public class CourseMaterialController extends BaseController<CourseMaterial, Cou
         }
     }
 
-    @GetMapping("/fileSystem/{fileName}")
-    public ResponseEntity<?> downloadFileFromFileSystem(@PathVariable String fileName) throws IOException {
-        byte[] fileData = courseMaterialService.downloadFileFromFileSystem(fileName);
-        CourseMaterial courseMaterialByName = courseMaterialService.getCourseMaterialByName(fileName);
+    @GetMapping("/fileSystem/{id}")
+    public ResponseEntity<?> downloadFileFromFileSystem(@PathVariable Long id) throws IOException {
+        byte[] fileData = courseMaterialService.downloadFileFromFileSystem(id);
+        CourseMaterial courseMaterialByName = courseMaterialService.getCourseMaterialByName(id);
         String name = courseMaterialByName.getName();
         String extension= getFileExtension(name);
         return ResponseEntity.status(HttpStatus.OK)

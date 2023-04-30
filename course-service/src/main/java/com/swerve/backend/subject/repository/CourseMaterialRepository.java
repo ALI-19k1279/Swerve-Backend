@@ -17,7 +17,7 @@ import java.util.Optional;
 @Repository
 public interface CourseMaterialRepository extends BaseRepository<CourseMaterial,Long> {
 
-    Optional<CourseMaterial> findByName(String fileName);
+    Optional<CourseMaterial> findById(Long id);
 
 
     List<CourseMaterial> findByTeacherIdAndOfferedCourseId(Long teacherId, Long offeredCourseId);

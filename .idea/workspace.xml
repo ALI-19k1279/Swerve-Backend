@@ -5,22 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e3b09a9e-0488-4344-9c3a-1a8badac1ec4" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/announcement-service/models/announcement.js" beforeDir="false" afterPath="$PROJECT_DIR$/announcement-service/models/announcement.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/announcement-service/routes/announcements.js" beforeDir="false" afterPath="$PROJECT_DIR$/announcement-service/routes/announcements.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth-service/src/main/java/com/swerve/backend/auth/mapper/RoleMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/src/main/java/com/swerve/backend/auth/mapper/RoleMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth-service/src/main/java/com/swerve/backend/auth/mapper/UserMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/src/main/java/com/swerve/backend/auth/mapper/UserMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/dto/CourseMaterialDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/dto/CourseMaterialDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/controller/CourseMaterialController.java" beforeDir="false" afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/controller/CourseMaterialController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/repository/CourseMaterialRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/repository/CourseMaterialRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/course-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/course-service/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/discussion-forum-service/routes/posts.js" beforeDir="false" afterPath="$PROJECT_DIR$/discussion-forum-service/routes/posts.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/discussion-forum-service/routes/replies.js" beforeDir="false" afterPath="$PROJECT_DIR$/discussion-forum-service/routes/replies.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/shared-library/src/main/java/com/swerve/backend/shared/security/SecurityUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/shared-library/src/main/java/com/swerve/backend/shared/security/SecurityUtils.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-service/src/main/java/com/swerve/backend/userservice/mapper/AdministratorMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/main/java/com/swerve/backend/userservice/mapper/AdministratorMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-service/src/main/java/com/swerve/backend/userservice/mapper/StudentMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/main/java/com/swerve/backend/userservice/mapper/StudentMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-service/src/main/java/com/swerve/backend/userservice/mapper/TeacherMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/main/java/com/swerve/backend/userservice/mapper/TeacherMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/service/CourseMaterialService.java" beforeDir="false" afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/service/CourseMaterialService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

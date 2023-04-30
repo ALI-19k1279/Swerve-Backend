@@ -55,15 +55,15 @@ public class CourseMaterialService extends BaseService<CourseMaterial, CourseMat
 //        return null;
 //    }
 
-    public byte[] downloadFileFromFileSystem(String fileName) throws IOException {
-        Optional<CourseMaterial> courseMaterial = courseMaterialRepository.findByName(fileName);
+    public byte[] downloadFileFromFileSystem(Long id) throws IOException {
+        Optional<CourseMaterial> courseMaterial = courseMaterialRepository.findById(id);
         String filePath=courseMaterial.get().getResourceUrl();
         byte[] file = Files.readAllBytes(new File(filePath).toPath());
         return file;
     }
 
-    public CourseMaterial getCourseMaterialByName(String fileName) throws IOException {
-        Optional<CourseMaterial> courseMaterial = courseMaterialRepository.findByName(fileName);
+    public CourseMaterial getCourseMaterialByName(Long id) throws IOException {
+        Optional<CourseMaterial> courseMaterial = courseMaterialRepository.findById(id);
         return courseMaterial.get();
     }
 
