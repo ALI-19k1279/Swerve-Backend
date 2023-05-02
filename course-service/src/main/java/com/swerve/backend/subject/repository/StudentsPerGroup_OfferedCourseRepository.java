@@ -40,6 +40,8 @@ public interface StudentsPerGroup_OfferedCourseRepository extends BaseRepository
             "offered_course_evaluation e where s.id=o.spg_id and e.oce_id=o.id and s.offered_course_id=:id " +
             "group by title,type",nativeQuery = true)
     List<String> findMaxMinAvgbyOfferedCourseID(Long id);
+
+
 //
 //    @Query("select oc from  OfferedCourseEvaluation oc")
 //    List<Integer> findStudentsByGroupID();

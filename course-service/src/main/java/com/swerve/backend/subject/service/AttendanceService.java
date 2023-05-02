@@ -36,9 +36,9 @@ public class AttendanceService extends BaseService<OfferedCourseAttendance, Atte
         return super.findAll();
     }
 
-    public List<AttendanceDTO> getLearnerOfferedCourseAttendance(Long gid,Long oid,Long stdid){
+    public List<AttendanceDTO> getLearnerOfferedCourseAttendance(Long oid,Long stdid){
         try {
-            List<AttendanceDTO> attendanceDTOS = attendanceRepository.getLeanerCourseAttendanceDTOs(gid, oid, stdid);
+            List<AttendanceDTO> attendanceDTOS = attendanceRepository.getLeanerCourseAttendanceDTOs(oid, stdid);
             System.out.println(attendanceDTOS.get(0).getDate());
             return attendanceDTOS.isEmpty() ? null : attendanceDTOS;
         }
@@ -67,6 +67,16 @@ public class AttendanceService extends BaseService<OfferedCourseAttendance, Atte
         } catch (Exception e) {
             System.out.println(e);
             return false;
+        }
+    }
+    public List<AttendanceDTO> getOfferedCourseAttendances(Long gid,Long stid){
+        try{
+            List<OfferedCourseAttendance> attendanceList= attendanceRepository.findByGroupIdAndStudentId(gid,stid);
+            return attendanceList.stream().map(attendance -> AttendanceMapper.INSTANCE.toDTOWithIds(attendance)).collect(Collectors.toList());
+        }
+        catch (Exception e){
+            System.out.println(e.getCause());
+            return null;
         }
     }
     public boolean updateAttendance(List<AttendanceDTO> attendanceList){

@@ -37,7 +37,7 @@ public class BatchController {
     @PostMapping("/importstudents")
     public ResponseEntity<String> importCsvToDBJob() throws IOException, JobParametersInvalidException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException {
 
-        log.info("BatchController | importCsvToDBJob is called");
+        log.info("BatchController | importStudentsCsvToDBJob is called");
 
         JobParameters jobParameters = new JobParametersBuilder()
                 .addLong("startAt", System.currentTimeMillis()).toJobParameters();
@@ -45,7 +45,7 @@ public class BatchController {
             jobLauncher.run(job, jobParameters);
         } catch (JobExecutionAlreadyRunningException | JobRestartException |
                  JobInstanceAlreadyCompleteException | JobParametersInvalidException e) {
-            log.info("BatchController | importCsvToDBJob | error : " + e.getMessage());
+            log.info("BatchController | importStudentsCsvToDBJob | error : " + e.getMessage());
             e.printStackTrace();
         }
 

@@ -17,12 +17,12 @@ public interface AttendanceRepository extends BaseRepository<OfferedCourseAttend
 
 
     @Query(value = "SELECT attendance FROM OfferedCourseAttendance attendance WHERE " +
-            "attendance.studentId = :stdid AND attendance.group.id = :gid " +
+            "attendance.studentId = :stdid " +
             "AND attendance.offeredCourse.id = :ocid")
-    List<OfferedCourseAttendance> getLeanerCourseAttendance(Long gid, Long ocid, Long stdid);
+    List<OfferedCourseAttendance> getLeanerCourseAttendance( Long ocid, Long stdid);
 
-    default List<AttendanceDTO> getLeanerCourseAttendanceDTOs(Long gid, Long ocid, Long stdid) {
-        List<OfferedCourseAttendance> attendanceList = getLeanerCourseAttendance(gid, ocid, stdid);
+    default List<AttendanceDTO> getLeanerCourseAttendanceDTOs( Long ocid, Long stdid) {
+        List<OfferedCourseAttendance> attendanceList = getLeanerCourseAttendance( ocid, stdid);
         return attendanceList.stream().map(attendance -> AttendanceMapper.INSTANCE.toDTOWithIds(attendance)).collect(Collectors.toList());
     }
     @Query("SELECT attendance FROM OfferedCourseAttendance attendance WHERE attendance.studentId = :studentId " +
@@ -36,7 +36,7 @@ public interface AttendanceRepository extends BaseRepository<OfferedCourseAttend
 
     List<OfferedCourseAttendance> findByGroupIdAndOfferedCourseId(Long groupId,Long offeredCourseId);
 
-
+    List<OfferedCourseAttendance> findByGroupIdAndStudentId(Long groupId,Long studentId);
     @Query(
             value = "update offered_course_attendance set status=:status where student_id=:studentId " +
                     "and oc_id=:offeredCourseId and date=:date",

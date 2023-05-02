@@ -7,6 +7,7 @@ import com.swerve.backend.subject.model.Course;
 import com.swerve.backend.subject.model.CourseMaterial;
 import com.swerve.backend.subject.service.CourseMaterialService;
 import com.swerve.backend.subject.service.CourseService;
+import com.swerve.backend.subject.util.Utility;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -40,44 +41,16 @@ public class CourseMaterialController extends BaseController<CourseMaterial, Cou
 //                .body(uploadImage);
 //    }
 
-    public String getFileExtension(String filename) {
-        if(filename == null || filename.isEmpty()) {
-            return "";
-        }
-        int dotIndex = filename.lastIndexOf(".");
-        if(dotIndex == -1 || dotIndex == 0 || dotIndex == filename.length() - 1) {
-            return "";
-        }
-        return filename.substring(dotIndex + 1);
-    }
 
-    public MediaType getMediaTypeForFileName(String fileName) {
-        String extension = getFileExtension(fileName);
-        switch (extension.toLowerCase()) {
-            case "pdf":
-                return MediaType.APPLICATION_PDF;
-            case "jpeg":
-            case "jpg":
-                return MediaType.IMAGE_JPEG;
-            case "png":
-                return MediaType.IMAGE_PNG;
-            case "txt":
-                return MediaType.TEXT_PLAIN;
-            case "html":
-                return MediaType.TEXT_HTML;
-            default:
-                return MediaType.APPLICATION_OCTET_STREAM;
-        }
-    }
 
     @GetMapping("/fileSystem/{id}")
     public ResponseEntity<?> downloadFileFromFileSystem(@PathVariable Long id) throws IOException {
         byte[] fileData = courseMaterialService.downloadFileFromFileSystem(id);
         CourseMaterial courseMaterialByName = courseMaterialService.getCourseMaterialByName(id);
         String name = courseMaterialByName.getName();
-        String extension= getFileExtension(name);
+        String extension= Utility.getFileExtension(name);
         return ResponseEntity.status(HttpStatus.OK)
-                .contentType(getMediaTypeForFileName(name))
+                .contentType(Utility.getMediaTypeForFileName(name))
                 .body(fileData);
     }
 

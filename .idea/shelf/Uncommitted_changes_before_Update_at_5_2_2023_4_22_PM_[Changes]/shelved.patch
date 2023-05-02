@@ -1,0 +1,1038 @@
+Index: user-service/src/main/java/com/swerve/backend/userservice/controller/BatchController.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.swerve.backend.userservice.controller;\r\n\r\nimport lombok.RequiredArgsConstructor;\r\nimport lombok.extern.slf4j.Slf4j;\r\nimport org.springframework.batch.core.Job;\r\nimport org.springframework.batch.core.JobParameters;\r\nimport org.springframework.batch.core.JobParametersBuilder;\r\nimport org.springframework.batch.core.JobParametersInvalidException;\r\nimport org.springframework.batch.core.launch.JobLauncher;\r\nimport org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;\r\nimport org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;\r\nimport org.springframework.batch.core.repository.JobRestartException;\r\nimport org.springframework.beans.factory.annotation.Autowired;\r\nimport org.springframework.http.HttpStatus;\r\nimport org.springframework.http.ResponseEntity;\r\nimport org.springframework.web.bind.annotation.PostMapping;\r\nimport org.springframework.web.bind.annotation.RequestMapping;\r\nimport org.springframework.web.bind.annotation.RestController;\r\n\r\nimport java.io.IOException;\r\n\r\n@RestController\r\n@RequestMapping(path = \"/batch\")// Root path\r\n@RequiredArgsConstructor\r\n@Slf4j\r\npublic class BatchController {\r\n\r\n    JobLauncher jobLauncher;\r\n    Job job;\r\n\r\n    @Autowired\r\n    public BatchController(JobLauncher jobLauncher, Job job) {\r\n        this.jobLauncher = jobLauncher;\r\n        this.job = job;\r\n    }\r\n\r\n    @PostMapping(\"/importstudents\")\r\n    public ResponseEntity<String> importCsvToDBJob() throws IOException, JobParametersInvalidException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException {\r\n\r\n        log.info(\"BatchController | importCsvToDBJob is called\");\r\n\r\n        JobParameters jobParameters = new JobParametersBuilder()\r\n                .addLong(\"startAt\", System.currentTimeMillis()).toJobParameters();\r\n        try {\r\n            jobLauncher.run(job, jobParameters);\r\n        } catch (JobExecutionAlreadyRunningException | JobRestartException |\r\n                 JobInstanceAlreadyCompleteException | JobParametersInvalidException e) {\r\n            log.info(\"BatchController | importCsvToDBJob | error : \" + e.getMessage());\r\n            e.printStackTrace();\r\n        }\r\n\r\n        return new ResponseEntity<>(\"Batch Process Completed!!\", HttpStatus.OK);\r\n    }\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/user-service/src/main/java/com/swerve/backend/userservice/controller/BatchController.java b/user-service/src/main/java/com/swerve/backend/userservice/controller/BatchController.java
+--- a/user-service/src/main/java/com/swerve/backend/userservice/controller/BatchController.java	(revision fc2ba9efed58ff876d9cb712fd1544d4f7deff57)
++++ b/user-service/src/main/java/com/swerve/backend/userservice/controller/BatchController.java	(date 1683060171221)
+@@ -37,7 +37,7 @@
+     @PostMapping("/importstudents")
+     public ResponseEntity<String> importCsvToDBJob() throws IOException, JobParametersInvalidException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException {
+ 
+-        log.info("BatchController | importCsvToDBJob is called");
++        log.info("BatchController | importStudentsCsvToDBJob is called");
+ 
+         JobParameters jobParameters = new JobParametersBuilder()
+                 .addLong("startAt", System.currentTimeMillis()).toJobParameters();
+@@ -45,7 +45,7 @@
+             jobLauncher.run(job, jobParameters);
+         } catch (JobExecutionAlreadyRunningException | JobRestartException |
+                  JobInstanceAlreadyCompleteException | JobParametersInvalidException e) {
+-            log.info("BatchController | importCsvToDBJob | error : " + e.getMessage());
++            log.info("BatchController | importStudentsCsvToDBJob | error : " + e.getMessage());
+             e.printStackTrace();
+         }
+ 
+Index: auth-service/src/main/java/com/swerve/backend/auth/config/SecurityConfig.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.swerve.backend.auth.config;\r\n\r\nimport com.swerve.backend.auth.security.AuthTokenFilter;\r\nimport org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;\r\nimport org.springframework.web.cors.UrlBasedCorsConfigurationSource;\r\nimport org.springframework.web.filter.CorsFilter;\r\nimport org.springframework.context.annotation.Bean;\r\nimport org.springframework.context.annotation.Configuration;\r\nimport org.springframework.http.HttpMethod;\r\nimport org.springframework.security.authentication.AuthenticationManager;\r\nimport org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;\r\nimport org.springframework.security.config.annotation.web.builders.HttpSecurity;\r\nimport org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;\r\nimport org.springframework.security.config.http.SessionCreationPolicy;\r\nimport org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;\r\nimport org.springframework.security.crypto.password.PasswordEncoder;\r\nimport org.springframework.security.web.SecurityFilterChain;\r\nimport org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;\r\nimport org.springframework.web.cors.*;\r\n\r\nimport java.util.Arrays;\r\nimport java.util.Collections;\r\n\r\nimport static com.swerve.backend.shared.security.SecurityUtils.*;\r\n\r\n@Configuration\r\n//@EnableWebSecurity\r\n@EnableGlobalMethodSecurity(prePostEnabled = true)\r\npublic class SecurityConfig {\r\n    @Bean\r\n    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration)\r\n            throws Exception {\r\n        return configuration.getAuthenticationManager();\r\n    }\r\n\r\n    @Bean\r\n    public PasswordEncoder passwordEncoder() {\r\n        return new BCryptPasswordEncoder();\r\n    }\r\n\r\n\r\n    @Bean\r\n    public SecurityFilterChain filterChain(HttpSecurity http, AuthTokenFilter authTokenFilter)\r\n            throws Exception {\r\n        return http.cors().and()\r\n                .addFilterBefore(authTokenFilter, UsernamePasswordAuthenticationFilter.class)\r\n                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)\r\n                .and()\r\n                .csrf().disable()\r\n                .authorizeRequests()\r\n                .requestMatchers(\r\n                        HttpMethod.GET,\r\n                        \"/actuator/**\",\r\n                        \"/refresh\").permitAll()\r\n                .requestMatchers(\r\n                        HttpMethod.POST,\r\n                        \"/login\").anonymous()\r\n                .requestMatchers(\r\n                        HttpMethod.GET,\r\n                        \"/users/username/*/id\",\r\n                        \"/users/**/public\").permitAll()\r\n                .requestMatchers(\r\n                        HttpMethod.GET,\r\n                        \"/users/username/*\").authenticated()\r\n//                .requestMatchers(\"/users/**\").hasAuthority(ROLE_ADMIN)\r\n//                .anyRequest().hasAuthority(ROLE_ROOT)\r\n                .anyRequest().authenticated()\r\n                .and()\r\n                .build();\r\n    }\r\n\r\n//    @Bean\r\n//    CorsConfigurationSource corsConfigurationSource()\r\n//    {\r\n//        CorsConfiguration configuration = new CorsConfiguration();\r\n//        configuration.setAllowedOrigins(Arrays.asList(\"*\"));\r\n//        configuration.setAllowedMethods(Arrays.asList(\"*\"));\r\n//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();\r\n//        source.registerCorsConfiguration(\"/**\", configuration);\r\n//        return source;\r\n//    }\r\n\r\n    @Bean\r\n    public CorsFilter corsFilter() {\r\n        System.out.println(\"corss\");\r\n        final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();\r\n        final CorsConfiguration config = new CorsConfiguration();\r\n        config.setAllowCredentials(true);\r\n        config.setAllowedOriginPatterns(Collections.singletonList(\"*\"));\r\n        config.addAllowedHeader(\"*\");\r\n        config.addAllowedMethod(\"OPTIONS\");\r\n        config.addAllowedMethod(\"HEAD\");\r\n        config.addAllowedMethod(\"GET\");\r\n        config.addAllowedMethod(\"PUT\");\r\n        config.addAllowedMethod(\"POST\");\r\n        config.addAllowedMethod(\"DELETE\");\r\n        config.addAllowedMethod(\"PATCH\");\r\n        config.addAllowedHeader(\"Authorization\");\r\n        source.registerCorsConfiguration(\"/**\", config);\r\n        return new CorsFilter(source);\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/auth-service/src/main/java/com/swerve/backend/auth/config/SecurityConfig.java b/auth-service/src/main/java/com/swerve/backend/auth/config/SecurityConfig.java
+--- a/auth-service/src/main/java/com/swerve/backend/auth/config/SecurityConfig.java	(revision fc2ba9efed58ff876d9cb712fd1544d4f7deff57)
++++ b/auth-service/src/main/java/com/swerve/backend/auth/config/SecurityConfig.java	(date 1683060290988)
+@@ -69,16 +69,6 @@
+                 .build();
+     }
+ 
+-//    @Bean
+-//    CorsConfigurationSource corsConfigurationSource()
+-//    {
+-//        CorsConfiguration configuration = new CorsConfiguration();
+-//        configuration.setAllowedOrigins(Arrays.asList("*"));
+-//        configuration.setAllowedMethods(Arrays.asList("*"));
+-//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+-//        source.registerCorsConfiguration("/**", configuration);
+-//        return source;
+-//    }
+ 
+     @Bean
+     public CorsFilter corsFilter() {
+Index: course-service/src/main/java/com/swerve/backend/subject/repository/AttendanceRepository.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.swerve.backend.subject.repository;\r\n\r\nimport com.swerve.backend.shared.repository.BaseRepository;\r\nimport com.swerve.backend.subject.dto.AttendanceDTO;\r\nimport com.swerve.backend.subject.mapper.AttendanceMapper;\r\nimport com.swerve.backend.subject.model.OfferedCourseAttendance;\r\nimport com.swerve.backend.subject.model.StudentsPerGroup_OfferedCourse;\r\nimport org.springframework.data.jpa.repository.Query;\r\nimport org.springframework.stereotype.Repository;\r\n\r\nimport java.util.Date;\r\nimport java.util.List;\r\nimport java.util.stream.Collectors;\r\n\r\n@Repository\r\npublic interface AttendanceRepository extends BaseRepository<OfferedCourseAttendance,Long> {\r\n\r\n\r\n    @Query(value = \"SELECT attendance FROM OfferedCourseAttendance attendance WHERE \" +\r\n            \"attendance.studentId = :stdid AND attendance.group.id = :gid \" +\r\n            \"AND attendance.offeredCourse.id = :ocid\")\r\n    List<OfferedCourseAttendance> getLeanerCourseAttendance(Long gid, Long ocid, Long stdid);\r\n\r\n    default List<AttendanceDTO> getLeanerCourseAttendanceDTOs(Long gid, Long ocid, Long stdid) {\r\n        List<OfferedCourseAttendance> attendanceList = getLeanerCourseAttendance(gid, ocid, stdid);\r\n        return attendanceList.stream().map(attendance -> AttendanceMapper.INSTANCE.toDTOWithIds(attendance)).collect(Collectors.toList());\r\n    }\r\n    @Query(\"SELECT attendance FROM OfferedCourseAttendance attendance WHERE attendance.studentId = :studentId \" +\r\n            \"AND attendance.group.id = :groupId AND attendance.offeredCourse.id = :offeredCourseId\")\r\n    List<OfferedCourseAttendance> findByStudentIdGroupIdAndOfferedCourseId(String studentId,\r\n                                                                           Long groupId,\r\n                                                                           Long offeredCourseId);\r\n\r\n\r\n    OfferedCourseAttendance findByStudentIdAndDateAndOfferedCourseId(String studentId, Date date, Long offeredCourseId);\r\n\r\n    List<OfferedCourseAttendance> findByGroupIdAndOfferedCourseId(Long groupId,Long offeredCourseId);\r\n\r\n\r\n    @Query(\r\n            value = \"update offered_course_attendance set status=:status where student_id=:studentId \" +\r\n                    \"and oc_id=:offeredCourseId and date=:date\",\r\n            nativeQuery = true\r\n    )\r\n    void updateAttendanceStatus(Long studentId, Date date, Long offeredCourseId, String status);\r\n\r\n\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/course-service/src/main/java/com/swerve/backend/subject/repository/AttendanceRepository.java b/course-service/src/main/java/com/swerve/backend/subject/repository/AttendanceRepository.java
+--- a/course-service/src/main/java/com/swerve/backend/subject/repository/AttendanceRepository.java	(revision fc2ba9efed58ff876d9cb712fd1544d4f7deff57)
++++ b/course-service/src/main/java/com/swerve/backend/subject/repository/AttendanceRepository.java	(date 1682922871201)
+@@ -17,12 +17,12 @@
+ 
+ 
+     @Query(value = "SELECT attendance FROM OfferedCourseAttendance attendance WHERE " +
+-            "attendance.studentId = :stdid AND attendance.group.id = :gid " +
++            "attendance.studentId = :stdid " +
+             "AND attendance.offeredCourse.id = :ocid")
+-    List<OfferedCourseAttendance> getLeanerCourseAttendance(Long gid, Long ocid, Long stdid);
++    List<OfferedCourseAttendance> getLeanerCourseAttendance( Long ocid, Long stdid);
+ 
+-    default List<AttendanceDTO> getLeanerCourseAttendanceDTOs(Long gid, Long ocid, Long stdid) {
+-        List<OfferedCourseAttendance> attendanceList = getLeanerCourseAttendance(gid, ocid, stdid);
++    default List<AttendanceDTO> getLeanerCourseAttendanceDTOs( Long ocid, Long stdid) {
++        List<OfferedCourseAttendance> attendanceList = getLeanerCourseAttendance( ocid, stdid);
+         return attendanceList.stream().map(attendance -> AttendanceMapper.INSTANCE.toDTOWithIds(attendance)).collect(Collectors.toList());
+     }
+     @Query("SELECT attendance FROM OfferedCourseAttendance attendance WHERE attendance.studentId = :studentId " +
+@@ -36,7 +36,7 @@
+ 
+     List<OfferedCourseAttendance> findByGroupIdAndOfferedCourseId(Long groupId,Long offeredCourseId);
+ 
+-
++    List<OfferedCourseAttendance> findByGroupIdAndStudentId(Long groupId,Long studentId);
+     @Query(
+             value = "update offered_course_attendance set status=:status where student_id=:studentId " +
+                     "and oc_id=:offeredCourseId and date=:date",
+Index: auth-service/src/main/resources/application.properties
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>server.port=8081\r\nspring.application.name=auth-service\r\n\r\neureka.instance.hostname=localhost\r\neureka.client.service-url.defaultZone=http://localhost:8761/eureka\r\n\r\nspring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect\r\nspring.jpa.generate-ddl=true\r\nspring.jpa.hibernate.ddl-auto=update\r\nspring.datasource.url=jdbc:postgresql://localhost:5432/lms-auth?createDatabaseIfNotExist=true\r\nspring.datasource.username=postgres\r\nspring.datasource.password=admin\r\n#spring.devtools.restart.enabled=true\r\n#spring.devtools.restart.additional-paths: src/main/java\r\n#spring.devtools.restart.exclude: WEB-INF/**\r\n\r\nspring.jackson.default-property-inclusion=non_empty\r\nspring.mvc.pathmatch.matching-strategy=ANT_PATH_MATCHER\r\nspringdoc.api-docs.path=/docs\r\n\r\ntoken.secret=GieJX^>%Pd;Z]#&?kmZY4SRZNlWsjr%JJiH!q9KM~,Zd./[oh*=dus&p_M3Ab#B\r\ntoken.accessExpiration=7200\r\ntoken.refreshExpiration=86400\r\n\r\n\r\nspring.jpa.hibernate.show-sql=true\r\n\r\nmanagement.endpoints.web.exposure.include=*
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>ISO-8859-1
+===================================================================
+diff --git a/auth-service/src/main/resources/application.properties b/auth-service/src/main/resources/application.properties
+--- a/auth-service/src/main/resources/application.properties	(revision fc2ba9efed58ff876d9cb712fd1544d4f7deff57)
++++ b/auth-service/src/main/resources/application.properties	(date 1682902087168)
+@@ -9,7 +9,7 @@
+ spring.jpa.hibernate.ddl-auto=update
+ spring.datasource.url=jdbc:postgresql://localhost:5432/lms-auth?createDatabaseIfNotExist=true
+ spring.datasource.username=postgres
+-spring.datasource.password=admin
++spring.datasource.password=password
+ #spring.devtools.restart.enabled=true
+ #spring.devtools.restart.additional-paths: src/main/java
+ #spring.devtools.restart.exclude: WEB-INF/**
+Index: course-service/src/main/java/com/swerve/backend/subject/repository/StudentsPerGroup_OfferedCourseRepository.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.swerve.backend.subject.repository;\r\n\r\nimport com.fasterxml.jackson.databind.util.JSONPObject;\r\nimport com.swerve.backend.shared.repository.BaseRepository;\r\nimport com.swerve.backend.subject.dto.LearnerEvaluationDTO;\r\nimport com.swerve.backend.subject.model.*;\r\nimport org.springframework.data.domain.Page;\r\nimport org.springframework.data.domain.Pageable;\r\nimport org.springframework.data.jpa.repository.Query;\r\nimport org.springframework.stereotype.Repository;\r\n\r\nimport java.util.List;\r\n\r\n@Repository\r\npublic interface StudentsPerGroup_OfferedCourseRepository extends BaseRepository<StudentsPerGroup_OfferedCourse,Long> {\r\n\r\n    List<StudentsPerGroup_OfferedCourse> findByStudentIdAndDeletedFalse(Long id);\r\n\r\n    //select * from offered_course oc where oc.id in (select offered_course_id from students_per_group_offered_course where group_id=1 )\r\n    @Query(\"Select oc from OfferedCourse oc where oc.id in \"\r\n    +\"(select spgoc.offeredCourse from StudentsPerGroup_OfferedCourse spgoc where spgoc.group.id=:id)\")\r\n    List<OfferedCourse> findOfferedCoursesByGroupId(Long id);\r\n\r\n    @Query(\"Select oc from OfferedCourse oc where oc.id in \"\r\n            +\"(select spgoc.offeredCourse from StudentsPerGroup_OfferedCourse spgoc where spgoc.studentId=:id)\")\r\n    List<OfferedCourse> findOfferedCoursesByStudentId(Long id);\r\n\r\n    @Query(value=\"select title as evaluationTitle\" +\r\n            \",type as evaluationType,marks_obtained as marksObtained\" +\r\n            \",total_marks as totalMarks \" +\r\n            \"from offered_course_evaluation_item o, \" +\r\n            \"students_per_group_offered_course s, \" +\r\n            \"offered_course_evaluation e where \" +\r\n            \"o.spg_id=s.id and e.oce_id=o.id and e.studentid=:stdid \" +\r\n            \"and s.group_id=:gid and s.offered_course_id=:ocid \" +\r\n            \"group by title,type,marks_obtained,total_marks;\",nativeQuery = true)\r\n    List<String> findEvaluationItemsByStudentId(Long stdid, Long gid, Long ocid);\r\n    @Query(value = \"select title,type,MAX(marks_obtained),MIN(marks_obtained),AVG(marks_obtained) from \" +\r\n            \"offered_course_evaluation_item o,students_per_group_offered_course s,\" +\r\n            \"offered_course_evaluation e where s.id=o.spg_id and e.oce_id=o.id and s.offered_course_id=:id \" +\r\n            \"group by title,type\",nativeQuery = true)\r\n    List<String> findMaxMinAvgbyOfferedCourseID(Long id);\r\n//\r\n//    @Query(\"select oc from  OfferedCourseEvaluation oc\")\r\n//    List<Integer> findStudentsByGroupID();\r\n\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/course-service/src/main/java/com/swerve/backend/subject/repository/StudentsPerGroup_OfferedCourseRepository.java b/course-service/src/main/java/com/swerve/backend/subject/repository/StudentsPerGroup_OfferedCourseRepository.java
+--- a/course-service/src/main/java/com/swerve/backend/subject/repository/StudentsPerGroup_OfferedCourseRepository.java	(revision fc2ba9efed58ff876d9cb712fd1544d4f7deff57)
++++ b/course-service/src/main/java/com/swerve/backend/subject/repository/StudentsPerGroup_OfferedCourseRepository.java	(date 1682982096621)
+@@ -40,6 +40,8 @@
+             "offered_course_evaluation e where s.id=o.spg_id and e.oce_id=o.id and s.offered_course_id=:id " +
+             "group by title,type",nativeQuery = true)
+     List<String> findMaxMinAvgbyOfferedCourseID(Long id);
++
++
+ //
+ //    @Query("select oc from  OfferedCourseEvaluation oc")
+ //    List<Integer> findStudentsByGroupID();
+Index: course-service/src/main/java/com/swerve/backend/subject/service/AttendanceService.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.swerve.backend.subject.service;\r\n\r\n\r\nimport com.swerve.backend.shared.service.BaseService;\r\nimport com.swerve.backend.subject.dto.AttendanceDTO;\r\nimport com.swerve.backend.subject.mapper.AttendanceMapper;\r\nimport com.swerve.backend.subject.mapper.StudentsPerGroup_OfferedCourseMapper;\r\nimport com.swerve.backend.subject.model.OfferedCourseAttendance;\r\nimport com.swerve.backend.subject.repository.AttendanceRepository;\r\nimport com.swerve.backend.subject.repository.StudentsPerGroup_OfferedCourseRepository;\r\nimport org.springframework.stereotype.Service;\r\n\r\nimport java.text.DateFormat;\r\nimport java.text.SimpleDateFormat;\r\nimport java.time.LocalDateTime;\r\nimport java.time.format.DateTimeFormatter;\r\nimport java.util.Date;\r\nimport java.util.List;\r\nimport java.util.Map;\r\nimport java.util.Objects;\r\nimport java.util.stream.Collectors;\r\n\r\n@Service\r\npublic class AttendanceService extends BaseService<OfferedCourseAttendance, AttendanceDTO,Long> {\r\n    private final AttendanceRepository attendanceRepository;\r\n    private final AttendanceMapper attendanceMapper;\r\n    public AttendanceService(AttendanceRepository attendanceRepository,\r\n                             AttendanceMapper attendanceMapper){\r\n        super(attendanceRepository,attendanceMapper);\r\n        this.attendanceRepository=attendanceRepository;\r\n        this.attendanceMapper=attendanceMapper;\r\n    }\r\n\r\n    @Override\r\n    public List<AttendanceDTO> findAll() {\r\n        return super.findAll();\r\n    }\r\n\r\n    public List<AttendanceDTO> getLearnerOfferedCourseAttendance(Long gid,Long oid,Long stdid){\r\n        try {\r\n            List<AttendanceDTO> attendanceDTOS = attendanceRepository.getLeanerCourseAttendanceDTOs(gid, oid, stdid);\r\n            System.out.println(attendanceDTOS.get(0).getDate());\r\n            return attendanceDTOS.isEmpty() ? null : attendanceDTOS;\r\n        }\r\n        catch (Exception e){\r\n            System.out.println(e.getCause());\r\n            return null;\r\n        }\r\n    }\r\n    public List<AttendanceDTO> getOfferedCourseGroupAttendance(Long gid,Long oid){\r\n        try{\r\n            List<OfferedCourseAttendance> attendanceList= attendanceRepository.findByGroupIdAndOfferedCourseId(gid,oid);\r\n            return attendanceList.stream().map(attendance -> AttendanceMapper.INSTANCE.toDTOWithIds(attendance)).collect(Collectors.toList());\r\n        }\r\n        catch (Exception e){\r\n            System.out.println(e.getCause());\r\n            return null;\r\n        }\r\n    }\r\n    public boolean markAttendance(List<AttendanceDTO> attendanceList){\r\n        try {\r\n            for (AttendanceDTO attendance : attendanceList) {\r\n                OfferedCourseAttendance newAttendance = AttendanceMapper.INSTANCE.toModelWithIds(attendance);\r\n                attendanceRepository.save(newAttendance);\r\n            }\r\n            return true;\r\n        } catch (Exception e) {\r\n            System.out.println(e);\r\n            return false;\r\n        }\r\n    }\r\n    public boolean updateAttendance(List<AttendanceDTO> attendanceList){\r\n        try {\r\n            for (AttendanceDTO attendance : attendanceList) {\r\n                OfferedCourseAttendance newAttendance = AttendanceMapper.INSTANCE.toModelWithIds(attendance);\r\n                System.out.println(newAttendance.getDate());\r\n                attendanceRepository.updateAttendanceStatus(\r\n                        newAttendance.getStudentId(),\r\n                        newAttendance.getDate(),\r\n                        attendance.getOfferedCourseId(),\r\n                        attendance.getStatus()\r\n                );\r\n//                OfferedCourseAttendance checkAttedance=attendanceRepository.findByStudentIdAndDateAndOfferedCourseId(\r\n//                        attendance.getStudentId(),newAttendance.getDate(),attendance.getOfferedCourseId());\r\n//                if(!Objects.equals(checkAttedance.getStatus(), attendance.getStatus())){\r\n//\r\n//                   attendanceRepository.updateAttendanceStatus(\r\n//                           attendance.getStudentId(),\r\n//                           newAttendance.getDate(),\r\n//                           attendance.getOfferedCourseId(),\r\n//                           attendance.getStatus()\r\n//                   );\r\n//                }\r\n//                else continue;\r\n//                OfferedCourseAttendance newAttendance = AttendanceMapper.INSTANCE.toModelWithIds(attendance);\r\n//                attendanceRepository.save(newAttendance);\r\n            }\r\n            return true;\r\n        } catch (Exception e) {\r\n            System.out.println(e);\r\n            return false;\r\n        }\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/course-service/src/main/java/com/swerve/backend/subject/service/AttendanceService.java b/course-service/src/main/java/com/swerve/backend/subject/service/AttendanceService.java
+--- a/course-service/src/main/java/com/swerve/backend/subject/service/AttendanceService.java	(revision fc2ba9efed58ff876d9cb712fd1544d4f7deff57)
++++ b/course-service/src/main/java/com/swerve/backend/subject/service/AttendanceService.java	(date 1682922871196)
+@@ -36,9 +36,9 @@
+         return super.findAll();
+     }
+ 
+-    public List<AttendanceDTO> getLearnerOfferedCourseAttendance(Long gid,Long oid,Long stdid){
++    public List<AttendanceDTO> getLearnerOfferedCourseAttendance(Long oid,Long stdid){
+         try {
+-            List<AttendanceDTO> attendanceDTOS = attendanceRepository.getLeanerCourseAttendanceDTOs(gid, oid, stdid);
++            List<AttendanceDTO> attendanceDTOS = attendanceRepository.getLeanerCourseAttendanceDTOs(oid, stdid);
+             System.out.println(attendanceDTOS.get(0).getDate());
+             return attendanceDTOS.isEmpty() ? null : attendanceDTOS;
+         }
+@@ -69,6 +69,16 @@
+             return false;
+         }
+     }
++    public List<AttendanceDTO> getOfferedCourseAttendances(Long gid,Long stid){
++        try{
++            List<OfferedCourseAttendance> attendanceList= attendanceRepository.findByGroupIdAndStudentId(gid,stid);
++            return attendanceList.stream().map(attendance -> AttendanceMapper.INSTANCE.toDTOWithIds(attendance)).collect(Collectors.toList());
++        }
++        catch (Exception e){
++            System.out.println(e.getCause());
++            return null;
++        }
++    }
+     public boolean updateAttendance(List<AttendanceDTO> attendanceList){
+         try {
+             for (AttendanceDTO attendance : attendanceList) {
+Index: .idea/workspace.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"AutoImportSettings\">\r\n    <option name=\"autoReloadType\" value=\"SELECTIVE\" />\r\n  </component>\r\n  <component name=\"ChangeListManager\">\r\n    <list default=\"true\" id=\"e3b09a9e-0488-4344-9c3a-1a8badac1ec4\" name=\"Changes\" comment=\"\">\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/misc.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/misc.xml\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/workspace.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/workspace.xml\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/announcement-service/models/announcement.js\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/announcement-service/models/announcement.js\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/announcement-service/routes/announcements.js\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/announcement-service/routes/announcements.js\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/auth-service/src/main/java/com/swerve/backend/auth/mapper/RoleMapper.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/auth-service/src/main/java/com/swerve/backend/auth/mapper/RoleMapper.java\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/auth-service/src/main/java/com/swerve/backend/auth/mapper/UserMapper.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/auth-service/src/main/java/com/swerve/backend/auth/mapper/UserMapper.java\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/auth-service/src/main/resources/application.properties\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/auth-service/src/main/resources/application.properties\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/dto/CourseMaterialDTO.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/dto/CourseMaterialDTO.java\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/repository/CourseMaterialRepository.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/repository/CourseMaterialRepository.java\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/course-service/src/main/resources/application.properties\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/course-service/src/main/resources/application.properties\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/discussion-forum-service/routes/posts.js\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/discussion-forum-service/routes/posts.js\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/discussion-forum-service/routes/replies.js\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/discussion-forum-service/routes/replies.js\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/shared-library/src/main/java/com/swerve/backend/shared/security/SecurityUtils.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/shared-library/src/main/java/com/swerve/backend/shared/security/SecurityUtils.java\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/user-service/src/main/java/com/swerve/backend/userservice/mapper/AdministratorMapper.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/user-service/src/main/java/com/swerve/backend/userservice/mapper/AdministratorMapper.java\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/user-service/src/main/java/com/swerve/backend/userservice/mapper/StudentMapper.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/user-service/src/main/java/com/swerve/backend/userservice/mapper/StudentMapper.java\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/user-service/src/main/java/com/swerve/backend/userservice/mapper/TeacherMapper.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/user-service/src/main/java/com/swerve/backend/userservice/mapper/TeacherMapper.java\" afterDir=\"false\" />\r\n    </list>\r\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\r\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\r\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\r\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\r\n  </component>\r\n  <component name=\"FileTemplateManagerImpl\">\r\n    <option name=\"RECENT_TEMPLATES\">\r\n      <list>\r\n        <option value=\"Class\" />\r\n      </list>\r\n    </option>\r\n  </component>\r\n  <component name=\"Git.Settings\">\r\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\r\n  </component>\r\n  <component name=\"MavenImportPreferences\">\r\n    <option name=\"generalSettings\">\r\n      <MavenGeneralSettings>\r\n        <option name=\"useMavenConfig\" value=\"true\" />\r\n      </MavenGeneralSettings>\r\n    </option>\r\n  </component>\r\n  <component name=\"ProjectId\" id=\"2OSGKKz27OQhLND9UnwBd10H3kp\" />\r\n  <component name=\"ProjectViewState\">\r\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\r\n    <option name=\"showLibraryContents\" value=\"true\" />\r\n  </component>\r\n  <component name=\"PropertiesComponent\">{\r\n  &quot;keyToString&quot;: {\r\n    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,\r\n    &quot;git-widget-placeholder&quot;: &quot;updated&quot;,\r\n    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,\r\n    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,\r\n    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;\r\n  }\r\n}</component>\r\n  <component name=\"RunManager\" selected=\"Application.SubjectServiceApplication\">\r\n    <configuration name=\"ApiGatewayApplication\" type=\"Application\" factoryName=\"Application\" temporary=\"true\" nameIsGenerated=\"true\">\r\n      <option name=\"MAIN_CLASS_NAME\" value=\"com.swerve.backend.apigateway.ApiGatewayApplication\" />\r\n      <module name=\"api-gateway\" />\r\n      <extension name=\"coverage\">\r\n        <pattern>\r\n          <option name=\"PATTERN\" value=\"com.swerve.backend.apigateway.*\" />\r\n          <option name=\"ENABLED\" value=\"true\" />\r\n        </pattern>\r\n      </extension>\r\n      <method v=\"2\">\r\n        <option name=\"Make\" enabled=\"true\" />\r\n      </method>\r\n    </configuration>\r\n    <configuration name=\"AuthServiceApplication\" type=\"Application\" factoryName=\"Application\" temporary=\"true\" nameIsGenerated=\"true\">\r\n      <option name=\"MAIN_CLASS_NAME\" value=\"com.swerve.backend.auth.AuthServiceApplication\" />\r\n      <module name=\"auth-service\" />\r\n      <extension name=\"coverage\">\r\n        <pattern>\r\n          <option name=\"PATTERN\" value=\"com.swerve.backend.auth.*\" />\r\n          <option name=\"ENABLED\" value=\"true\" />\r\n        </pattern>\r\n      </extension>\r\n      <method v=\"2\">\r\n        <option name=\"Make\" enabled=\"true\" />\r\n      </method>\r\n    </configuration>\r\n    <configuration name=\"DiscoveryServerApplication\" type=\"Application\" factoryName=\"Application\" temporary=\"true\" nameIsGenerated=\"true\">\r\n      <option name=\"MAIN_CLASS_NAME\" value=\"com.swerve.backend.discoveryserver.DiscoveryServerApplication\" />\r\n      <module name=\"discovery-server\" />\r\n      <extension name=\"coverage\">\r\n        <pattern>\r\n          <option name=\"PATTERN\" value=\"com.swerve.backend.discoveryserver.*\" />\r\n          <option name=\"ENABLED\" value=\"true\" />\r\n        </pattern>\r\n      </extension>\r\n      <method v=\"2\">\r\n        <option name=\"Make\" enabled=\"true\" />\r\n      </method>\r\n    </configuration>\r\n    <configuration name=\"SubjectServiceApplication\" type=\"Application\" factoryName=\"Application\" temporary=\"true\" nameIsGenerated=\"true\">\r\n      <option name=\"MAIN_CLASS_NAME\" value=\"com.swerve.backend.subject.SubjectServiceApplication\" />\r\n      <module name=\"course-service\" />\r\n      <extension name=\"coverage\">\r\n        <pattern>\r\n          <option name=\"PATTERN\" value=\"com.swerve.backend.subject.*\" />\r\n          <option name=\"ENABLED\" value=\"true\" />\r\n        </pattern>\r\n      </extension>\r\n      <method v=\"2\">\r\n        <option name=\"Make\" enabled=\"true\" />\r\n      </method>\r\n    </configuration>\r\n    <configuration name=\"UserServiceApplication\" type=\"Application\" factoryName=\"Application\" temporary=\"true\" nameIsGenerated=\"true\">\r\n      <option name=\"MAIN_CLASS_NAME\" value=\"com.swerve.backend.userservice.UserServiceApplication\" />\r\n      <module name=\"user-service\" />\r\n      <extension name=\"coverage\">\r\n        <pattern>\r\n          <option name=\"PATTERN\" value=\"com.swerve.backend.userservice.*\" />\r\n          <option name=\"ENABLED\" value=\"true\" />\r\n        </pattern>\r\n      </extension>\r\n      <method v=\"2\">\r\n        <option name=\"Make\" enabled=\"true\" />\r\n      </method>\r\n    </configuration>\r\n    <recent_temporary>\r\n      <list>\r\n        <item itemvalue=\"Application.SubjectServiceApplication\" />\r\n        <item itemvalue=\"Application.AuthServiceApplication\" />\r\n        <item itemvalue=\"Application.UserServiceApplication\" />\r\n        <item itemvalue=\"Application.ApiGatewayApplication\" />\r\n        <item itemvalue=\"Application.DiscoveryServerApplication\" />\r\n      </list>\r\n    </recent_temporary>\r\n  </component>\r\n  <component name=\"SpellCheckerSettings\" RuntimeDictionaries=\"0\" Folders=\"0\" CustomDictionaries=\"0\" DefaultDictionary=\"application-level\" UseSingleDictionary=\"true\" transferred=\"true\" />\r\n  <component name=\"TaskManager\">\r\n    <task active=\"true\" id=\"Default\" summary=\"Default task\">\r\n      <changelist id=\"e3b09a9e-0488-4344-9c3a-1a8badac1ec4\" name=\"Changes\" comment=\"\" />\r\n      <created>1681546504188</created>\r\n      <option name=\"number\" value=\"Default\" />\r\n      <option name=\"presentableId\" value=\"Default\" />\r\n      <updated>1681546504188</updated>\r\n    </task>\r\n    <servers />\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+--- a/.idea/workspace.xml	(revision fc2ba9efed58ff876d9cb712fd1544d4f7deff57)
++++ b/.idea/workspace.xml	(date 1683060264953)
+@@ -5,22 +5,30 @@
+   </component>
+   <component name="ChangeListManager">
+     <list default="true" id="e3b09a9e-0488-4344-9c3a-1a8badac1ec4" name="Changes" comment="">
+-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_4_30_2023_5_43_PM_[Changes]/shelved.patch" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_4_30_2023_5_43_PM__Changes_.xml" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/controller/CourseOutlineController.java" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/dto/CourseOutlineDTO.java" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/dto/LearnerGradebookDTO.java" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/mapper/CourseOutlineMapper.java" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/mapper/LearnerGradebookMapper.java" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/repository/OfferedCourseOutlineRepository.java" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/service/CourseOutlineService.java" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/announcement-service/models/announcement.js" beforeDir="false" afterPath="$PROJECT_DIR$/announcement-service/models/announcement.js" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/announcement-service/routes/announcements.js" beforeDir="false" afterPath="$PROJECT_DIR$/announcement-service/routes/announcements.js" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/auth-service/src/main/java/com/swerve/backend/auth/mapper/RoleMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/src/main/java/com/swerve/backend/auth/mapper/RoleMapper.java" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/auth-service/src/main/java/com/swerve/backend/auth/mapper/UserMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/src/main/java/com/swerve/backend/auth/mapper/UserMapper.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/auth-service/src/main/java/com/swerve/backend/auth/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/src/main/java/com/swerve/backend/auth/config/SecurityConfig.java" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/auth-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/src/main/resources/application.properties" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/dto/CourseMaterialDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/dto/CourseMaterialDTO.java" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/repository/CourseMaterialRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/repository/CourseMaterialRepository.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/config/EnrollmentBatchConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/config/EnrollmentBatchConfig.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/config/SecurityConfig.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/controller/AttendanceController.java" beforeDir="false" afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/controller/AttendanceController.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/controller/BatchController.java" beforeDir="false" afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/controller/BatchController.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/controller/GroupController.java" beforeDir="false" afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/controller/GroupController.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/model/OfferedCourseOutline.java" beforeDir="false" afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/model/OfferedCourseOutline.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/repository/AttendanceRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/repository/AttendanceRepository.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/repository/StudentsPerGroup_OfferedCourseRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/repository/StudentsPerGroup_OfferedCourseRepository.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/service/AttendanceService.java" beforeDir="false" afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/service/AttendanceService.java" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/course-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/course-service/src/main/resources/application.properties" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/discussion-forum-service/routes/posts.js" beforeDir="false" afterPath="$PROJECT_DIR$/discussion-forum-service/routes/posts.js" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/discussion-forum-service/routes/replies.js" beforeDir="false" afterPath="$PROJECT_DIR$/discussion-forum-service/routes/replies.js" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/shared-library/src/main/java/com/swerve/backend/shared/security/SecurityUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/shared-library/src/main/java/com/swerve/backend/shared/security/SecurityUtils.java" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/user-service/src/main/java/com/swerve/backend/userservice/mapper/AdministratorMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/main/java/com/swerve/backend/userservice/mapper/AdministratorMapper.java" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/user-service/src/main/java/com/swerve/backend/userservice/mapper/StudentMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/main/java/com/swerve/backend/userservice/mapper/StudentMapper.java" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/user-service/src/main/java/com/swerve/backend/userservice/mapper/TeacherMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/main/java/com/swerve/backend/userservice/mapper/TeacherMapper.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/user-service/src/main/java/com/swerve/backend/userservice/config/BatchConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/main/java/com/swerve/backend/userservice/config/BatchConfig.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/user-service/src/main/java/com/swerve/backend/userservice/controller/BatchController.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/main/java/com/swerve/backend/userservice/controller/BatchController.java" afterDir="false" />
+     </list>
+     <option name="SHOW_DIALOG" value="false" />
+     <option name="HIGHLIGHT_CONFLICTS" value="true" />
+@@ -30,6 +38,7 @@
+   <component name="FileTemplateManagerImpl">
+     <option name="RECENT_TEMPLATES">
+       <list>
++        <option value="Interface" />
+         <option value="Class" />
+       </list>
+     </option>
+@@ -53,9 +62,9 @@
+   &quot;keyToString&quot;: {
+     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+     &quot;git-widget-placeholder&quot;: &quot;updated&quot;,
+-    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
++    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
+     &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+-    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;
++    &quot;project.structure.side.proportion&quot;: &quot;0.121979296&quot;
+   }
+ }</component>
+   <component name="RunManager" selected="Application.SubjectServiceApplication">
+Index: course-service/src/main/java/com/swerve/backend/subject/config/EnrollmentBatchConfig.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.swerve.backend.subject.config;\r\n\r\nimport com.swerve.backend.subject.dto.SPGOC_DTO;\r\nimport com.swerve.backend.subject.dto.SPGOC_Import;\r\nimport com.swerve.backend.subject.model.Course;\r\nimport org.springframework.batch.core.Job;\r\nimport org.springframework.batch.core.Step;\r\nimport org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;\r\nimport org.springframework.batch.core.job.builder.JobBuilder;\r\nimport org.springframework.batch.core.launch.support.RunIdIncrementer;\r\nimport org.springframework.batch.core.repository.JobRepository;\r\nimport org.springframework.batch.core.step.builder.StepBuilder;\r\nimport org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider;\r\nimport org.springframework.batch.item.database.JdbcBatchItemWriter;\r\nimport org.springframework.batch.item.file.FlatFileItemReader;\r\nimport org.springframework.batch.item.file.LineMapper;\r\nimport org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper;\r\nimport org.springframework.batch.item.file.mapping.DefaultLineMapper;\r\nimport org.springframework.batch.item.file.transform.DelimitedLineTokenizer;\r\nimport org.springframework.beans.factory.annotation.Autowired;\r\nimport org.springframework.beans.factory.annotation.Qualifier;\r\nimport org.springframework.beans.factory.annotation.Value;\r\nimport org.springframework.context.annotation.Bean;\r\nimport org.springframework.context.annotation.Configuration;\r\nimport org.springframework.core.io.ClassPathResource;\r\nimport org.springframework.core.io.Resource;\r\nimport org.springframework.transaction.PlatformTransactionManager;\r\n\r\nimport javax.sql.DataSource;\r\n\r\n@Configuration\r\n@EnableBatchProcessing\r\npublic class EnrollmentBatchConfig {\r\n    @Autowired\r\n    private DataSource dataSource;\r\n\r\n    @Value(\"${input}\") Resource resource;\r\n\r\n\r\n    @Bean\r\n    public FlatFileItemReader<SPGOC_DTO> enrollmentsReader(){\r\n        FlatFileItemReader<SPGOC_DTO> itemReader = new FlatFileItemReader<>();\r\n        itemReader.setResource(new ClassPathResource(\"MOCK_DATA_Enroll.csv\"));\r\n        itemReader.setName(\"EnrollmentItemReader\");\r\n        itemReader.setLinesToSkip(1);\r\n        itemReader.setLineMapper(lineMapper());\r\n        return itemReader;\r\n    }\r\n    private LineMapper<SPGOC_DTO> lineMapper() {\r\n        DefaultLineMapper<SPGOC_DTO> lineMapper = new DefaultLineMapper<>();\r\n\r\n        DelimitedLineTokenizer lineTokenizer = new DelimitedLineTokenizer();\r\n        lineTokenizer.setDelimiter(\",\");\r\n        lineTokenizer.setStrict(false);\r\n        lineTokenizer.setNames(\r\n                SPGOC_DTO.getEnrollmentFields()\r\n        );\r\n\r\n        BeanWrapperFieldSetMapper<SPGOC_DTO> fieldSetMapper = new BeanWrapperFieldSetMapper<>();\r\n        fieldSetMapper.setTargetType(SPGOC_DTO.class);\r\n\r\n        lineMapper.setLineTokenizer(lineTokenizer);\r\n        lineMapper.setFieldSetMapper(fieldSetMapper);\r\n        return lineMapper;\r\n    }\r\n    @Bean\r\n    public SPGOC_Processor enrollmentProcessor() {\r\n        return new SPGOC_Processor();\r\n    }\r\n    @Bean\r\n    public JdbcBatchItemWriter<SPGOC_Import> enrollmentWriter(){\r\n        JdbcBatchItemWriter<SPGOC_Import> jdbcBatchItemWriter=new JdbcBatchItemWriter<>();\r\n        jdbcBatchItemWriter.setDataSource(dataSource);\r\n        jdbcBatchItemWriter.setSql(\"INSERT INTO students_per_group_offered_course(\" +\r\n                \"student_id, is_enrolled, group_id, offered_course_id)\" +\r\n                \"VALUES (:student_id,:is_enrolled ,:group_id,:offered_course_id)\");\r\n        jdbcBatchItemWriter.setItemSqlParameterSourceProvider(new BeanPropertyItemSqlParameterSourceProvider<SPGOC_Import>());\r\n        return jdbcBatchItemWriter;\r\n    }\r\n\r\n    @Bean\r\n    public Step enrollemntStep1(JobRepository jobRepository,\r\n                      PlatformTransactionManager transactionManager, JdbcBatchItemWriter<SPGOC_Import> enrollmentWriter) {\r\n        return new StepBuilder(\"enrollemntStep1\", jobRepository)\r\n                .<SPGOC_DTO, SPGOC_Import> chunk(10, transactionManager)\r\n                .reader(enrollmentsReader())\r\n                .processor(enrollmentProcessor())\r\n                .writer(enrollmentWriter)\r\n                .build();\r\n    }\r\n    @Bean\r\n    @Qualifier(\"importEnrollmentsJob\")\r\n    public Job importEnrollmentsJob(JobRepository jobRepository,\r\n                               JobCompletionNotificationListener listener, Step enrollemntStep1) {\r\n        return new JobBuilder(\"importEnrollmentsJob\", jobRepository)\r\n                .incrementer(new RunIdIncrementer())\r\n                .listener(listener)\r\n                .flow(enrollemntStep1)\r\n                .end()\r\n                .build();\r\n    }\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/course-service/src/main/java/com/swerve/backend/subject/config/EnrollmentBatchConfig.java b/course-service/src/main/java/com/swerve/backend/subject/config/EnrollmentBatchConfig.java
+--- a/course-service/src/main/java/com/swerve/backend/subject/config/EnrollmentBatchConfig.java	(revision fc2ba9efed58ff876d9cb712fd1544d4f7deff57)
++++ b/course-service/src/main/java/com/swerve/backend/subject/config/EnrollmentBatchConfig.java	(date 1683059788611)
+@@ -100,11 +100,4 @@
+                 .build();
+     }
+ 
+-
+-
+-
+-
+-
+-
+-
+ }
+Index: course-service/src/main/java/com/swerve/backend/subject/controller/AttendanceController.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.swerve.backend.subject.controller;\r\n\r\nimport com.swerve.backend.shared.controller.BaseController;\r\nimport com.swerve.backend.shared.service.BaseService;\r\nimport com.swerve.backend.subject.dto.AttendanceDTO;\r\nimport com.swerve.backend.subject.dto.GroupDTO;\r\nimport com.swerve.backend.subject.model.OfferedCourseAttendance;\r\nimport com.swerve.backend.subject.service.AttendanceService;\r\nimport com.swerve.backend.subject.service.GroupService;\r\nimport org.springframework.cloud.client.loadbalancer.Response;\r\nimport org.springframework.http.HttpStatus;\r\nimport org.springframework.http.ResponseEntity;\r\nimport org.springframework.stereotype.Controller;\r\nimport org.springframework.web.bind.annotation.*;\r\n\r\nimport java.net.http.HttpResponse;\r\nimport java.util.List;\r\nimport java.util.Map;\r\n\r\n@Controller\r\n@RequestMapping(\"/attendance\")\r\npublic class AttendanceController extends BaseController<OfferedCourseAttendance, AttendanceDTO,Long> {\r\n\r\n    private final AttendanceService attendanceService;\r\n    public AttendanceController(AttendanceService attendanceService) {\r\n        super(attendanceService);\r\n        this.attendanceService=attendanceService;\r\n    }\r\n\r\n    @GetMapping(\"/{gid}/{ocid}/{stdid}\")\r\n    public ResponseEntity<List<AttendanceDTO>> getLearnerOfferedCourseAttendance(@PathVariable Long gid,\r\n                                                                               @PathVariable Long ocid,\r\n                                                                               @PathVariable Long stdid){\r\n\r\n        return new ResponseEntity<>(this.attendanceService.getLearnerOfferedCourseAttendance(gid,\r\n                ocid,stdid), HttpStatus.OK);\r\n\r\n    }\r\n    @GetMapping(\"/{gid}/{ocid}\")\r\n    public ResponseEntity<List<AttendanceDTO>> getGroupOfferedCourseAttendance(@PathVariable Long gid,\r\n                                                                                      @PathVariable Long ocid\r\n                                                                                      ){\r\n        return new ResponseEntity<>(this.attendanceService.getOfferedCourseGroupAttendance(gid,\r\n                ocid), HttpStatus.OK);\r\n\r\n    }\r\n\r\n    @PostMapping(\"/mark\")\r\n    public ResponseEntity<?> markAttendance(@RequestBody List<AttendanceDTO> attendanceList){\r\n        if(this.attendanceService.markAttendance(attendanceList))\r\n            return ResponseEntity.ok().build();\r\n        else\r\n            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(\"Failed to mark attendance\");\r\n    }\r\n    @PatchMapping(\"/update\")\r\n    public ResponseEntity<?>  updateAttendance(@RequestBody List<AttendanceDTO> attendanceList){\r\n        if(this.attendanceService.updateAttendance(attendanceList))\r\n            return ResponseEntity.ok().build();\r\n        else\r\n            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(\"Failed to update attendance\");\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/course-service/src/main/java/com/swerve/backend/subject/controller/AttendanceController.java b/course-service/src/main/java/com/swerve/backend/subject/controller/AttendanceController.java
+--- a/course-service/src/main/java/com/swerve/backend/subject/controller/AttendanceController.java	(revision fc2ba9efed58ff876d9cb712fd1544d4f7deff57)
++++ b/course-service/src/main/java/com/swerve/backend/subject/controller/AttendanceController.java	(date 1682924416592)
+@@ -27,12 +27,12 @@
+         this.attendanceService=attendanceService;
+     }
+ 
+-    @GetMapping("/{gid}/{ocid}/{stdid}")
+-    public ResponseEntity<List<AttendanceDTO>> getLearnerOfferedCourseAttendance(@PathVariable Long gid,
++    @GetMapping("/{ocid}/{stdid}/bycourse")
++    public ResponseEntity<List<AttendanceDTO>> getLearnerOfferedCourseAttendance(
+                                                                                @PathVariable Long ocid,
+                                                                                @PathVariable Long stdid){
+ 
+-        return new ResponseEntity<>(this.attendanceService.getLearnerOfferedCourseAttendance(gid,
++        return new ResponseEntity<>(this.attendanceService.getLearnerOfferedCourseAttendance(
+                 ocid,stdid), HttpStatus.OK);
+ 
+     }
+@@ -58,5 +58,13 @@
+             return ResponseEntity.ok().build();
+         else
+             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to update attendance");
++    }
++    @GetMapping("/{gid}/{stid}/all")
++    public ResponseEntity<List<AttendanceDTO>> getOfferedCourseAttendances(@PathVariable Long gid,
++                                                                               @PathVariable Long stid
++    ){
++        return new ResponseEntity<>(this.attendanceService.getOfferedCourseAttendances(gid,
++                stid), HttpStatus.OK);
++
+     }
+ }
+Index: course-service/src/main/java/com/swerve/backend/subject/dto/CourseOutlineDTO.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/course-service/src/main/java/com/swerve/backend/subject/dto/CourseOutlineDTO.java b/course-service/src/main/java/com/swerve/backend/subject/dto/CourseOutlineDTO.java
+new file mode 100644
+--- /dev/null	(date 1682992414513)
++++ b/course-service/src/main/java/com/swerve/backend/subject/dto/CourseOutlineDTO.java	(date 1682992414513)
+@@ -0,0 +1,38 @@
++package com.swerve.backend.subject.dto;
++
++import com.fasterxml.jackson.annotation.JsonIgnore;
++import com.swerve.backend.shared.dto.BaseDTO;
++import com.swerve.backend.subject.model.OfferedCourse;
++import jakarta.persistence.JoinColumn;
++import jakarta.persistence.ManyToOne;
++import jakarta.validation.constraints.NotBlank;
++import lombok.AllArgsConstructor;
++import lombok.Getter;
++import lombok.NoArgsConstructor;
++import lombok.Setter;
++
++import java.util.List;
++
++@NoArgsConstructor
++@AllArgsConstructor
++@Getter
++@Setter
++public class CourseOutlineDTO extends BaseDTO<Long> {
++
++    private Long offeredCourseId;
++    private List<WeeklyCourseOutline> courseOutline;
++
++    @NoArgsConstructor
++    @AllArgsConstructor
++    @Getter
++    @Setter
++    public static class WeeklyCourseOutline {
++        private int week;
++        private List<String> topics;
++
++        @JsonIgnore
++        public String getTopic(int index) {
++            return index == 0 ? "[placeholder]" : topics.get(index - 1);
++        }
++    }
++}
+Index: .idea/shelf/Uncommitted_changes_before_Update_at_4_30_2023_5_43_PM__Changes_.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/shelf/Uncommitted_changes_before_Update_at_4_30_2023_5_43_PM__Changes_.xml b/.idea/shelf/Uncommitted_changes_before_Update_at_4_30_2023_5_43_PM__Changes_.xml
+new file mode 100644
+--- /dev/null	(date 1683069767476)
++++ b/.idea/shelf/Uncommitted_changes_before_Update_at_4_30_2023_5_43_PM__Changes_.xml	(date 1683069767476)
+@@ -0,0 +1,4 @@
++<changelist name="Uncommitted_changes_before_Update_at_4_30_2023_5_43_PM_[Changes]" date="1682901851359" recycled="true" deleted="true">
++  <option name="PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_4_30_2023_5_43_PM_[Changes]/shelved.patch" />
++  <option name="DESCRIPTION" value="Uncommitted changes before Update at 4/30/2023 5:43 PM [Changes]" />
++</changelist>
+\ No newline at end of file
+Index: course-service/src/main/java/com/swerve/backend/subject/controller/BatchController.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.swerve.backend.subject.controller;\r\n\r\nimport lombok.RequiredArgsConstructor;\r\nimport lombok.extern.slf4j.Slf4j;\r\nimport org.springframework.batch.core.Job;\r\nimport org.springframework.batch.core.JobParameters;\r\nimport org.springframework.batch.core.JobParametersBuilder;\r\nimport org.springframework.batch.core.JobParametersInvalidException;\r\nimport org.springframework.batch.core.configuration.JobLocator;\r\nimport org.springframework.batch.core.launch.JobLauncher;\r\nimport org.springframework.batch.core.launch.NoSuchJobException;\r\nimport org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;\r\nimport org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;\r\nimport org.springframework.batch.core.repository.JobRestartException;\r\nimport org.springframework.beans.factory.annotation.Autowired;\r\nimport org.springframework.beans.factory.annotation.Qualifier;\r\nimport org.springframework.http.HttpStatus;\r\nimport org.springframework.http.ResponseEntity;\r\nimport org.springframework.web.bind.annotation.PostMapping;\r\nimport org.springframework.web.bind.annotation.RequestMapping;\r\nimport org.springframework.web.bind.annotation.RestController;\r\n\r\nimport java.io.IOException;\r\n\r\n@RestController\r\n@RequestMapping(path = \"/batch\")// Root path\r\n@RequiredArgsConstructor\r\n@Slf4j\r\npublic class BatchController {\r\n\r\n    private final JobLauncher jobLauncher;\r\n    private Job importEnrollmentsJob;\r\n    private Job importCourseJob;\r\n    @Autowired\r\n    private JobLocator jobLocator;\r\n\r\n    @Autowired\r\n    public BatchController(JobLauncher jobLauncher,\r\n                           @Qualifier(\"importEnrollmentsJob\") Job importEnrollmentsJob,\r\n                           @Qualifier(\"importCourseJob\") Job importCourseJob) {\r\n        this.jobLauncher = jobLauncher;\r\n        this.importEnrollmentsJob = importEnrollmentsJob;\r\n        this.importCourseJob = importCourseJob;\r\n    }\r\n\r\n\r\n\r\n    @PostMapping(\"/importcourses\")\r\n    public ResponseEntity<String> importCsvToDBJob() throws IOException, JobParametersInvalidException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException, NoSuchJobException {\r\n//        this.importCourseJob=jobLocator.getJob(\"importCourseJob\");\r\n        log.info(\"BatchController | importCsvToDBJob is called\");\r\n\r\n        JobParameters jobParameters = new JobParametersBuilder()\r\n                .addLong(\"startAt\", System.currentTimeMillis()).toJobParameters();\r\n        try {\r\n            jobLauncher.run(this.importCourseJob, jobParameters);\r\n        } catch (JobExecutionAlreadyRunningException | JobRestartException |\r\n                 JobInstanceAlreadyCompleteException | JobParametersInvalidException e) {\r\n            log.info(\"BatchController | importCsvToDBJob | error : \" + e.getMessage());\r\n            e.printStackTrace();\r\n        }\r\n        return new ResponseEntity<>(\"Batch Process Completed!!\", HttpStatus.OK);\r\n    }\r\n    @PostMapping(\"/importenrollments\")\r\n    public ResponseEntity<String> importEnrollmentsCsvToDBJob() throws IOException, JobParametersInvalidException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException, NoSuchJobException {\r\n\r\n        log.info(\"BatchController | importCsvToDBJob is called\");\r\n\r\n        JobParameters jobParameters = new JobParametersBuilder()\r\n                .addLong(\"startAt\", System.currentTimeMillis()).toJobParameters();\r\n        try {\r\n            jobLauncher.run(this.importEnrollmentsJob, jobParameters);\r\n        } catch (JobExecutionAlreadyRunningException | JobRestartException |\r\n                 JobInstanceAlreadyCompleteException | JobParametersInvalidException e) {\r\n            log.info(\"BatchController | importCsvToDBJob | error : \" + e.getMessage());\r\n            e.printStackTrace();\r\n        }\r\n\r\n        return new ResponseEntity<>(\"Batch Process Completed!!\", HttpStatus.OK);\r\n    }\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/course-service/src/main/java/com/swerve/backend/subject/controller/BatchController.java b/course-service/src/main/java/com/swerve/backend/subject/controller/BatchController.java
+--- a/course-service/src/main/java/com/swerve/backend/subject/controller/BatchController.java	(revision fc2ba9efed58ff876d9cb712fd1544d4f7deff57)
++++ b/course-service/src/main/java/com/swerve/backend/subject/controller/BatchController.java	(date 1683059002482)
+@@ -48,7 +48,7 @@
+     @PostMapping("/importcourses")
+     public ResponseEntity<String> importCsvToDBJob() throws IOException, JobParametersInvalidException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException, NoSuchJobException {
+ //        this.importCourseJob=jobLocator.getJob("importCourseJob");
+-        log.info("BatchController | importCsvToDBJob is called");
++        log.info("BatchController | importCourseCsvToDBJob is called");
+ 
+         JobParameters jobParameters = new JobParametersBuilder()
+                 .addLong("startAt", System.currentTimeMillis()).toJobParameters();
+@@ -56,7 +56,7 @@
+             jobLauncher.run(this.importCourseJob, jobParameters);
+         } catch (JobExecutionAlreadyRunningException | JobRestartException |
+                  JobInstanceAlreadyCompleteException | JobParametersInvalidException e) {
+-            log.info("BatchController | importCsvToDBJob | error : " + e.getMessage());
++            log.info("BatchController | importEnrollmentsCsvToDBJob | error : " + e.getMessage());
+             e.printStackTrace();
+         }
+         return new ResponseEntity<>("Batch Process Completed!!", HttpStatus.OK);
+@@ -64,7 +64,7 @@
+     @PostMapping("/importenrollments")
+     public ResponseEntity<String> importEnrollmentsCsvToDBJob() throws IOException, JobParametersInvalidException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException, NoSuchJobException {
+ 
+-        log.info("BatchController | importCsvToDBJob is called");
++        log.info("BatchController | importEnrollmentsCsvToDBJob is called");
+ 
+         JobParameters jobParameters = new JobParametersBuilder()
+                 .addLong("startAt", System.currentTimeMillis()).toJobParameters();
+@@ -72,7 +72,7 @@
+             jobLauncher.run(this.importEnrollmentsJob, jobParameters);
+         } catch (JobExecutionAlreadyRunningException | JobRestartException |
+                  JobInstanceAlreadyCompleteException | JobParametersInvalidException e) {
+-            log.info("BatchController | importCsvToDBJob | error : " + e.getMessage());
++            log.info("BatchController | importEnrollmentsCsvToDBJob | error : " + e.getMessage());
+             e.printStackTrace();
+         }
+ 
+Index: course-service/src/main/java/com/swerve/backend/subject/controller/GroupController.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.swerve.backend.subject.controller;\r\n\r\n\r\n\r\nimport com.fasterxml.jackson.databind.util.JSONPObject;\r\nimport com.swerve.backend.shared.controller.BaseController;\r\nimport com.swerve.backend.subject.dto.CourseDTO;\r\nimport com.swerve.backend.subject.dto.LearningTrackDTO;\r\nimport com.swerve.backend.subject.dto.StudentsPerGroup_OfferedCourseDTO;\r\nimport com.swerve.backend.subject.model.*;\r\nimport com.swerve.backend.subject.service.CourseService;\r\nimport com.swerve.backend.subject.service.GroupService;\r\nimport org.springframework.http.HttpStatus;\r\nimport org.springframework.http.ResponseEntity;\r\nimport org.springframework.stereotype.Controller;\r\nimport org.springframework.web.bind.annotation.GetMapping;\r\nimport org.springframework.web.bind.annotation.PathVariable;\r\nimport org.springframework.web.bind.annotation.RequestMapping;\r\nimport com.swerve.backend.subject.dto.LearnerEvaluationDTO;\r\nimport java.util.Collection;\r\nimport java.util.List;\r\nimport java.util.Set;\r\n\r\n@Controller\r\n@RequestMapping(\"/spgoc\")\r\npublic class GroupController extends BaseController<StudentsPerGroup_OfferedCourse, StudentsPerGroup_OfferedCourseDTO,Long> {\r\n    private final GroupService groupService;\r\n\r\n    public GroupController(GroupService groupService){\r\n        super(groupService);\r\n        this.groupService=groupService;\r\n    }\r\n\r\n    @GetMapping(\"/{id}/offeredcourses/gid\")\r\n    public ResponseEntity<List<OfferedCourse>> getOfferedCourseByGroupID(@PathVariable Long id){\r\n        return new ResponseEntity<>(groupService.GetOfferedCourseByGroupID(id),HttpStatus.OK);\r\n    }\r\n\r\n    @GetMapping(\"/{id}/offeredcourses/stdid\")\r\n    public ResponseEntity<List<OfferedCourse>> getOfferedCourseByStudentID(@PathVariable Long id){\r\n        return new ResponseEntity<>(groupService.GetOfferedCourseByStudentID(id),HttpStatus.OK);\r\n    }\r\n\r\n    @GetMapping(\"/{stdid}/{gid}/{ocid}/evaluationitems\")\r\n    public ResponseEntity<List<String>> getEvaluationItemsByStudentID(@PathVariable  Long stdid,\r\n                                                                     @PathVariable Long gid,\r\n                                                                     @PathVariable Long ocid){\r\n        return new ResponseEntity<>(groupService.GetEvaluationItemsByStudentID(stdid,gid,ocid),HttpStatus.OK);\r\n    }\r\n//    @GetMapping(\"/{gid}/{ocid}/evaluations/stdid\")\r\n//    public ResponseEntity<LearnerEvaluationDTO> getEvaluationsByGroupID(@PathVariable Long gid,@PathVariable Long ocid){\r\n//        return new null;\r\n//    }\r\n\r\n//    @GetMapping(\"/{id}/students\")\r\n//    public ResponseEntity<List<Integer>> getStudentsDetails(){\r\n//            return new ResponseEntity<>(groupService.getStudentsDetail(),HttpStatus.OK);\r\n//    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/course-service/src/main/java/com/swerve/backend/subject/controller/GroupController.java b/course-service/src/main/java/com/swerve/backend/subject/controller/GroupController.java
+--- a/course-service/src/main/java/com/swerve/backend/subject/controller/GroupController.java	(revision fc2ba9efed58ff876d9cb712fd1544d4f7deff57)
++++ b/course-service/src/main/java/com/swerve/backend/subject/controller/GroupController.java	(date 1682986813991)
+@@ -2,13 +2,10 @@
+ 
+ 
+ 
+-import com.fasterxml.jackson.databind.util.JSONPObject;
+ import com.swerve.backend.shared.controller.BaseController;
+-import com.swerve.backend.subject.dto.CourseDTO;
+-import com.swerve.backend.subject.dto.LearningTrackDTO;
+-import com.swerve.backend.subject.dto.StudentsPerGroup_OfferedCourseDTO;
++import com.swerve.backend.subject.dto.*;
+ import com.swerve.backend.subject.model.*;
+-import com.swerve.backend.subject.service.CourseService;
++import com.swerve.backend.subject.service.CourseOutlineService;
+ import com.swerve.backend.subject.service.GroupService;
+ import org.springframework.http.HttpStatus;
+ import org.springframework.http.ResponseEntity;
+@@ -16,19 +13,19 @@
+ import org.springframework.web.bind.annotation.GetMapping;
+ import org.springframework.web.bind.annotation.PathVariable;
+ import org.springframework.web.bind.annotation.RequestMapping;
+-import com.swerve.backend.subject.dto.LearnerEvaluationDTO;
+-import java.util.Collection;
++
+ import java.util.List;
+-import java.util.Set;
+ 
+ @Controller
+ @RequestMapping("/spgoc")
+ public class GroupController extends BaseController<StudentsPerGroup_OfferedCourse, StudentsPerGroup_OfferedCourseDTO,Long> {
+     private final GroupService groupService;
+ 
+-    public GroupController(GroupService groupService){
++
++    public GroupController(GroupService groupService, CourseOutlineService courseOutlineService){
+         super(groupService);
+         this.groupService=groupService;
++
+     }
+ 
+     @GetMapping("/{id}/offeredcourses/gid")
+@@ -47,6 +44,8 @@
+                                                                      @PathVariable Long ocid){
+         return new ResponseEntity<>(groupService.GetEvaluationItemsByStudentID(stdid,gid,ocid),HttpStatus.OK);
+     }
++
++
+ //    @GetMapping("/{gid}/{ocid}/evaluations/stdid")
+ //    public ResponseEntity<LearnerEvaluationDTO> getEvaluationsByGroupID(@PathVariable Long gid,@PathVariable Long ocid){
+ //        return new null;
+Index: user-service/src/main/java/com/swerve/backend/userservice/config/BatchConfig.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.swerve.backend.userservice.config;\r\n\r\nimport com.swerve.backend.userservice.dto.StudentImportDTO;\r\nimport org.springframework.batch.core.Job;\r\nimport org.springframework.batch.core.Step;\r\nimport org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;\r\nimport org.springframework.batch.core.job.builder.JobBuilder;\r\nimport org.springframework.batch.core.launch.support.RunIdIncrementer;\r\nimport org.springframework.batch.core.repository.JobRepository;\r\nimport org.springframework.batch.core.step.builder.StepBuilder;\r\nimport org.springframework.batch.item.data.RepositoryItemWriter;\r\nimport org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider;\r\nimport org.springframework.batch.item.database.JdbcBatchItemWriter;\r\nimport org.springframework.batch.item.file.FlatFileItemReader;\r\nimport org.springframework.batch.item.file.LineMapper;\r\nimport org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper;\r\nimport org.springframework.batch.item.file.mapping.DefaultLineMapper;\r\nimport org.springframework.batch.item.file.transform.DelimitedLineTokenizer;\r\nimport org.springframework.beans.factory.annotation.Autowired;\r\nimport org.springframework.beans.factory.annotation.Value;\r\nimport org.springframework.context.annotation.Bean;\r\nimport org.springframework.context.annotation.Configuration;\r\nimport org.springframework.core.io.ClassPathResource;\r\nimport org.springframework.core.io.FileSystemResource;\r\nimport org.springframework.core.io.PathResource;\r\nimport org.springframework.core.io.Resource;\r\nimport org.springframework.core.task.SimpleAsyncTaskExecutor;\r\nimport org.springframework.core.task.TaskExecutor;\r\nimport org.springframework.transaction.PlatformTransactionManager;\r\nimport com.swerve.backend.userservice.config.JobCompletionNotificationListener;\r\nimport javax.sql.DataSource;\r\n\r\n@Configuration\r\n@EnableBatchProcessing\r\npublic class BatchConfig {\r\n\r\n    @Autowired\r\n    private DataSource dataSource;\r\n\r\n\r\n    @Bean\r\n    public FlatFileItemReader<StudentImportDTO> reader(){\r\n        FlatFileItemReader<StudentImportDTO> itemReader = new FlatFileItemReader<>();\r\n        itemReader.setResource(new ClassPathResource(\"MOCK_DATA_std.csv\"));\r\n        itemReader.setName(\"stdItemReader\");\r\n        itemReader.setLinesToSkip(1);\r\n        itemReader.setLineMapper(lineMapper());\r\n        return itemReader;\r\n    }\r\n    private LineMapper<StudentImportDTO> lineMapper() {\r\n        DefaultLineMapper<StudentImportDTO> lineMapper = new DefaultLineMapper<>();\r\n\r\n        DelimitedLineTokenizer lineTokenizer = new DelimitedLineTokenizer();\r\n        lineTokenizer.setDelimiter(\",\");\r\n        lineTokenizer.setStrict(false);\r\n        lineTokenizer.setNames(\r\n                StudentImportDTO.getStudentFields()\r\n        );\r\n\r\n        BeanWrapperFieldSetMapper<StudentImportDTO> fieldSetMapper = new BeanWrapperFieldSetMapper<>();\r\n        fieldSetMapper.setTargetType(StudentImportDTO.class);\r\n\r\n        lineMapper.setLineTokenizer(lineTokenizer);\r\n        lineMapper.setFieldSetMapper(fieldSetMapper);\r\n        return lineMapper;\r\n    }\r\n    @Bean\r\n    public StudentProcessor processor() {\r\n        return new StudentProcessor();\r\n    }\r\n    @Bean\r\n    public JdbcBatchItemWriter<StudentImport> writer(){\r\n        JdbcBatchItemWriter<StudentImport> jdbcBatchItemWriter=new JdbcBatchItemWriter<>();\r\n        jdbcBatchItemWriter.setDataSource(dataSource);\r\n        jdbcBatchItemWriter.setSql(\"insert into student (first_name, s_index, last_name, user_id,year_of_enrollment) \" +\r\n                \"values(:first_name, :s_index, :last_name, :user_id,:year_of_enrollment)\");\r\n        jdbcBatchItemWriter.setItemSqlParameterSourceProvider(new BeanPropertyItemSqlParameterSourceProvider<StudentImport>());\r\n        return jdbcBatchItemWriter;\r\n    }\r\n\r\n    @Bean\r\n    public Step step1(JobRepository jobRepository,\r\n                      PlatformTransactionManager transactionManager, JdbcBatchItemWriter<StudentImport> writer) {\r\n        return new StepBuilder(\"step1\", jobRepository)\r\n                .<StudentImportDTO, StudentImport> chunk(10, transactionManager)\r\n                .reader(reader())\r\n                .processor(processor())\r\n                .writer(writer)\r\n                .build();\r\n    }\r\n    @Bean\r\n    public Job importCourseJob(JobRepository jobRepository,\r\n                               JobCompletionNotificationListener listener, Step step1) {\r\n        return new JobBuilder(\"importStudentJob\", jobRepository)\r\n                .incrementer(new RunIdIncrementer())\r\n                .listener(listener)\r\n                .flow(step1)\r\n                .end()\r\n                .build();\r\n    }\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/user-service/src/main/java/com/swerve/backend/userservice/config/BatchConfig.java b/user-service/src/main/java/com/swerve/backend/userservice/config/BatchConfig.java
+--- a/user-service/src/main/java/com/swerve/backend/userservice/config/BatchConfig.java	(revision fc2ba9efed58ff876d9cb712fd1544d4f7deff57)
++++ b/user-service/src/main/java/com/swerve/backend/userservice/config/BatchConfig.java	(date 1683060120869)
+@@ -99,11 +99,4 @@
+                 .build();
+     }
+ 
+-
+-
+-
+-
+-
+-
+-
+ }
+Index: course-service/src/main/java/com/swerve/backend/subject/config/SecurityConfig.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.swerve.backend.subject.config;\r\n\r\nimport com.swerve.backend.shared.security.AuthenticationTokenFilter;\r\nimport org.springframework.context.annotation.Bean;\r\nimport org.springframework.context.annotation.Configuration;\r\nimport org.springframework.http.HttpMethod;\r\nimport org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;\r\nimport org.springframework.security.config.annotation.web.builders.HttpSecurity;\r\nimport org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;\r\nimport org.springframework.security.config.http.SessionCreationPolicy;\r\nimport org.springframework.security.web.SecurityFilterChain;\r\nimport org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;\r\nimport org.springframework.web.cors.CorsConfiguration;\r\nimport org.springframework.web.cors.UrlBasedCorsConfigurationSource;\r\nimport org.springframework.web.filter.CorsFilter;\r\n\r\nimport java.util.Collections;\r\n\r\nimport static com.swerve.backend.shared.security.SecurityUtils.*;\r\n\r\n@Configuration\r\n//@EnableWebSecurity\r\n@EnableGlobalMethodSecurity(prePostEnabled = true)\r\npublic class SecurityConfig {\r\n    @Bean\r\n    public SecurityFilterChain filterChain(HttpSecurity http, AuthenticationTokenFilter authenticationTokenFilter)\r\n            throws Exception {\r\n\r\n        return http.cors().and()\r\n                .addFilterBefore(authenticationTokenFilter, UsernamePasswordAuthenticationFilter.class)\r\n                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)\r\n                .and()\r\n                .csrf().disable()\r\n                .authorizeRequests()\r\n                .requestMatchers(\r\n                        HttpMethod.GET,\r\n                        \"/actuator/**\",\r\n                        \"/docs/**\").permitAll()\r\n//                .requestMatchers(\r\n//                        HttpMethod.GET,\r\n//                        \"/subjects/student/*/all\").hasAnyAuthority(ROLE_STUDENT, ROLE_ADMIN)\r\n                .requestMatchers(\r\n                        HttpMethod.GET,\r\n                        \"cycles/*/cycle\",\r\n                \"/courses/*/learningtrack\",\r\n                        \"/courses/*/prereq\",\r\n                        \"/courses/*/course\",\r\n                        \"/courses/offeredcourses\",\r\n                        \"/spgoc/*/offeredcourses/gid\",\r\n                        \"/spgoc/*/offeredcourses/stdid\",\r\n                        \"/spgoc/*/*/*/evaluationitems\",\r\n                        \"/spgoc/*/*/evaluations/stdid\",\r\n                        \"/spgoc/*/students\",\r\n                        \"/attendance/*/*/*\",\r\n                        \"/attendance/*/*\").permitAll()\r\n                .requestMatchers(\r\n                        HttpMethod.POST,\r\n                        \"/courses/create\",\r\n                        \"/batch/importcourses\",\r\n                        \"/batch/importenrollments\",\r\n                        \"/attendance/mark\"\r\n                ).permitAll()\r\n                .requestMatchers(\r\n                        HttpMethod.PATCH,\r\n                        \"attendance/update\"\r\n                ).permitAll()\r\n//                .requestMatchers(\r\n//                        HttpMethod.GET,\r\n//                        \"/subject-enrollments/*\",\r\n//                        \"/subject-enrollments/student/*/average-grade\",\r\n//                        \"/subject-enrollments/student/*/total-ects\").hasAnyAuthority(ROLE_STUDENT, ROLE_TEACHER, ROLE_ADMIN)\r\n//                .requestMatchers(\r\n//                        HttpMethod.GET,\r\n//                        \"/subject-enrollments/student/**\").hasAnyAuthority(ROLE_STUDENT, ROLE_ADMIN)\r\n//                .requestMatchers(\r\n//                        HttpMethod.GET,\r\n//                        \"/subject-enrollments/subject/*\",\r\n//                        \"/subject-enrollments/subject/*/student-id/all\").hasAnyAuthority(ROLE_TEACHER, ROLE_ADMIN)\r\n//                .requestMatchers(\r\n//                        HttpMethod.PATCH,\r\n//                        \"/subjects/*/syllabus\",\r\n//                        \"/subject-enrollments/*/grade\").hasAnyAuthority(ROLE_TEACHER, ROLE_ADMIN)\r\n//                .requestMatchers(\r\n//                        \"/subject-materials/**\",\r\n//                        \"/subject-notifications/**\",\r\n//                        \"/subject-terms/**\").hasAnyAuthority(ROLE_TEACHER, ROLE_ADMIN)\r\n                .requestMatchers(\r\n                        HttpMethod.GET,\r\n                        \"/hello\"\r\n\r\n                ).permitAll()\r\n                .anyRequest().authenticated()\r\n                .and()\r\n                .build();\r\n    }\r\n    @Bean\r\n    public CorsFilter corsFilter() {\r\n        System.out.println(\"corss\");\r\n        final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();\r\n        final CorsConfiguration config = new CorsConfiguration();\r\n        config.setAllowCredentials(true);\r\n        config.setAllowedOriginPatterns(Collections.singletonList(\"*\"));\r\n        config.addAllowedHeader(\"*\");\r\n        config.addAllowedMethod(\"OPTIONS\");\r\n        config.addAllowedMethod(\"HEAD\");\r\n        config.addAllowedMethod(\"GET\");\r\n        config.addAllowedMethod(\"PUT\");\r\n        config.addAllowedMethod(\"POST\");\r\n        config.addAllowedMethod(\"DELETE\");\r\n        config.addAllowedMethod(\"PATCH\");\r\n        config.addAllowedHeader(\"Authorization\");\r\n        source.registerCorsConfiguration(\"/**\", config);\r\n        return new CorsFilter(source);\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/course-service/src/main/java/com/swerve/backend/subject/config/SecurityConfig.java b/course-service/src/main/java/com/swerve/backend/subject/config/SecurityConfig.java
+--- a/course-service/src/main/java/com/swerve/backend/subject/config/SecurityConfig.java	(revision fc2ba9efed58ff876d9cb712fd1544d4f7deff57)
++++ b/course-service/src/main/java/com/swerve/backend/subject/config/SecurityConfig.java	(date 1683009350569)
+@@ -51,14 +51,19 @@
+                         "/spgoc/*/*/*/evaluationitems",
+                         "/spgoc/*/*/evaluations/stdid",
+                         "/spgoc/*/students",
++                        "/courseoutline/*/offeredcourse",
+                         "/attendance/*/*/*",
+-                        "/attendance/*/*").permitAll()
++                        "/attendance/*/*",
++                        "/attendance/*/*/all",
++                        "/attendance/*/*/bycourse"
++                        ).permitAll()
+                 .requestMatchers(
+                         HttpMethod.POST,
+                         "/courses/create",
+                         "/batch/importcourses",
+                         "/batch/importenrollments",
+-                        "/attendance/mark"
++                        "/attendance/mark",
++                        "/courseoutline/*/*/update/outline"
+                 ).permitAll()
+                 .requestMatchers(
+                         HttpMethod.PATCH,
+Index: course-service/src/main/java/com/swerve/backend/subject/controller/CourseOutlineController.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/course-service/src/main/java/com/swerve/backend/subject/controller/CourseOutlineController.java b/course-service/src/main/java/com/swerve/backend/subject/controller/CourseOutlineController.java
+new file mode 100644
+--- /dev/null	(date 1683009350574)
++++ b/course-service/src/main/java/com/swerve/backend/subject/controller/CourseOutlineController.java	(date 1683009350574)
+@@ -0,0 +1,35 @@
++package com.swerve.backend.subject.controller;
++
++import com.swerve.backend.shared.controller.BaseController;
++import com.swerve.backend.subject.dto.CourseOutlineDTO;
++import com.swerve.backend.subject.model.OfferedCourseOutline;
++import com.swerve.backend.subject.service.CourseOutlineService;
++import org.springframework.http.ResponseEntity;
++import org.springframework.stereotype.Controller;
++import org.springframework.web.bind.annotation.*;
++
++import java.util.List;
++
++@Controller
++@RequestMapping("/courseoutline")
++public class CourseOutlineController extends BaseController<OfferedCourseOutline, CourseOutlineDTO,Long> {
++
++    private final CourseOutlineService courseOutlineService;
++
++    public CourseOutlineController(CourseOutlineService courseOutlineService) {
++        super(courseOutlineService);
++        this.courseOutlineService = courseOutlineService;
++    }
++    @GetMapping("/{offeredCourseId}/offeredcourse")
++    public ResponseEntity<CourseOutlineDTO> getCourseOutlineByOfferedCourseId(@PathVariable Long offeredCourseId) {
++        CourseOutlineDTO courseOutlineDTOs = courseOutlineService.getCourseOutlineByOfferedCourseId(offeredCourseId);
++        return ResponseEntity.ok(courseOutlineDTOs);
++    }
++
++    @PostMapping("/{offeredCourseId}/{teacherId}/update/outline")
++    public ResponseEntity<?> getCourseOutlineByOfferedCourseId(@PathVariable Long offeredCourseId,@PathVariable Long teacherId,
++                                                                              @RequestBody CourseOutlineDTO courseOutlineDTO) {
++        CourseOutlineDTO courseOutlineDTOs = courseOutlineService.saveOrUpdateCourseOutline(offeredCourseId,teacherId,courseOutlineDTO);
++        return ResponseEntity.ok(courseOutlineDTOs);
++    }
++}
+Index: .idea/shelf/Uncommitted_changes_before_Update_at_4_30_2023_5_43_PM_[Changes]/shelved.patch
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/shelf/Uncommitted_changes_before_Update_at_4_30_2023_5_43_PM_[Changes]/shelved.patch b/.idea/shelf/Uncommitted_changes_before_Update_at_4_30_2023_5_43_PM_[Changes]/shelved.patch
+new file mode 100644
+--- /dev/null	(date 1682901802690)
++++ b/.idea/shelf/Uncommitted_changes_before_Update_at_4_30_2023_5_43_PM_[Changes]/shelved.patch	(date 1682901802690)
+@@ -0,0 +1,198 @@
++Index: auth-service/src/main/java/com/swerve/backend/auth/mapper/RoleMapper.java
++IDEA additional info:
++Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
++<+>package com.swerve.backend.auth.mapper;\r\n\r\nimport com.swerve.backend.auth.model.Role;\r\nimport com.swerve.backend.shared.dto.RoleDTO;\r\nimport com.swerve.backend.shared.mapper.BaseMapper;\r\nimport org.mapstruct.Mapper;\r\n\r\n@Mapper(componentModel = \"spring\")\r\npublic interface RoleMapper extends BaseMapper<Role, RoleDTO, Long> {}\r\n
++Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
++<+>UTF-8
++===================================================================
++diff --git a/auth-service/src/main/java/com/swerve/backend/auth/mapper/RoleMapper.java b/auth-service/src/main/java/com/swerve/backend/auth/mapper/RoleMapper.java
++--- a/auth-service/src/main/java/com/swerve/backend/auth/mapper/RoleMapper.java	(revision c3cc2f2f1f9522b82074c684e61f4fe28e2c797d)
+++++ b/auth-service/src/main/java/com/swerve/backend/auth/mapper/RoleMapper.java	(date 1682900284001)
++@@ -4,6 +4,16 @@
++ import com.swerve.backend.shared.dto.RoleDTO;
++ import com.swerve.backend.shared.mapper.BaseMapper;
++ import org.mapstruct.Mapper;
+++import org.mapstruct.Named;
++ 
++ @Mapper(componentModel = "spring")
++-public interface RoleMapper extends BaseMapper<Role, RoleDTO, Long> {}
+++public interface RoleMapper extends BaseMapper<Role, RoleDTO, Long> {
+++
+++    @Override
+++    @Named("default")
+++    RoleDTO toDTO(Role cycle);
+++
+++    @Override
+++    @Named("default")
+++    Role toModel(RoleDTO cycleDTO);
+++}
++Index: auth-service/src/main/java/com/swerve/backend/auth/mapper/UserMapper.java
++IDEA additional info:
++Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
++<+>package com.swerve.backend.auth.mapper;\r\n\r\nimport com.swerve.backend.auth.model.User;\r\nimport com.swerve.backend.shared.dto.UserDTO;\r\nimport com.swerve.backend.shared.dto.UserDetailsDTO;\r\nimport com.swerve.backend.shared.mapper.BaseMapper;\r\nimport org.mapstruct.Mapper;\r\n\r\nimport java.util.List;\r\n\r\n@Mapper(componentModel = \"spring\")\r\npublic interface UserMapper extends BaseMapper<User, UserDetailsDTO, Long> {\r\n    UserDTO userToUserDTO(User user);\r\n\r\n    User userDTOtoUser(UserDTO userDTO);\r\n\r\n    List<UserDTO> userToUserDTOList(List<User> users);\r\n\r\n    List<User> userDTOtoUserList(List<UserDTO> userDTOList);\r\n}\r\n
++Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
++<+>UTF-8
++===================================================================
++diff --git a/auth-service/src/main/java/com/swerve/backend/auth/mapper/UserMapper.java b/auth-service/src/main/java/com/swerve/backend/auth/mapper/UserMapper.java
++--- a/auth-service/src/main/java/com/swerve/backend/auth/mapper/UserMapper.java	(revision c3cc2f2f1f9522b82074c684e61f4fe28e2c797d)
+++++ b/auth-service/src/main/java/com/swerve/backend/auth/mapper/UserMapper.java	(date 1682900792050)
++@@ -5,16 +5,27 @@
++ import com.swerve.backend.shared.dto.UserDetailsDTO;
++ import com.swerve.backend.shared.mapper.BaseMapper;
++ import org.mapstruct.Mapper;
+++import org.mapstruct.Mapping;
+++import org.mapstruct.Named;
++ 
++ import java.util.List;
++ 
++ @Mapper(componentModel = "spring")
++ public interface UserMapper extends BaseMapper<User, UserDetailsDTO, Long> {
++-    UserDTO userToUserDTO(User user);
+++
+++    @Override
+++    @Named("default")
+++
+++    UserDetailsDTO toDTO(User user);
+++
+++    @Override
+++    @Named("default")
+++    User toModel(UserDetailsDTO userDetailsDTO);
++ 
++-    User userDTOtoUser(UserDTO userDTO);
+++
++ 
++     List<UserDTO> userToUserDTOList(List<User> users);
++ 
++-    List<User> userDTOtoUserList(List<UserDTO> userDTOList);
+++
+++
++ }
++Index: user-service/src/main/java/com/swerve/backend/userservice/mapper/TeacherMapper.java
++IDEA additional info:
++Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
++<+>package com.swerve.backend.userservice.mapper;\r\n\r\nimport com.swerve.backend.userservice.dto.TeacherDTO;\r\nimport com.swerve.backend.userservice.model.Teacher;\r\nimport com.swerve.backend.shared.dto.UserDTO;\r\nimport com.swerve.backend.shared.mapper.BaseMapper;\r\n\r\nimport org.mapstruct.Mapper;\r\nimport org.mapstruct.Mapping;\r\n\r\n@Mapper(componentModel = \"spring\")\r\npublic interface TeacherMapper extends BaseMapper<Teacher, TeacherDTO, Long> {\r\n    @Mapping(source = \"userId\", target = \"user\")\r\n    TeacherDTO toDTO(Teacher teacher);\r\n\r\n    @Mapping(source = \"user.id\", target = \"userId\")\r\n    Teacher toModel(TeacherDTO teacherDTO);\r\n\r\n    UserDTO userDTOFromId(Long id);\r\n}\r\n
++Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
++<+>UTF-8
++===================================================================
++diff --git a/user-service/src/main/java/com/swerve/backend/userservice/mapper/TeacherMapper.java b/user-service/src/main/java/com/swerve/backend/userservice/mapper/TeacherMapper.java
++--- a/user-service/src/main/java/com/swerve/backend/userservice/mapper/TeacherMapper.java	(revision c3cc2f2f1f9522b82074c684e61f4fe28e2c797d)
+++++ b/user-service/src/main/java/com/swerve/backend/userservice/mapper/TeacherMapper.java	(date 1682900111923)
++@@ -7,12 +7,17 @@
++ 
++ import org.mapstruct.Mapper;
++ import org.mapstruct.Mapping;
+++import org.mapstruct.Named;
++ 
++ @Mapper(componentModel = "spring")
++ public interface TeacherMapper extends BaseMapper<Teacher, TeacherDTO, Long> {
+++    @Override
+++    @Named("default")
++     @Mapping(source = "userId", target = "user")
++     TeacherDTO toDTO(Teacher teacher);
++ 
+++    @Override
+++    @Named("default")
++     @Mapping(source = "user.id", target = "userId")
++     Teacher toModel(TeacherDTO teacherDTO);
++ 
++Index: user-service/src/main/java/com/swerve/backend/userservice/mapper/StudentMapper.java
++IDEA additional info:
++Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
++<+>package com.swerve.backend.userservice.mapper;\r\n\r\nimport com.swerve.backend.userservice.client.SubjectFeignClient;\r\nimport com.swerve.backend.userservice.dto.StudentDTO;\r\nimport com.swerve.backend.userservice.model.Student;\r\nimport com.swerve.backend.shared.dto.UserDTO;\r\nimport com.swerve.backend.shared.mapper.BaseMapper;\r\n\r\nimport org.mapstruct.Mapper;\r\nimport org.mapstruct.Mapping;\r\nimport org.mapstruct.Named;\r\nimport org.springframework.beans.factory.annotation.Autowired;\r\n\r\nimport java.util.List;\r\n\r\n@Mapper(componentModel = \"spring\")\r\npublic abstract class StudentMapper implements BaseMapper<Student, StudentDTO, Long> {\r\n    private SubjectFeignClient subjectFeignClient;\r\n\r\n    @Autowired\r\n    public void setSubjectFeignClient(SubjectFeignClient subjectFeignClient) {\r\n        this.subjectFeignClient = subjectFeignClient;\r\n    }\r\n\r\n    @Mapping(source = \"userId\", target = \"user\")\r\n    public abstract StudentDTO toDTO(Student student);\r\n\r\n    @Mapping(source = \"user.id\", target = \"userId\")\r\n    public abstract Student toModel(StudentDTO studentDTO);\r\n\r\n    public List<StudentDTO> toDTO(List<Student> students) {\r\n        List<StudentDTO> list = students.stream().map(this::toDTO).toList();\r\n        if (list.size() > 0) {\r\n            List<Long> studentIds = list.stream().map(StudentDTO::getId).toList();\r\n//            List<Double> averageGrades = subjectFeignClient.getAverageGradesByStudentId(studentIds);\r\n//            List<Integer> totalECTS = subjectFeignClient.getTotalECTSByStudentId(studentIds);\r\n\r\n//            for (int i = 0; i < list.size(); i++) {\r\n//                list.get(i).setAverageGrade(averageGrades.get(i));\r\n//                list.get(i).setTotalECTS(totalECTS.get(i));\r\n//            }\r\n        }\r\n\r\n        return list;\r\n    }\r\n\r\n    public abstract UserDTO userDTOFromId(Long id);\r\n\r\n//    @Named(\"getAverageGrade\")\r\n//    public Double getAverageGrade(Long studentId) {\r\n//        return subjectFeignClient.getAverageGradesByStudentId(List.of(studentId)).get(0);\r\n//    }\r\n//\r\n//    @Named(\"getTotalECTS\")\r\n//    public Integer getTotalECTS(Long studentId) {\r\n//        return subjectFeignClient.getTotalECTSByStudentId(List.of(studentId)).get(0);\r\n//    }\r\n}\r\n
++Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
++<+>UTF-8
++===================================================================
++diff --git a/user-service/src/main/java/com/swerve/backend/userservice/mapper/StudentMapper.java b/user-service/src/main/java/com/swerve/backend/userservice/mapper/StudentMapper.java
++--- a/user-service/src/main/java/com/swerve/backend/userservice/mapper/StudentMapper.java	(revision c3cc2f2f1f9522b82074c684e61f4fe28e2c797d)
+++++ b/user-service/src/main/java/com/swerve/backend/userservice/mapper/StudentMapper.java	(date 1682899938295)
++@@ -22,9 +22,13 @@
++         this.subjectFeignClient = subjectFeignClient;
++     }
++ 
+++    @Override
+++    @Named("default")
++     @Mapping(source = "userId", target = "user")
++     public abstract StudentDTO toDTO(Student student);
++ 
+++    @Override
+++    @Named("default")
++     @Mapping(source = "user.id", target = "userId")
++     public abstract Student toModel(StudentDTO studentDTO);
++ 
++Index: .idea/workspace.xml
++IDEA additional info:
++Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
++<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"AutoImportSettings\">\r\n    <option name=\"autoReloadType\" value=\"SELECTIVE\" />\r\n  </component>\r\n  <component name=\"ChangeListManager\">\r\n    <list default=\"true\" id=\"e3b09a9e-0488-4344-9c3a-1a8badac1ec4\" name=\"Changes\" comment=\"\">\r\n      <change afterPath=\"$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/controller/AttendanceController.java\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/dto/AttendanceDTO.java\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/mapper/AttendanceMapper.java\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/model/OfferedCourseAttendance.java\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/repository/AttendanceRepository.java\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/service/AttendanceService.java\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/workspace.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/workspace.xml\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/config/SecurityConfig.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/config/SecurityConfig.java\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/controller/GroupController.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/controller/GroupController.java\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/mapper/CourseLearnerProgressMapper.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/mapper/CourseLearnerProgressMapper.java\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/mapper/CourseMapper.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/mapper/CourseMapper.java\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/mapper/CourseMaterialMapper.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/mapper/CourseMaterialMapper.java\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/mapper/CourseModuleMapper.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/mapper/CourseModuleMapper.java\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/mapper/CycleMapper.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/mapper/CycleMapper.java\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/mapper/GroupMapper.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/mapper/GroupMapper.java\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/mapper/LearningTrackMapper.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/mapper/LearningTrackMapper.java\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/mapper/OfferedCourseEvaluationItemMapper.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/mapper/OfferedCourseEvaluationItemMapper.java\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/mapper/OfferedCourseEvaluationMapper.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/mapper/OfferedCourseEvaluationMapper.java\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/mapper/OfferedCourseMapper.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/mapper/OfferedCourseMapper.java\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/mapper/PreRequisiteMapper.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/mapper/PreRequisiteMapper.java\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/mapper/SessionMapper.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/mapper/SessionMapper.java\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/mapper/StudentsPerGroup_OfferedCourseMapper.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/mapper/StudentsPerGroup_OfferedCourseMapper.java\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/service/GroupService.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/service/GroupService.java\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/course-service/src/main/resources/application.properties\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/course-service/src/main/resources/application.properties\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/shared-library/pom.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/shared-library/pom.xml\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/shared-library/src/main/java/com/swerve/backend/shared/mapper/BaseMapper.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/shared-library/src/main/java/com/swerve/backend/shared/mapper/BaseMapper.java\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/user-service/src/main/resources/application.properties\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/user-service/src/main/resources/application.properties\" afterDir=\"false\" />\r\n    </list>\r\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\r\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\r\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\r\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\r\n  </component>\r\n  <component name=\"FileTemplateManagerImpl\">\r\n    <option name=\"RECENT_TEMPLATES\">\r\n      <list>\r\n        <option value=\"Class\" />\r\n        <option value=\"Interface\" />\r\n      </list>\r\n    </option>\r\n  </component>\r\n  <component name=\"Git.Settings\">\r\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\r\n  </component>\r\n  <component name=\"MavenImportPreferences\">\r\n    <option name=\"generalSettings\">\r\n      <MavenGeneralSettings>\r\n        <option name=\"useMavenConfig\" value=\"true\" />\r\n      </MavenGeneralSettings>\r\n    </option>\r\n  </component>\r\n  <component name=\"ProjectId\" id=\"2OSGKKz27OQhLND9UnwBd10H3kp\" />\r\n  <component name=\"ProjectViewState\">\r\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\r\n    <option name=\"showLibraryContents\" value=\"true\" />\r\n  </component>\r\n  <component name=\"PropertiesComponent\">{\r\n  &quot;keyToString&quot;: {\r\n    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,\r\n    &quot;git-widget-placeholder&quot;: &quot;updated&quot;,\r\n    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,\r\n    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,\r\n    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;\r\n  }\r\n}</component>\r\n  <component name=\"RunManager\" selected=\"Application.SubjectServiceApplication\">\r\n    <configuration name=\"ApiGatewayApplication\" type=\"Application\" factoryName=\"Application\" temporary=\"true\" nameIsGenerated=\"true\">\r\n      <option name=\"MAIN_CLASS_NAME\" value=\"com.swerve.backend.apigateway.ApiGatewayApplication\" />\r\n      <module name=\"api-gateway\" />\r\n      <extension name=\"coverage\">\r\n        <pattern>\r\n          <option name=\"PATTERN\" value=\"com.swerve.backend.apigateway.*\" />\r\n          <option name=\"ENABLED\" value=\"true\" />\r\n        </pattern>\r\n      </extension>\r\n      <method v=\"2\">\r\n        <option name=\"Make\" enabled=\"true\" />\r\n      </method>\r\n    </configuration>\r\n    <configuration name=\"AuthServiceApplication\" type=\"Application\" factoryName=\"Application\" temporary=\"true\" nameIsGenerated=\"true\">\r\n      <option name=\"MAIN_CLASS_NAME\" value=\"com.swerve.backend.auth.AuthServiceApplication\" />\r\n      <module name=\"auth-service\" />\r\n      <extension name=\"coverage\">\r\n        <pattern>\r\n          <option name=\"PATTERN\" value=\"com.swerve.backend.auth.*\" />\r\n          <option name=\"ENABLED\" value=\"true\" />\r\n        </pattern>\r\n      </extension>\r\n      <method v=\"2\">\r\n        <option name=\"Make\" enabled=\"true\" />\r\n      </method>\r\n    </configuration>\r\n    <configuration name=\"DiscoveryServerApplication\" type=\"Application\" factoryName=\"Application\" temporary=\"true\" nameIsGenerated=\"true\">\r\n      <option name=\"MAIN_CLASS_NAME\" value=\"com.swerve.backend.discoveryserver.DiscoveryServerApplication\" />\r\n      <module name=\"discovery-server\" />\r\n      <extension name=\"coverage\">\r\n        <pattern>\r\n          <option name=\"PATTERN\" value=\"com.swerve.backend.discoveryserver.*\" />\r\n          <option name=\"ENABLED\" value=\"true\" />\r\n        </pattern>\r\n      </extension>\r\n      <method v=\"2\">\r\n        <option name=\"Make\" enabled=\"true\" />\r\n      </method>\r\n    </configuration>\r\n    <configuration name=\"SubjectServiceApplication\" type=\"Application\" factoryName=\"Application\" temporary=\"true\" nameIsGenerated=\"true\">\r\n      <option name=\"MAIN_CLASS_NAME\" value=\"com.swerve.backend.subject.SubjectServiceApplication\" />\r\n      <module name=\"course-service\" />\r\n      <extension name=\"coverage\">\r\n        <pattern>\r\n          <option name=\"PATTERN\" value=\"com.swerve.backend.subject.*\" />\r\n          <option name=\"ENABLED\" value=\"true\" />\r\n        </pattern>\r\n      </extension>\r\n      <method v=\"2\">\r\n        <option name=\"Make\" enabled=\"true\" />\r\n      </method>\r\n    </configuration>\r\n    <configuration name=\"UserServiceApplication\" type=\"Application\" factoryName=\"Application\" temporary=\"true\" nameIsGenerated=\"true\">\r\n      <option name=\"MAIN_CLASS_NAME\" value=\"com.swerve.backend.userservice.UserServiceApplication\" />\r\n      <module name=\"user-service\" />\r\n      <extension name=\"coverage\">\r\n        <pattern>\r\n          <option name=\"PATTERN\" value=\"com.swerve.backend.userservice.*\" />\r\n          <option name=\"ENABLED\" value=\"true\" />\r\n        </pattern>\r\n      </extension>\r\n      <method v=\"2\">\r\n        <option name=\"Make\" enabled=\"true\" />\r\n      </method>\r\n    </configuration>\r\n    <recent_temporary>\r\n      <list>\r\n        <item itemvalue=\"Application.SubjectServiceApplication\" />\r\n        <item itemvalue=\"Application.AuthServiceApplication\" />\r\n        <item itemvalue=\"Application.UserServiceApplication\" />\r\n        <item itemvalue=\"Application.ApiGatewayApplication\" />\r\n        <item itemvalue=\"Application.DiscoveryServerApplication\" />\r\n      </list>\r\n    </recent_temporary>\r\n  </component>\r\n  <component name=\"SpellCheckerSettings\" RuntimeDictionaries=\"0\" Folders=\"0\" CustomDictionaries=\"0\" DefaultDictionary=\"application-level\" UseSingleDictionary=\"true\" transferred=\"true\" />\r\n  <component name=\"TaskManager\">\r\n    <task active=\"true\" id=\"Default\" summary=\"Default task\">\r\n      <changelist id=\"e3b09a9e-0488-4344-9c3a-1a8badac1ec4\" name=\"Changes\" comment=\"\" />\r\n      <created>1681546504188</created>\r\n      <option name=\"number\" value=\"Default\" />\r\n      <option name=\"presentableId\" value=\"Default\" />\r\n      <updated>1681546504188</updated>\r\n    </task>\r\n    <servers />\r\n  </component>\r\n</project>
++Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
++<+>UTF-8
++===================================================================
++diff --git a/.idea/workspace.xml b/.idea/workspace.xml
++--- a/.idea/workspace.xml	(revision c3cc2f2f1f9522b82074c684e61f4fe28e2c797d)
+++++ b/.idea/workspace.xml	(date 1682901094983)
++@@ -5,33 +5,12 @@
++   </component>
++   <component name="ChangeListManager">
++     <list default="true" id="e3b09a9e-0488-4344-9c3a-1a8badac1ec4" name="Changes" comment="">
++-      <change afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/controller/AttendanceController.java" afterDir="false" />
++-      <change afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/dto/AttendanceDTO.java" afterDir="false" />
++-      <change afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/mapper/AttendanceMapper.java" afterDir="false" />
++-      <change afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/model/OfferedCourseAttendance.java" afterDir="false" />
++-      <change afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/repository/AttendanceRepository.java" afterDir="false" />
++-      <change afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/service/AttendanceService.java" afterDir="false" />
++       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
++-      <change beforePath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/config/SecurityConfig.java" afterDir="false" />
++-      <change beforePath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/controller/GroupController.java" beforeDir="false" afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/controller/GroupController.java" afterDir="false" />
++-      <change beforePath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/mapper/CourseLearnerProgressMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/mapper/CourseLearnerProgressMapper.java" afterDir="false" />
++-      <change beforePath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/mapper/CourseMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/mapper/CourseMapper.java" afterDir="false" />
++-      <change beforePath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/mapper/CourseMaterialMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/mapper/CourseMaterialMapper.java" afterDir="false" />
++-      <change beforePath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/mapper/CourseModuleMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/mapper/CourseModuleMapper.java" afterDir="false" />
++-      <change beforePath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/mapper/CycleMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/mapper/CycleMapper.java" afterDir="false" />
++-      <change beforePath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/mapper/GroupMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/mapper/GroupMapper.java" afterDir="false" />
++-      <change beforePath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/mapper/LearningTrackMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/mapper/LearningTrackMapper.java" afterDir="false" />
++-      <change beforePath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/mapper/OfferedCourseEvaluationItemMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/mapper/OfferedCourseEvaluationItemMapper.java" afterDir="false" />
++-      <change beforePath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/mapper/OfferedCourseEvaluationMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/mapper/OfferedCourseEvaluationMapper.java" afterDir="false" />
++-      <change beforePath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/mapper/OfferedCourseMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/mapper/OfferedCourseMapper.java" afterDir="false" />
++-      <change beforePath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/mapper/PreRequisiteMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/mapper/PreRequisiteMapper.java" afterDir="false" />
++-      <change beforePath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/mapper/SessionMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/mapper/SessionMapper.java" afterDir="false" />
++-      <change beforePath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/mapper/StudentsPerGroup_OfferedCourseMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/mapper/StudentsPerGroup_OfferedCourseMapper.java" afterDir="false" />
++-      <change beforePath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/service/GroupService.java" beforeDir="false" afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/service/GroupService.java" afterDir="false" />
++-      <change beforePath="$PROJECT_DIR$/course-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/course-service/src/main/resources/application.properties" afterDir="false" />
++-      <change beforePath="$PROJECT_DIR$/shared-library/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/shared-library/pom.xml" afterDir="false" />
++-      <change beforePath="$PROJECT_DIR$/shared-library/src/main/java/com/swerve/backend/shared/mapper/BaseMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/shared-library/src/main/java/com/swerve/backend/shared/mapper/BaseMapper.java" afterDir="false" />
++-      <change beforePath="$PROJECT_DIR$/user-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/main/resources/application.properties" afterDir="false" />
+++      <change beforePath="$PROJECT_DIR$/auth-service/src/main/java/com/swerve/backend/auth/mapper/RoleMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/src/main/java/com/swerve/backend/auth/mapper/RoleMapper.java" afterDir="false" />
+++      <change beforePath="$PROJECT_DIR$/auth-service/src/main/java/com/swerve/backend/auth/mapper/UserMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/src/main/java/com/swerve/backend/auth/mapper/UserMapper.java" afterDir="false" />
+++      <change beforePath="$PROJECT_DIR$/user-service/src/main/java/com/swerve/backend/userservice/mapper/AdministratorMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/main/java/com/swerve/backend/userservice/mapper/AdministratorMapper.java" afterDir="false" />
+++      <change beforePath="$PROJECT_DIR$/user-service/src/main/java/com/swerve/backend/userservice/mapper/StudentMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/main/java/com/swerve/backend/userservice/mapper/StudentMapper.java" afterDir="false" />
+++      <change beforePath="$PROJECT_DIR$/user-service/src/main/java/com/swerve/backend/userservice/mapper/TeacherMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/main/java/com/swerve/backend/userservice/mapper/TeacherMapper.java" afterDir="false" />
++     </list>
++     <option name="SHOW_DIALOG" value="false" />
++     <option name="HIGHLIGHT_CONFLICTS" value="true" />
++Index: user-service/src/main/java/com/swerve/backend/userservice/mapper/AdministratorMapper.java
++IDEA additional info:
++Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
++<+>package com.swerve.backend.userservice.mapper;\r\n\r\nimport com.swerve.backend.userservice.dto.AdministratorDTO;\r\nimport com.swerve.backend.userservice.model.Administrator;\r\nimport com.swerve.backend.shared.dto.UserDTO;\r\nimport com.swerve.backend.shared.mapper.BaseMapper;\r\nimport org.mapstruct.Mapper;\r\nimport org.mapstruct.Mapping;\r\n\r\n@Mapper(componentModel = \"spring\")\r\npublic interface AdministratorMapper extends BaseMapper<Administrator, AdministratorDTO, Long> {\r\n    @Mapping(source = \"userId\", target = \"user\")\r\n    AdministratorDTO toDTO(Administrator administrator);\r\n\r\n    @Mapping(source = \"user.id\", target = \"userId\")\r\n    Administrator toModel(AdministratorDTO administratorDTO);\r\n\r\n    UserDTO userDTOFromId(Long id);\r\n}\r\n
++Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
++<+>UTF-8
++===================================================================
++diff --git a/user-service/src/main/java/com/swerve/backend/userservice/mapper/AdministratorMapper.java b/user-service/src/main/java/com/swerve/backend/userservice/mapper/AdministratorMapper.java
++--- a/user-service/src/main/java/com/swerve/backend/userservice/mapper/AdministratorMapper.java	(revision c3cc2f2f1f9522b82074c684e61f4fe28e2c797d)
+++++ b/user-service/src/main/java/com/swerve/backend/userservice/mapper/AdministratorMapper.java	(date 1682899969856)
++@@ -6,12 +6,17 @@
++ import com.swerve.backend.shared.mapper.BaseMapper;
++ import org.mapstruct.Mapper;
++ import org.mapstruct.Mapping;
+++import org.mapstruct.Named;
++ 
++ @Mapper(componentModel = "spring")
++ public interface AdministratorMapper extends BaseMapper<Administrator, AdministratorDTO, Long> {
+++    @Override
+++    @Named("default")
++     @Mapping(source = "userId", target = "user")
++     AdministratorDTO toDTO(Administrator administrator);
++ 
+++    @Override
+++    @Named("default")
++     @Mapping(source = "user.id", target = "userId")
++     Administrator toModel(AdministratorDTO administratorDTO);
++ 
+Index: course-service/src/main/resources/application.properties
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>spring.application.name=subject-service\r\n\r\n#spring.config.import=optional:configserver:http://localhost:8888\r\n\r\neureka.instance.hostname=localhost\r\neureka.client.service-url.defaultZone=http://localhost:8761/eureka\r\n\r\nspring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect\r\nspring.jpa.generate-ddl=true\r\nspring.jpa.hibernate.ddl-auto=update\r\nspring.datasource.url=jdbc:postgresql://localhost:5432/lms-course?createDatabaseIfNotExist=true\r\nspring.datasource.username=postgres\r\nspring.datasource.password=admin\r\nspring.datasource.platform=postgresql\r\nspring.batch.jdbc.initialize-schema=always\r\n# we want to launch our job via our controller\r\nspring.batch.job.enabled=false\r\nspring.jackson.default-property-inclusion=non_empty\r\nspring.mvc.pathmatch.matching-strategy=ANT_PATH_MATCHER\r\nspringdoc.api-docs.path=/docs\r\n\r\nserver.port=8082\r\ninput=src/main/resources/MOCK_DATA.csv\r\n#eureka.client.service-url.defaultZone=http://[myIP@]:8888/eureka\r\n\r\n\r\n\r\n#token.secret=GieJX^>%Pd;Z]#&?kmZY4SRZNlWsjr%JJiH!q9KM~,Zd./[oh*=dus&p_M3Ab#B\r\nmanagement.endpoints.web.exposure.include=*
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>ISO-8859-1
+===================================================================
+diff --git a/course-service/src/main/resources/application.properties b/course-service/src/main/resources/application.properties
+--- a/course-service/src/main/resources/application.properties	(revision fc2ba9efed58ff876d9cb712fd1544d4f7deff57)
++++ b/course-service/src/main/resources/application.properties	(date 1682902087173)
+@@ -10,7 +10,7 @@
+ spring.jpa.hibernate.ddl-auto=update
+ spring.datasource.url=jdbc:postgresql://localhost:5432/lms-course?createDatabaseIfNotExist=true
+ spring.datasource.username=postgres
+-spring.datasource.password=admin
++spring.datasource.password=password
+ spring.datasource.platform=postgresql
+ spring.batch.jdbc.initialize-schema=always
+ # we want to launch our job via our controller
+Index: course-service/src/main/java/com/swerve/backend/subject/mapper/CourseOutlineMapper.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/course-service/src/main/java/com/swerve/backend/subject/mapper/CourseOutlineMapper.java b/course-service/src/main/java/com/swerve/backend/subject/mapper/CourseOutlineMapper.java
+new file mode 100644
+--- /dev/null	(date 1682991716433)
++++ b/course-service/src/main/java/com/swerve/backend/subject/mapper/CourseOutlineMapper.java	(date 1682991716433)
+@@ -0,0 +1,32 @@
++package com.swerve.backend.subject.mapper;
++
++
++import com.swerve.backend.shared.mapper.BaseMapper;
++import com.swerve.backend.subject.dto.AttendanceDTO;
++import com.swerve.backend.subject.dto.CourseOutlineDTO;
++import com.swerve.backend.subject.model.OfferedCourseAttendance;
++import com.swerve.backend.subject.model.OfferedCourseOutline;
++import org.mapstruct.*;
++import org.mapstruct.factory.Mappers;
++
++import java.util.List;
++
++@Mapper(componentModel = "spring",  uses = GroupMapper.class)
++public interface CourseOutlineMapper extends BaseMapper<OfferedCourseOutline, CourseOutlineDTO,Long> {
++    CourseOutlineMapper INSTANCE = Mappers.getMapper(CourseOutlineMapper.class);
++    @Override
++    @Named("default")
++    CourseOutlineDTO toDTO(OfferedCourseOutline offeredCourseOutline);
++
++    @Override
++    @Named("default")
++    OfferedCourseOutline toModel(CourseOutlineDTO courseOutlineDTO);
++
++    @IterableMapping(qualifiedByName = "default")
++    List<CourseOutlineDTO> toDtoList(List<OfferedCourseOutline> offeredCourseOutlines);
++
++    @IterableMapping(qualifiedByName = "default")
++    List<OfferedCourseOutline> toModelList(List<CourseOutlineDTO> courseOutlineDTOs);
++
++
++}
+Index: course-service/src/main/java/com/swerve/backend/subject/model/OfferedCourseOutline.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.swerve.backend.subject.model;\r\n\r\nimport com.fasterxml.jackson.annotation.JsonIgnore;\r\nimport com.swerve.backend.shared.model.BaseEntity;\r\nimport jakarta.persistence.Entity;\r\nimport jakarta.persistence.JoinColumn;\r\nimport jakarta.persistence.ManyToOne;\r\nimport lombok.AllArgsConstructor;\r\nimport lombok.Getter;\r\nimport lombok.NoArgsConstructor;\r\nimport lombok.Setter;\r\n\r\n@Entity\r\n@NoArgsConstructor\r\n@AllArgsConstructor\r\n@Getter\r\n@Setter\r\npublic class OfferedCourseOutline extends BaseEntity<Long> {\r\n\r\n    @ManyToOne(optional = false)\r\n    @JoinColumn(name=\"offeredCourse_ID\", nullable=false)\r\n    private OfferedCourse offeredCourse;\r\n\r\n    private int sequenceNumber;\r\n\r\n    private String description;\r\n\r\n\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/course-service/src/main/java/com/swerve/backend/subject/model/OfferedCourseOutline.java b/course-service/src/main/java/com/swerve/backend/subject/model/OfferedCourseOutline.java
+--- a/course-service/src/main/java/com/swerve/backend/subject/model/OfferedCourseOutline.java	(revision fc2ba9efed58ff876d9cb712fd1544d4f7deff57)
++++ b/course-service/src/main/java/com/swerve/backend/subject/model/OfferedCourseOutline.java	(date 1682981091634)
+@@ -2,14 +2,15 @@
+ 
+ import com.fasterxml.jackson.annotation.JsonIgnore;
+ import com.swerve.backend.shared.model.BaseEntity;
+-import jakarta.persistence.Entity;
+-import jakarta.persistence.JoinColumn;
+-import jakarta.persistence.ManyToOne;
++import jakarta.persistence.*;
+ import lombok.AllArgsConstructor;
+ import lombok.Getter;
+ import lombok.NoArgsConstructor;
+ import lombok.Setter;
+ 
++import java.util.ArrayList;
++import java.util.List;
++
+ @Entity
+ @NoArgsConstructor
+ @AllArgsConstructor
+@@ -17,13 +18,17 @@
+ @Setter
+ public class OfferedCourseOutline extends BaseEntity<Long> {
+ 
++    private Long teacherId;
++    private int week;
++
+     @ManyToOne(optional = false)
+     @JoinColumn(name="offeredCourse_ID", nullable=false)
+     private OfferedCourse offeredCourse;
+ 
+-    private int sequenceNumber;
+-
+-    private String description;
++    @ElementCollection
++    @CollectionTable(name = "outline_topics", joinColumns = @JoinColumn(name = "outline_id"))
++    @OrderColumn(name = "sequence_number")
++    private List<String> topics = new ArrayList<>();
+ 
++}
+ 
+-}
+Index: course-service/src/main/java/com/swerve/backend/subject/repository/OfferedCourseOutlineRepository.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/course-service/src/main/java/com/swerve/backend/subject/repository/OfferedCourseOutlineRepository.java b/course-service/src/main/java/com/swerve/backend/subject/repository/OfferedCourseOutlineRepository.java
+new file mode 100644
+--- /dev/null	(date 1682998113137)
++++ b/course-service/src/main/java/com/swerve/backend/subject/repository/OfferedCourseOutlineRepository.java	(date 1682998113137)
+@@ -0,0 +1,14 @@
++package com.swerve.backend.subject.repository;
++
++import com.swerve.backend.shared.repository.BaseRepository;
++import com.swerve.backend.subject.dto.CourseOutlineDTO;
++import com.swerve.backend.subject.model.OfferedCourseOutline;
++
++import java.util.List;
++import java.util.Optional;
++
++public interface OfferedCourseOutlineRepository extends BaseRepository<OfferedCourseOutline, Long> {
++
++    List<OfferedCourseOutline> findByOfferedCourseId(Long offeredCourseId);
++    Optional<OfferedCourseOutline> findByOfferedCourseIdAndWeek(Long ocid,int week);
++}
+Index: course-service/src/main/java/com/swerve/backend/subject/dto/LearnerGradebookDTO.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/course-service/src/main/java/com/swerve/backend/subject/dto/LearnerGradebookDTO.java b/course-service/src/main/java/com/swerve/backend/subject/dto/LearnerGradebookDTO.java
+new file mode 100644
+--- /dev/null	(date 1682972383816)
++++ b/course-service/src/main/java/com/swerve/backend/subject/dto/LearnerGradebookDTO.java	(date 1682972383816)
+@@ -0,0 +1,4 @@
++package com.swerve.backend.subject.dto;
++
++public class LearnerGradebookDTO {
++}
+Index: course-service/src/main/java/com/swerve/backend/subject/mapper/LearnerGradebookMapper.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/course-service/src/main/java/com/swerve/backend/subject/mapper/LearnerGradebookMapper.java b/course-service/src/main/java/com/swerve/backend/subject/mapper/LearnerGradebookMapper.java
+new file mode 100644
+--- /dev/null	(date 1682972383849)
++++ b/course-service/src/main/java/com/swerve/backend/subject/mapper/LearnerGradebookMapper.java	(date 1682972383849)
+@@ -0,0 +1,4 @@
++package com.swerve.backend.subject.mapper;
++
++public class LearnerGradebookMapper {
++}
+Index: course-service/src/main/java/com/swerve/backend/subject/service/CourseOutlineService.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/course-service/src/main/java/com/swerve/backend/subject/service/CourseOutlineService.java b/course-service/src/main/java/com/swerve/backend/subject/service/CourseOutlineService.java
+new file mode 100644
+--- /dev/null	(date 1683009661572)
++++ b/course-service/src/main/java/com/swerve/backend/subject/service/CourseOutlineService.java	(date 1683009661572)
+@@ -0,0 +1,85 @@
++package com.swerve.backend.subject.service;
++
++import com.swerve.backend.shared.exception.NotFoundException;
++import com.swerve.backend.shared.service.BaseService;
++import com.swerve.backend.subject.dto.CourseOutlineDTO;
++import com.swerve.backend.subject.mapper.CourseOutlineMapper;
++import com.swerve.backend.subject.model.OfferedCourse;
++import com.swerve.backend.subject.model.OfferedCourseOutline;
++import com.swerve.backend.subject.repository.OfferedCourseOutlineRepository;
++import com.swerve.backend.subject.repository.OfferedCourseRepository;
++import org.springframework.stereotype.Service;
++
++import java.util.ArrayList;
++import java.util.List;
++import java.util.Objects;
++import java.util.Optional;
++import java.util.stream.Collectors;
++
++@Service
++public class CourseOutlineService extends BaseService<OfferedCourseOutline, CourseOutlineDTO,Long> {
++    private final OfferedCourseOutlineRepository offeredCourseOutlineRepository;
++    private final CourseOutlineMapper courseOutlineMapper;
++    private OfferedCourseRepository offeredCourseRepository;
++
++    public CourseOutlineService(OfferedCourseOutlineRepository offeredCourseOutlineRepository,OfferedCourseRepository offeredCourseRepository, CourseOutlineMapper courseOutlineMapper) {
++        super(offeredCourseOutlineRepository,courseOutlineMapper);
++        this.offeredCourseOutlineRepository = offeredCourseOutlineRepository;
++        this.courseOutlineMapper = courseOutlineMapper;
++        this.offeredCourseRepository=offeredCourseRepository;
++    }
++
++    public CourseOutlineDTO getCourseOutlineByOfferedCourseId(Long offeredCourseId) {
++        List<CourseOutlineDTO.WeeklyCourseOutline> weeklyCourseOutlines = new ArrayList<>();
++
++        List<OfferedCourseOutline> offeredCourseOutlines = offeredCourseOutlineRepository.findByOfferedCourseId(offeredCourseId);
++        for (OfferedCourseOutline offeredCourseOutline : offeredCourseOutlines) {
++            List<String> topics = offeredCourseOutline.getTopics();
++            topics.removeIf(Objects::isNull); // remove null values from the topics list
++            int week = offeredCourseOutline.getWeek();
++            CourseOutlineDTO.WeeklyCourseOutline weeklyCourseOutline = new CourseOutlineDTO.WeeklyCourseOutline(week, topics);
++            weeklyCourseOutlines.add(weeklyCourseOutline);
++        }
++
++        CourseOutlineDTO courseOutlineDTO = new CourseOutlineDTO();
++        courseOutlineDTO.setOfferedCourseId(offeredCourseId);
++        courseOutlineDTO.setCourseOutline(weeklyCourseOutlines);
++
++        return courseOutlineDTO;
++    }
++
++    public CourseOutlineDTO saveOrUpdateCourseOutline(Long offeredCourseId, Long teacherId, CourseOutlineDTO courseOutlineDTO) {
++        OfferedCourse offeredCourse = offeredCourseRepository.findById(offeredCourseId)
++                .orElseThrow(NotFoundException::new);
++
++        List<CourseOutlineDTO.WeeklyCourseOutline> weeklyCourseOutlines = courseOutlineDTO.getCourseOutline();
++        if (weeklyCourseOutlines != null) {
++            for (CourseOutlineDTO.WeeklyCourseOutline weeklyOutline : weeklyCourseOutlines) {
++                OfferedCourseOutline offeredCourseOutline = new OfferedCourseOutline();
++                offeredCourseOutline.setTeacherId(teacherId);
++                offeredCourseOutline.setWeek(weeklyOutline.getWeek());
++                offeredCourseOutline.setOfferedCourse(offeredCourse);
++                offeredCourseOutline.setTopics(weeklyOutline.getTopics());
++
++                Optional<OfferedCourseOutline> existingOfferedCourseOutline = offeredCourseOutlineRepository.findByOfferedCourseIdAndWeek(offeredCourseId, offeredCourseOutline.getWeek());
++
++                if (existingOfferedCourseOutline.isPresent()) {
++                    OfferedCourseOutline existingOutline = existingOfferedCourseOutline.get();
++                    existingOutline.setTopics(offeredCourseOutline.getTopics());
++                    offeredCourseOutlineRepository.save(existingOutline);
++                } else {
++                    offeredCourseOutlineRepository.save(offeredCourseOutline);
++                }
++            }
++        }
++
++        return courseOutlineDTO;
++    }
++
++
++
++
++
++
++
++}

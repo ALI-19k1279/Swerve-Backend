@@ -48,7 +48,7 @@ public class BatchController {
     @PostMapping("/importcourses")
     public ResponseEntity<String> importCsvToDBJob() throws IOException, JobParametersInvalidException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException, NoSuchJobException {
 //        this.importCourseJob=jobLocator.getJob("importCourseJob");
-        log.info("BatchController | importCsvToDBJob is called");
+        log.info("BatchController | importCourseCsvToDBJob is called");
 
         JobParameters jobParameters = new JobParametersBuilder()
                 .addLong("startAt", System.currentTimeMillis()).toJobParameters();
@@ -56,7 +56,7 @@ public class BatchController {
             jobLauncher.run(this.importCourseJob, jobParameters);
         } catch (JobExecutionAlreadyRunningException | JobRestartException |
                  JobInstanceAlreadyCompleteException | JobParametersInvalidException e) {
-            log.info("BatchController | importCsvToDBJob | error : " + e.getMessage());
+            log.info("BatchController | importEnrollmentsCsvToDBJob | error : " + e.getMessage());
             e.printStackTrace();
         }
         return new ResponseEntity<>("Batch Process Completed!!", HttpStatus.OK);
@@ -64,7 +64,7 @@ public class BatchController {
     @PostMapping("/importenrollments")
     public ResponseEntity<String> importEnrollmentsCsvToDBJob() throws IOException, JobParametersInvalidException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException, NoSuchJobException {
 
-        log.info("BatchController | importCsvToDBJob is called");
+        log.info("BatchController | importEnrollmentsCsvToDBJob is called");
 
         JobParameters jobParameters = new JobParametersBuilder()
                 .addLong("startAt", System.currentTimeMillis()).toJobParameters();
@@ -72,7 +72,7 @@ public class BatchController {
             jobLauncher.run(this.importEnrollmentsJob, jobParameters);
         } catch (JobExecutionAlreadyRunningException | JobRestartException |
                  JobInstanceAlreadyCompleteException | JobParametersInvalidException e) {
-            log.info("BatchController | importCsvToDBJob | error : " + e.getMessage());
+            log.info("BatchController | importEnrollmentsCsvToDBJob | error : " + e.getMessage());
             e.printStackTrace();
         }
 

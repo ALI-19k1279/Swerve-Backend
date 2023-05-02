@@ -27,12 +27,12 @@ public class AttendanceController extends BaseController<OfferedCourseAttendance
         this.attendanceService=attendanceService;
     }
 
-    @GetMapping("/{gid}/{ocid}/{stdid}")
-    public ResponseEntity<List<AttendanceDTO>> getLearnerOfferedCourseAttendance(@PathVariable Long gid,
+    @GetMapping("/{ocid}/{stdid}/bycourse")
+    public ResponseEntity<List<AttendanceDTO>> getLearnerOfferedCourseAttendance(
                                                                                @PathVariable Long ocid,
                                                                                @PathVariable Long stdid){
 
-        return new ResponseEntity<>(this.attendanceService.getLearnerOfferedCourseAttendance(gid,
+        return new ResponseEntity<>(this.attendanceService.getLearnerOfferedCourseAttendance(
                 ocid,stdid), HttpStatus.OK);
 
     }
@@ -58,5 +58,13 @@ public class AttendanceController extends BaseController<OfferedCourseAttendance
             return ResponseEntity.ok().build();
         else
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to update attendance");
+    }
+    @GetMapping("/{gid}/{stid}/all")
+    public ResponseEntity<List<AttendanceDTO>> getOfferedCourseAttendances(@PathVariable Long gid,
+                                                                               @PathVariable Long stid
+    ){
+        return new ResponseEntity<>(this.attendanceService.getOfferedCourseAttendances(gid,
+                stid), HttpStatus.OK);
+
     }
 }
