@@ -28,7 +28,7 @@ public class OfferedCourseEvaluationController extends BaseController<OfferedCou
     }
 
     @GetMapping("/{ocid}/{stdid}/bycourse")
-    public ResponseEntity<List<String>> getEvaluationItemsByStudentIdAndOfferedCourseId(
+    public ResponseEntity<Object[]> getEvaluationItemsByStudentIdAndOfferedCourseId(
             @PathVariable Long ocid,
             @PathVariable Long stdid){
 
@@ -36,7 +36,7 @@ public class OfferedCourseEvaluationController extends BaseController<OfferedCou
 
     }
     @GetMapping("/{ocid}/{teacherid}/minmaxavgbycourse")
-    public ResponseEntity<List<String>> getEvaluationItemsMinMaxAverageByTeacherIdAndOfferedCourseId(
+    public ResponseEntity<Object[]> getEvaluationItemsMinMaxAverageByTeacherIdAndOfferedCourseId(
             @PathVariable Long ocid,
             @PathVariable Long teacherid){
 

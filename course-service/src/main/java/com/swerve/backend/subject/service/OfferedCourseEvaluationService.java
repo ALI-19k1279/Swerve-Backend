@@ -26,13 +26,13 @@ public class OfferedCourseEvaluationService extends BaseService<OfferedCourseEva
         this.offeredCourseEvaluationRepository=offeredCourseEvaluationRepository;
     }
 
-    public List<String> findEvaluationItemsByStudentIdAndOfferedCourseId(Long studentID, Long offeredCourseID){
-        List<String> evaluationItemsByStudentIdAndOfferedCourseId = offeredCourseEvaluationRepository.findEvaluationItemsByStudentIdAndOfferedCourseId(studentID, offeredCourseID);
+    public Object[] findEvaluationItemsByStudentIdAndOfferedCourseId(Long studentID, Long offeredCourseID){
+        Object[] evaluationItemsByStudentIdAndOfferedCourseId = offeredCourseEvaluationRepository.findEvaluationItemsByStudentIdAndOfferedCourseId(studentID, offeredCourseID);
         return evaluationItemsByStudentIdAndOfferedCourseId;
     }
 
-    public List<String> findEvaluationItemsMinMaxAverageByTeacherIdAndOfferedCourseId(Long offeredCourseID, Long teacherID){
-        List<String> evaluationItemsMinMaxAverageByTeacherIdAndOfferedCourseId = offeredCourseEvaluationRepository.findEvaluationItemsMinMaxAverageByTeacherIdAndOfferedCourseId(offeredCourseID, teacherID);
+    public Object[] findEvaluationItemsMinMaxAverageByTeacherIdAndOfferedCourseId(Long offeredCourseID, Long teacherID){
+        Object[] evaluationItemsMinMaxAverageByTeacherIdAndOfferedCourseId = offeredCourseEvaluationRepository.findEvaluationItemsMinMaxAverageByTeacherIdAndOfferedCourseId(offeredCourseID, teacherID);
         return evaluationItemsMinMaxAverageByTeacherIdAndOfferedCourseId;
     }
 }

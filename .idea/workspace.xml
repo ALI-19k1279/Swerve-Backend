@@ -43,7 +43,7 @@
     &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;
   }
 }</component>
-  <component name="RunManager" selected="Application.SubjectServiceApplication">
+  <component name="RunManager" selected="Application.AuthServiceApplication">
     <configuration name="ApiGatewayApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.swerve.backend.apigateway.ApiGatewayApplication" />
       <module name="api-gateway" />
