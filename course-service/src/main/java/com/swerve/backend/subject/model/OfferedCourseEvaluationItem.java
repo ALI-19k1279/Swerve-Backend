@@ -36,9 +36,18 @@ public class OfferedCourseEvaluationItem extends BaseEntity<Long>{
     @Column(nullable = false)
     private int passingMarks;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name="SPG_ID", nullable=false)
-    private StudentsPerGroup_OfferedCourse studentsPerGroup_OfferedCourse;
+    @Column(nullable = false)
+    private Long groupID;
+
+    @Column(nullable = false)
+    private Long offeredCourseID;
+
+    @Column(nullable = false)
+    private Long teacherID;
+
+//    @ManyToOne(optional = false)
+//    @JoinColumn(name="SPG_ID", nullable=false)
+//    private StudentsPerGroup_OfferedCourse studentsPerGroup_OfferedCourse;
 
     @OneToMany
     Set<OfferedCourseEvaluation> offeredCourseEvaluations=new HashSet<>();
