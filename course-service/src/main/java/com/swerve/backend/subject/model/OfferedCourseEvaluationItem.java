@@ -7,6 +7,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -35,6 +37,9 @@ public class OfferedCourseEvaluationItem extends BaseEntity<Long>{
 
     @Column(nullable = false)
     private int passingMarks;
+
+    @Column(nullable = false)
+    private LocalDateTime publicationDate;
 
     @Column(nullable = false)
     private Long groupID;
