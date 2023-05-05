@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/spgoc")
@@ -39,11 +40,10 @@ public class GroupController extends BaseController<StudentsPerGroup_OfferedCour
     }
 
 
-    @GetMapping("/{stdid}/{gid}/{ocid}/evaluationitems")
-    public ResponseEntity<List<String>> getEvaluationItemsByStudentID(@PathVariable  Long stdid,
-                                                                     @PathVariable Long gid,
-                                                                     @PathVariable Long ocid){
-        return new ResponseEntity<>(groupService.GetEvaluationItemsByStudentID(stdid,gid,ocid),HttpStatus.OK);
+    @GetMapping("/{stdid}/{ocid}/evaluationitems")
+    public ResponseEntity< Map<String, List<OfferedCourseEvaluation>> > getEvaluationItemsByStudentID(@PathVariable  Long stdid,
+                                                                                                       @PathVariable Long ocid){
+        return new ResponseEntity<>(groupService.getEvaluationItemsByStudentId(stdid,ocid),HttpStatus.OK);
     }
     @GetMapping("/{tid}/offeredcourses/tid")
     public ResponseEntity<List<OfferedCourse>> findOfferedCourseByTeacherID(@PathVariable  Long tid){

@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public interface StudentsPerGroup_OfferedCourseRepository extends BaseRepository<StudentsPerGroup_OfferedCourse,Long> {
@@ -28,16 +29,14 @@ public interface StudentsPerGroup_OfferedCourseRepository extends BaseRepository
     @Query("Select oc from OfferedCourse oc where oc.teacherId=:id")
     List<OfferedCourse> findOfferedCoursesByTeacherId(Long id);
 
-    @Query(value="select title as evaluationTitle" +
-            ",type as evaluationType,marks_obtained as marksObtained" +
-            ",total_marks as totalMarks " +
-            "from offered_course_evaluation_item o, " +
-            "students_per_group_offered_course s, " +
-            "offered_course_evaluation e where " +
-            "o.spg_id=s.id and e.oce_id=o.id and e.studentid=:stdid " +
-            "and s.group_id=:gid and s.offered_course_id=:ocid " +
-            "group by title,type,marks_obtained,total_marks;",nativeQuery = true)
-    List<String> findEvaluationItemsByStudentId(Long stdid, Long gid, Long ocid);
+    @Query("SELECT oce.offeredCourse_EvaluationItem.type, oce " +
+            "FROM OfferedCourseEvaluationItem ocei " +
+            "LEFT JOIN OfferedCourseEvaluation oce ON oce.offeredCourse_EvaluationItem = ocei " +
+            "WHERE oce.studentID = :stdid AND ocei.offeredCourseID = :ocid " +
+            "GROUP BY oce.offeredCourse_EvaluationItem.type,oce")
+    Object[] findEvaluationItemsByStudentId(Long stdid, Long ocid);
+
+
     @Query(value = "select title,type,MAX(marks_obtained),MIN(marks_obtained),AVG(marks_obtained) from " +
             "offered_course_evaluation_item o,students_per_group_offered_course s," +
             "offered_course_evaluation e where s.id=o.spg_id and e.oce_id=o.id and s.offered_course_id=:id " +

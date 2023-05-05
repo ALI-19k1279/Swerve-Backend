@@ -5,6 +5,7 @@ package com.swerve.backend.subject.service;
 import com.fasterxml.jackson.databind.util.JSONPObject;
 import com.swerve.backend.shared.service.BaseService;
 import com.swerve.backend.subject.dto.LearnerEvaluationDTO;
+import com.swerve.backend.subject.dto.OfferedCourseEvaluationDTO;
 import com.swerve.backend.subject.dto.StudentsPerGroup_OfferedCourseDTO;
 import com.swerve.backend.subject.mapper.StudentsPerGroup_OfferedCourseMapper;
 import com.swerve.backend.subject.model.*;
@@ -47,17 +48,29 @@ public class GroupService extends BaseService<StudentsPerGroup_OfferedCourse, St
         return offeredCourses.isEmpty()? null:offeredCourses;
     }
 
-    public List<String> GetEvaluationItemsByStudentID(Long stdid,Long gid,Long ocid) {
-        List<String> learnerEvaluationDTOS = studentsPerGroupOfferedCourseRepository.findEvaluationItemsByStudentId(stdid,gid,ocid);
-        List<String> maxMinAvg=studentsPerGroupOfferedCourseRepository.findMaxMinAvgbyOfferedCourseID(ocid);
-        //        List<LearnerEvaluationDTO> evaluationDTOS=new ArrayList<LearnerEvaluationDTO>();
-//        int size=evaluationDTOS.size();
-//        for(int i=0;i<size;i++){
-//            evalua
-//        }
-//        System.out.println(maxMinAvg.get(0));
-        return learnerEvaluationDTOS.isEmpty()? null:learnerEvaluationDTOS;
+    public Map<String, List<OfferedCourseEvaluation>> getEvaluationItemsByStudentId(Long studentId, Long offeredCourseId) {
+        Map<String, List<OfferedCourseEvaluation>> evaluationMap = new HashMap<>();
+
+        Object[] result = studentsPerGroupOfferedCourseRepository.findEvaluationItemsByStudentId(studentId, offeredCourseId);
+
+        for (Object obj : result) {
+            Object[] arr = (Object[]) obj;
+            String type = (String) arr[0];
+            OfferedCourseEvaluation oce = (OfferedCourseEvaluation) arr[1];
+
+            if (evaluationMap.containsKey(type)) {
+                evaluationMap.get(type).add(oce);
+            } else {
+                List<OfferedCourseEvaluation> list = new ArrayList<>();
+                list.add(oce);
+                evaluationMap.put(type, list);
+            }
+        }
+
+        return evaluationMap;
     }
+
+
 //
 //    public LearnerEvaluationDTO getEvaluationsByStudentIDandOfferedCourseID(Long stdID,Long offeredCourseID) {
 //        List<OfferedCourseEvaluation> offeredCourseEvaluations = studentsPerGroupOfferedCourseRepository.findEvaluationItemsByStudentIdandOfferedCourseID(stdID,offeredCourseID);

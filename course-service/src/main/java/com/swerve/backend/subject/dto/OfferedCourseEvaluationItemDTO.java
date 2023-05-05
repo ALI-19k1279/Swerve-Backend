@@ -25,6 +25,7 @@ public class OfferedCourseEvaluationItemDTO extends BaseDTO<Long> {
 
     @NotBlank(message = "Passing Marks are mandatory")
     private int passingMarks;
+
     @NotBlank(message = "Offered Course Evaluation mandatory")
     private OfferedCourseEvaluationDTO offeredCourseEvaluation;
 }
