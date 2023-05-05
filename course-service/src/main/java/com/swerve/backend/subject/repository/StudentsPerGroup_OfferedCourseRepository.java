@@ -25,6 +25,9 @@ public interface StudentsPerGroup_OfferedCourseRepository extends BaseRepository
             +"(select spgoc.offeredCourse from StudentsPerGroup_OfferedCourse spgoc where spgoc.studentId=:id)")
     List<OfferedCourse> findOfferedCoursesByStudentId(Long id);
 
+    @Query("Select oc from OfferedCourse oc where oc.teacherId=:id")
+    List<OfferedCourse> findOfferedCoursesByTeacherId(Long id);
+
     @Query(value="select title as evaluationTitle" +
             ",type as evaluationType,marks_obtained as marksObtained" +
             ",total_marks as totalMarks " +

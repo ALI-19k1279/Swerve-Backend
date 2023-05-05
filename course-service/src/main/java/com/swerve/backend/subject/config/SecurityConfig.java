@@ -48,6 +48,7 @@ public class SecurityConfig {
                         "/courses/offeredcourses",
                         "/spgoc/*/offeredcourses/gid",
                         "/spgoc/*/offeredcourses/stdid",
+                        "/spgoc/*/offeredcourses/tid",
                         "/spgoc/*/*/*/evaluationitems",
                         "/spgoc/*/*/evaluations/stdid",
                         "/spgoc/*/students",

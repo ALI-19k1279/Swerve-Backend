@@ -38,11 +38,16 @@ public class GroupController extends BaseController<StudentsPerGroup_OfferedCour
         return new ResponseEntity<>(groupService.GetOfferedCourseByStudentID(id),HttpStatus.OK);
     }
 
+
     @GetMapping("/{stdid}/{gid}/{ocid}/evaluationitems")
     public ResponseEntity<List<String>> getEvaluationItemsByStudentID(@PathVariable  Long stdid,
                                                                      @PathVariable Long gid,
                                                                      @PathVariable Long ocid){
         return new ResponseEntity<>(groupService.GetEvaluationItemsByStudentID(stdid,gid,ocid),HttpStatus.OK);
+    }
+    @GetMapping("/{tid}/offeredcourses/tid")
+    public ResponseEntity<List<OfferedCourse>> findOfferedCourseByTeacherID(@PathVariable  Long tid){
+        return new ResponseEntity<>(groupService.GetOfferedCourseByTeacherID(tid),HttpStatus.OK);
     }
 
 

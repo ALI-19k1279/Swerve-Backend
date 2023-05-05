@@ -13,12 +13,12 @@ public interface OfferedCourseMapper extends BaseMapper<OfferedCourse, OfferedCo
 
     @Override
     @Named("default")
-    @Mapping(source = "instructorId",target = "instructor")
+    @Mapping(source = "teacherId",target = "instructor")
     OfferedCourseDTO toDTO(OfferedCourse offeredCourse);
 
     @Override
     @Named("default")
-    @Mapping(source = "instructor.id",target = "instructorId")
+    @Mapping(source = "instructor.id",target = "teacherId")
     OfferedCourse toModel(OfferedCourseDTO offeredCourseDTO);
 
     InstructorDTO instructorDTOFromId(Long id);

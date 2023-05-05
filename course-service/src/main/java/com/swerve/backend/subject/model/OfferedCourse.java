@@ -32,7 +32,7 @@ public class OfferedCourse extends BaseEntity<Long>{
     private String postsAndAnnouncements;
 
     @Column(nullable = false)
-    private String instructorId;
+    private Long teacherId;
 
     @ManyToOne(optional = false)
     @JoinColumn(name="cycle_ID", nullable=false)

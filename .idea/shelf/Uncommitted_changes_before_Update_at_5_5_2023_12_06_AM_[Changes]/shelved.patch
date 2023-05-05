@@ -1,0 +1,238 @@
+Index: auth-service/src/main/resources/application.properties
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>server.port=8081\r\nspring.application.name=auth-service\r\n\r\neureka.instance.hostname=localhost\r\neureka.client.service-url.defaultZone=http://localhost:8761/eureka\r\n\r\nspring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect\r\nspring.jpa.generate-ddl=true\r\nspring.jpa.hibernate.ddl-auto=update\r\nspring.datasource.url=jdbc:postgresql://localhost:5432/lms-auth?createDatabaseIfNotExist=true\r\nspring.datasource.username=postgres\r\nspring.datasource.password=admin\r\n#spring.devtools.restart.enabled=true\r\n#spring.devtools.restart.additional-paths: src/main/java\r\n#spring.devtools.restart.exclude: WEB-INF/**\r\n\r\nspring.jackson.default-property-inclusion=non_empty\r\nspring.mvc.pathmatch.matching-strategy=ANT_PATH_MATCHER\r\nspringdoc.api-docs.path=/docs\r\n\r\ntoken.secret=GieJX^>%Pd;Z]#&?kmZY4SRZNlWsjr%JJiH!q9KM~,Zd./[oh*=dus&p_M3Ab#B\r\ntoken.accessExpiration=7200\r\ntoken.refreshExpiration=86400\r\n\r\n\r\nspring.jpa.hibernate.show-sql=true\r\n\r\nmanagement.endpoints.web.exposure.include=*
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>ISO-8859-1
+===================================================================
+diff --git a/auth-service/src/main/resources/application.properties b/auth-service/src/main/resources/application.properties
+--- a/auth-service/src/main/resources/application.properties	(revision 5b19d26d764a6bd4d0eed77f6a69125d951fec7a)
++++ b/auth-service/src/main/resources/application.properties	(date 1683266706801)
+@@ -9,7 +9,7 @@
+ spring.jpa.hibernate.ddl-auto=update
+ spring.datasource.url=jdbc:postgresql://localhost:5432/lms-auth?createDatabaseIfNotExist=true
+ spring.datasource.username=postgres
+-spring.datasource.password=admin
++spring.datasource.password=password
+ #spring.devtools.restart.enabled=true
+ #spring.devtools.restart.additional-paths: src/main/java
+ #spring.devtools.restart.exclude: WEB-INF/**
+Index: course-service/src/main/java/com/swerve/backend/subject/controller/OfferedCourseEvaluationController.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.swerve.backend.subject.controller;\r\n\r\nimport com.swerve.backend.shared.controller.BaseController;\r\nimport com.swerve.backend.subject.dto.AttendanceDTO;\r\nimport com.swerve.backend.subject.dto.CourseOutlineDTO;\r\nimport com.swerve.backend.subject.dto.OfferedCourseEvaluationDTO;\r\nimport com.swerve.backend.subject.model.OfferedCourseEvaluation;\r\nimport com.swerve.backend.subject.model.OfferedCourseOutline;\r\nimport com.swerve.backend.subject.service.CourseOutlineService;\r\nimport com.swerve.backend.subject.service.OfferedCourseEvaluationService;\r\nimport org.springframework.http.HttpStatus;\r\nimport org.springframework.http.ResponseEntity;\r\nimport org.springframework.stereotype.Controller;\r\nimport org.springframework.web.bind.annotation.GetMapping;\r\nimport org.springframework.web.bind.annotation.PathVariable;\r\nimport org.springframework.web.bind.annotation.RequestMapping;\r\n\r\nimport java.util.List;\r\n\r\n@Controller\r\n@RequestMapping(\"/evaluation\")\r\npublic class OfferedCourseEvaluationController extends BaseController<OfferedCourseEvaluation, OfferedCourseEvaluationDTO,Long> {\r\n    private final OfferedCourseEvaluationService offeredCourseEvaluationService;\r\n\r\n    public OfferedCourseEvaluationController(OfferedCourseEvaluationService offeredCourseEvaluationService) {\r\n        super(offeredCourseEvaluationService);\r\n        this.offeredCourseEvaluationService = offeredCourseEvaluationService;\r\n    }\r\n\r\n    @GetMapping(\"/{ocid}/{stdid}/bycourse\")\r\n    public ResponseEntity<List<String>> getEvaluationItemsByStudentIdAndOfferedCourseId(\r\n            @PathVariable Long ocid,\r\n            @PathVariable Long stdid){\r\n\r\n        return new ResponseEntity<>(this.offeredCourseEvaluationService.findEvaluationItemsByStudentIdAndOfferedCourseId(stdid,ocid), HttpStatus.OK);\r\n\r\n    }\r\n    @GetMapping(\"/{ocid}/{teacherid}/minmaxavgbycourse\")\r\n    public ResponseEntity<List<String>> getEvaluationItemsMinMaxAverageByTeacherIdAndOfferedCourseId(\r\n            @PathVariable Long ocid,\r\n            @PathVariable Long teacherid){\r\n\r\n        return new ResponseEntity<>(this.offeredCourseEvaluationService.findEvaluationItemsMinMaxAverageByTeacherIdAndOfferedCourseId(ocid,teacherid), HttpStatus.OK);\r\n\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/course-service/src/main/java/com/swerve/backend/subject/controller/OfferedCourseEvaluationController.java b/course-service/src/main/java/com/swerve/backend/subject/controller/OfferedCourseEvaluationController.java
+--- a/course-service/src/main/java/com/swerve/backend/subject/controller/OfferedCourseEvaluationController.java	(revision 5b19d26d764a6bd4d0eed77f6a69125d951fec7a)
++++ b/course-service/src/main/java/com/swerve/backend/subject/controller/OfferedCourseEvaluationController.java	(date 1683266583939)
+@@ -4,7 +4,9 @@
+ import com.swerve.backend.subject.dto.AttendanceDTO;
+ import com.swerve.backend.subject.dto.CourseOutlineDTO;
+ import com.swerve.backend.subject.dto.OfferedCourseEvaluationDTO;
++import com.swerve.backend.subject.dto.OfferedCourseEvaluationItemDTO;
+ import com.swerve.backend.subject.model.OfferedCourseEvaluation;
++import com.swerve.backend.subject.model.OfferedCourseEvaluationItem;
+ import com.swerve.backend.subject.model.OfferedCourseOutline;
+ import com.swerve.backend.subject.service.CourseOutlineService;
+ import com.swerve.backend.subject.service.OfferedCourseEvaluationService;
+@@ -16,10 +18,11 @@
+ import org.springframework.web.bind.annotation.RequestMapping;
+ 
+ import java.util.List;
++import java.util.Optional;
+ 
+ @Controller
+ @RequestMapping("/evaluation")
+-public class OfferedCourseEvaluationController extends BaseController<OfferedCourseEvaluation, OfferedCourseEvaluationDTO,Long> {
++public class OfferedCourseEvaluationController extends BaseController<OfferedCourseEvaluationItem, OfferedCourseEvaluationItemDTO,Long> {
+     private final OfferedCourseEvaluationService offeredCourseEvaluationService;
+ 
+     public OfferedCourseEvaluationController(OfferedCourseEvaluationService offeredCourseEvaluationService) {
+@@ -28,7 +31,7 @@
+     }
+ 
+     @GetMapping("/{ocid}/{stdid}/bycourse")
+-    public ResponseEntity<List<String>> getEvaluationItemsByStudentIdAndOfferedCourseId(
++    public ResponseEntity<List<Object[]>> getEvaluationItemsByStudentIdAndOfferedCourseId(
+             @PathVariable Long ocid,
+             @PathVariable Long stdid){
+ 
+Index: course-service/src/main/java/com/swerve/backend/subject/service/OfferedCourseEvaluationService.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.swerve.backend.subject.service;\r\n\r\nimport com.swerve.backend.shared.service.BaseService;\r\nimport com.swerve.backend.subject.dto.CourseOutlineDTO;\r\nimport com.swerve.backend.subject.dto.OfferedCourseEvaluationDTO;\r\nimport com.swerve.backend.subject.mapper.CourseOutlineMapper;\r\nimport com.swerve.backend.subject.mapper.OfferedCourseEvaluationMapper;\r\nimport com.swerve.backend.subject.model.OfferedCourseEvaluation;\r\nimport com.swerve.backend.subject.model.OfferedCourseOutline;\r\nimport com.swerve.backend.subject.repository.OfferedCourseEvaluationRepository;\r\nimport com.swerve.backend.subject.repository.OfferedCourseOutlineRepository;\r\nimport com.swerve.backend.subject.repository.OfferedCourseRepository;\r\nimport org.springframework.data.repository.query.Param;\r\nimport org.springframework.stereotype.Service;\r\n\r\nimport java.util.List;\r\n@Service\r\npublic class OfferedCourseEvaluationService extends BaseService<OfferedCourseEvaluation, OfferedCourseEvaluationDTO,Long> {\r\n\r\n    private final OfferedCourseEvaluationRepository offeredCourseEvaluationRepository;\r\n    private final OfferedCourseEvaluationMapper offeredCourseEvaluationMapper;\r\n\r\n    public OfferedCourseEvaluationService(OfferedCourseEvaluationRepository offeredCourseEvaluationRepository, OfferedCourseEvaluationMapper offeredCourseEvaluationMapper) {\r\n        super(offeredCourseEvaluationRepository,offeredCourseEvaluationMapper);\r\n        this.offeredCourseEvaluationMapper=offeredCourseEvaluationMapper;\r\n        this.offeredCourseEvaluationRepository=offeredCourseEvaluationRepository;\r\n    }\r\n\r\n    public List<String> findEvaluationItemsByStudentIdAndOfferedCourseId(Long studentID, Long offeredCourseID){\r\n        List<String> evaluationItemsByStudentIdAndOfferedCourseId = offeredCourseEvaluationRepository.findEvaluationItemsByStudentIdAndOfferedCourseId(studentID, offeredCourseID);\r\n        return evaluationItemsByStudentIdAndOfferedCourseId;\r\n    }\r\n\r\n    public List<String> findEvaluationItemsMinMaxAverageByTeacherIdAndOfferedCourseId(Long offeredCourseID, Long teacherID){\r\n        List<String> evaluationItemsMinMaxAverageByTeacherIdAndOfferedCourseId = offeredCourseEvaluationRepository.findEvaluationItemsMinMaxAverageByTeacherIdAndOfferedCourseId(offeredCourseID, teacherID);\r\n        return evaluationItemsMinMaxAverageByTeacherIdAndOfferedCourseId;\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/course-service/src/main/java/com/swerve/backend/subject/service/OfferedCourseEvaluationService.java b/course-service/src/main/java/com/swerve/backend/subject/service/OfferedCourseEvaluationService.java
+--- a/course-service/src/main/java/com/swerve/backend/subject/service/OfferedCourseEvaluationService.java	(revision 5b19d26d764a6bd4d0eed77f6a69125d951fec7a)
++++ b/course-service/src/main/java/com/swerve/backend/subject/service/OfferedCourseEvaluationService.java	(date 1683266583953)
+@@ -3,10 +3,14 @@
+ import com.swerve.backend.shared.service.BaseService;
+ import com.swerve.backend.subject.dto.CourseOutlineDTO;
+ import com.swerve.backend.subject.dto.OfferedCourseEvaluationDTO;
++import com.swerve.backend.subject.dto.OfferedCourseEvaluationItemDTO;
+ import com.swerve.backend.subject.mapper.CourseOutlineMapper;
++import com.swerve.backend.subject.mapper.OfferedCourseEvaluationItemMapper;
+ import com.swerve.backend.subject.mapper.OfferedCourseEvaluationMapper;
+ import com.swerve.backend.subject.model.OfferedCourseEvaluation;
++import com.swerve.backend.subject.model.OfferedCourseEvaluationItem;
+ import com.swerve.backend.subject.model.OfferedCourseOutline;
++import com.swerve.backend.subject.repository.OfferedCourseEvaluationItemRepository;
+ import com.swerve.backend.subject.repository.OfferedCourseEvaluationRepository;
+ import com.swerve.backend.subject.repository.OfferedCourseOutlineRepository;
+ import com.swerve.backend.subject.repository.OfferedCourseRepository;
+@@ -14,25 +18,28 @@
+ import org.springframework.stereotype.Service;
+ 
+ import java.util.List;
++import java.util.Optional;
++
+ @Service
+-public class OfferedCourseEvaluationService extends BaseService<OfferedCourseEvaluation, OfferedCourseEvaluationDTO,Long> {
++public class OfferedCourseEvaluationService extends BaseService<OfferedCourseEvaluationItem, OfferedCourseEvaluationItemDTO,Long> {
+ 
+-    private final OfferedCourseEvaluationRepository offeredCourseEvaluationRepository;
+-    private final OfferedCourseEvaluationMapper offeredCourseEvaluationMapper;
++    private final OfferedCourseEvaluationItemRepository offeredCourseEvaluationItemRepository;
++    private final OfferedCourseEvaluationItemMapper offeredCourseEvaluationItemMapper;
+ 
+-    public OfferedCourseEvaluationService(OfferedCourseEvaluationRepository offeredCourseEvaluationRepository, OfferedCourseEvaluationMapper offeredCourseEvaluationMapper) {
+-        super(offeredCourseEvaluationRepository,offeredCourseEvaluationMapper);
+-        this.offeredCourseEvaluationMapper=offeredCourseEvaluationMapper;
+-        this.offeredCourseEvaluationRepository=offeredCourseEvaluationRepository;
++    public OfferedCourseEvaluationService(OfferedCourseEvaluationItemRepository offeredCourseEvaluationItemRepository, OfferedCourseEvaluationItemMapper offeredCourseEvaluationItemMapper) {
++        super(offeredCourseEvaluationItemRepository,offeredCourseEvaluationItemMapper);
++        this.offeredCourseEvaluationItemMapper=offeredCourseEvaluationItemMapper;
++        this.offeredCourseEvaluationItemRepository=offeredCourseEvaluationItemRepository;
+     }
+ 
+-    public List<String> findEvaluationItemsByStudentIdAndOfferedCourseId(Long studentID, Long offeredCourseID){
+-        List<String> evaluationItemsByStudentIdAndOfferedCourseId = offeredCourseEvaluationRepository.findEvaluationItemsByStudentIdAndOfferedCourseId(studentID, offeredCourseID);
+-        return evaluationItemsByStudentIdAndOfferedCourseId;
++    public List<Object[]> findEvaluationItemsByStudentIdAndOfferedCourseId(Long studentID, Long offeredCourseID){
++        List<Object[]> items = offeredCourseEvaluationItemRepository.findEvaluationItemsByStudentIdAndOfferedCourseId(studentID, offeredCourseID);
++        return items;
+     }
+ 
+     public List<String> findEvaluationItemsMinMaxAverageByTeacherIdAndOfferedCourseId(Long offeredCourseID, Long teacherID){
+-        List<String> evaluationItemsMinMaxAverageByTeacherIdAndOfferedCourseId = offeredCourseEvaluationRepository.findEvaluationItemsMinMaxAverageByTeacherIdAndOfferedCourseId(offeredCourseID, teacherID);
+-        return evaluationItemsMinMaxAverageByTeacherIdAndOfferedCourseId;
++//        List<String> evaluationItemsMinMaxAverageByTeacherIdAndOfferedCourseId = offeredCourseEvaluationRepository.findEvaluationItemsMinMaxAverageByTeacherIdAndOfferedCourseId(offeredCourseID, teacherID);
++//        return evaluationItemsMinMaxAverageByTeacherIdAndOfferedCourseId;
++        return null;
+     }
+ }
+Index: course-service/src/main/java/com/swerve/backend/subject/repository/OfferedCourseEvaluationItemRepository.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.swerve.backend.subject.repository;\r\n\r\nimport com.swerve.backend.shared.repository.BaseRepository;\r\nimport com.swerve.backend.subject.model.OfferedCourseEvaluationItem;\r\nimport org.springframework.data.domain.Page;\r\nimport org.springframework.data.domain.Pageable;\r\nimport org.springframework.data.jpa.repository.Query;\r\nimport org.springframework.stereotype.Repository;\r\n\r\nimport java.util.List;\r\n\r\n@Repository\r\npublic interface OfferedCourseEvaluationItemRepository extends BaseRepository<OfferedCourseEvaluationItem,Long>{\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/course-service/src/main/java/com/swerve/backend/subject/repository/OfferedCourseEvaluationItemRepository.java b/course-service/src/main/java/com/swerve/backend/subject/repository/OfferedCourseEvaluationItemRepository.java
+--- a/course-service/src/main/java/com/swerve/backend/subject/repository/OfferedCourseEvaluationItemRepository.java	(revision 5b19d26d764a6bd4d0eed77f6a69125d951fec7a)
++++ b/course-service/src/main/java/com/swerve/backend/subject/repository/OfferedCourseEvaluationItemRepository.java	(date 1683266607693)
+@@ -2,13 +2,21 @@
+ 
+ import com.swerve.backend.shared.repository.BaseRepository;
+ import com.swerve.backend.subject.model.OfferedCourseEvaluationItem;
++import feign.Param;
+ import org.springframework.data.domain.Page;
+ import org.springframework.data.domain.Pageable;
+ import org.springframework.data.jpa.repository.Query;
+ import org.springframework.stereotype.Repository;
+ 
+ import java.util.List;
++import java.util.Optional;
+ 
+ @Repository
+ public interface OfferedCourseEvaluationItemRepository extends BaseRepository<OfferedCourseEvaluationItem,Long>{
++
++    @Query("SELECT oce.offeredCourse_EvaluationItem.title, oce.marksObtained, oce.offeredCourse_EvaluationItem.type, oce.offeredCourse_EvaluationItem.totalMarks, oce.offeredCourse_EvaluationItem.publicationDate " +
++            "FROM OfferedCourseEvaluation oce " +
++            "WHERE oce.studentID = :studentID AND oce.offeredCourse_EvaluationItem.offeredCourseID = :offeredCourseID")
++    List<Object[]> findEvaluationItemsByStudentIdAndOfferedCourseId(@Param("studentID") Long studentID, @Param("offeredCourseID") Long offeredCourseID);
++
+ }
+Index: .idea/workspace.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"AutoImportSettings\">\r\n    <option name=\"autoReloadType\" value=\"SELECTIVE\" />\r\n  </component>\r\n  <component name=\"ChangeListManager\">\r\n    <list default=\"true\" id=\"e3b09a9e-0488-4344-9c3a-1a8badac1ec4\" name=\"Changes\" comment=\"\">\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/workspace.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/workspace.xml\" afterDir=\"false\" />\r\n    </list>\r\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\r\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\r\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\r\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\r\n  </component>\r\n  <component name=\"FileTemplateManagerImpl\">\r\n    <option name=\"RECENT_TEMPLATES\">\r\n      <list>\r\n        <option value=\"Class\" />\r\n      </list>\r\n    </option>\r\n  </component>\r\n  <component name=\"Git.Settings\">\r\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\r\n  </component>\r\n  <component name=\"MavenImportPreferences\">\r\n    <option name=\"generalSettings\">\r\n      <MavenGeneralSettings>\r\n        <option name=\"useMavenConfig\" value=\"true\" />\r\n      </MavenGeneralSettings>\r\n    </option>\r\n  </component>\r\n  <component name=\"ProjectId\" id=\"2OSGKKz27OQhLND9UnwBd10H3kp\" />\r\n  <component name=\"ProjectViewState\">\r\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\r\n    <option name=\"showLibraryContents\" value=\"true\" />\r\n  </component>\r\n  <component name=\"PropertiesComponent\">{\r\n  &quot;keyToString&quot;: {\r\n    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,\r\n    &quot;git-widget-placeholder&quot;: &quot;updated&quot;,\r\n    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,\r\n    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,\r\n    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;\r\n  }\r\n}</component>\r\n  <component name=\"RunManager\" selected=\"Application.SubjectServiceApplication\">\r\n    <configuration name=\"ApiGatewayApplication\" type=\"Application\" factoryName=\"Application\" temporary=\"true\" nameIsGenerated=\"true\">\r\n      <option name=\"MAIN_CLASS_NAME\" value=\"com.swerve.backend.apigateway.ApiGatewayApplication\" />\r\n      <module name=\"api-gateway\" />\r\n      <extension name=\"coverage\">\r\n        <pattern>\r\n          <option name=\"PATTERN\" value=\"com.swerve.backend.apigateway.*\" />\r\n          <option name=\"ENABLED\" value=\"true\" />\r\n        </pattern>\r\n      </extension>\r\n      <method v=\"2\">\r\n        <option name=\"Make\" enabled=\"true\" />\r\n      </method>\r\n    </configuration>\r\n    <configuration name=\"AuthServiceApplication\" type=\"Application\" factoryName=\"Application\" temporary=\"true\" nameIsGenerated=\"true\">\r\n      <option name=\"MAIN_CLASS_NAME\" value=\"com.swerve.backend.auth.AuthServiceApplication\" />\r\n      <module name=\"auth-service\" />\r\n      <extension name=\"coverage\">\r\n        <pattern>\r\n          <option name=\"PATTERN\" value=\"com.swerve.backend.auth.*\" />\r\n          <option name=\"ENABLED\" value=\"true\" />\r\n        </pattern>\r\n      </extension>\r\n      <method v=\"2\">\r\n        <option name=\"Make\" enabled=\"true\" />\r\n      </method>\r\n    </configuration>\r\n    <configuration name=\"DiscoveryServerApplication\" type=\"Application\" factoryName=\"Application\" temporary=\"true\" nameIsGenerated=\"true\">\r\n      <option name=\"MAIN_CLASS_NAME\" value=\"com.swerve.backend.discoveryserver.DiscoveryServerApplication\" />\r\n      <module name=\"discovery-server\" />\r\n      <extension name=\"coverage\">\r\n        <pattern>\r\n          <option name=\"PATTERN\" value=\"com.swerve.backend.discoveryserver.*\" />\r\n          <option name=\"ENABLED\" value=\"true\" />\r\n        </pattern>\r\n      </extension>\r\n      <method v=\"2\">\r\n        <option name=\"Make\" enabled=\"true\" />\r\n      </method>\r\n    </configuration>\r\n    <configuration name=\"SubjectServiceApplication\" type=\"Application\" factoryName=\"Application\" temporary=\"true\" nameIsGenerated=\"true\">\r\n      <option name=\"MAIN_CLASS_NAME\" value=\"com.swerve.backend.subject.SubjectServiceApplication\" />\r\n      <module name=\"course-service\" />\r\n      <extension name=\"coverage\">\r\n        <pattern>\r\n          <option name=\"PATTERN\" value=\"com.swerve.backend.subject.*\" />\r\n          <option name=\"ENABLED\" value=\"true\" />\r\n        </pattern>\r\n      </extension>\r\n      <method v=\"2\">\r\n        <option name=\"Make\" enabled=\"true\" />\r\n      </method>\r\n    </configuration>\r\n    <configuration name=\"UserServiceApplication\" type=\"Application\" factoryName=\"Application\" temporary=\"true\" nameIsGenerated=\"true\">\r\n      <option name=\"MAIN_CLASS_NAME\" value=\"com.swerve.backend.userservice.UserServiceApplication\" />\r\n      <module name=\"user-service\" />\r\n      <extension name=\"coverage\">\r\n        <pattern>\r\n          <option name=\"PATTERN\" value=\"com.swerve.backend.userservice.*\" />\r\n          <option name=\"ENABLED\" value=\"true\" />\r\n        </pattern>\r\n      </extension>\r\n      <method v=\"2\">\r\n        <option name=\"Make\" enabled=\"true\" />\r\n      </method>\r\n    </configuration>\r\n    <recent_temporary>\r\n      <list>\r\n        <item itemvalue=\"Application.SubjectServiceApplication\" />\r\n        <item itemvalue=\"Application.AuthServiceApplication\" />\r\n        <item itemvalue=\"Application.UserServiceApplication\" />\r\n        <item itemvalue=\"Application.ApiGatewayApplication\" />\r\n        <item itemvalue=\"Application.DiscoveryServerApplication\" />\r\n      </list>\r\n    </recent_temporary>\r\n  </component>\r\n  <component name=\"SpellCheckerSettings\" RuntimeDictionaries=\"0\" Folders=\"0\" CustomDictionaries=\"0\" DefaultDictionary=\"application-level\" UseSingleDictionary=\"true\" transferred=\"true\" />\r\n  <component name=\"TaskManager\">\r\n    <task active=\"true\" id=\"Default\" summary=\"Default task\">\r\n      <changelist id=\"e3b09a9e-0488-4344-9c3a-1a8badac1ec4\" name=\"Changes\" comment=\"\" />\r\n      <created>1681546504188</created>\r\n      <option name=\"number\" value=\"Default\" />\r\n      <option name=\"presentableId\" value=\"Default\" />\r\n      <updated>1681546504188</updated>\r\n    </task>\r\n    <servers />\r\n  </component>\r\n  <component name=\"Vcs.Log.Tabs.Properties\">\r\n    <option name=\"TAB_STATES\">\r\n      <map>\r\n        <entry key=\"MAIN\">\r\n          <value>\r\n            <State />\r\n          </value>\r\n        </entry>\r\n      </map>\r\n    </option>\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+--- a/.idea/workspace.xml	(revision 5b19d26d764a6bd4d0eed77f6a69125d951fec7a)
++++ b/.idea/workspace.xml	(date 1683267233022)
+@@ -5,7 +5,14 @@
+   </component>
+   <component name="ChangeListManager">
+     <list default="true" id="e3b09a9e-0488-4344-9c3a-1a8badac1ec4" name="Changes" comment="">
++      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_02_05_2023_4_57_pm__Changes_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_02_05_2023_4_57_pm__Changes_.xml" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/auth-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/src/main/resources/application.properties" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/controller/OfferedCourseEvaluationController.java" beforeDir="false" afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/controller/OfferedCourseEvaluationController.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/repository/OfferedCourseEvaluationItemRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/repository/OfferedCourseEvaluationItemRepository.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/service/OfferedCourseEvaluationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/service/OfferedCourseEvaluationService.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/course-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/course-service/src/main/resources/application.properties" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/course-service/src/main/resources/database/Porstgresql Spring Batch Metadata tables script.sql" beforeDir="false" afterPath="$PROJECT_DIR$/course-service/src/main/resources/database/Porstgresql Spring Batch Metadata tables script.sql" afterDir="false" />
+     </list>
+     <option name="SHOW_DIALOG" value="false" />
+     <option name="HIGHLIGHT_CONFLICTS" value="true" />
+@@ -43,7 +50,7 @@
+     &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;
+   }
+ }</component>
+-  <component name="RunManager" selected="Application.SubjectServiceApplication">
++  <component name="RunManager" selected="Application.AuthServiceApplication">
+     <configuration name="ApiGatewayApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+       <option name="MAIN_CLASS_NAME" value="com.swerve.backend.apigateway.ApiGatewayApplication" />
+       <module name="api-gateway" />
+@@ -111,8 +118,8 @@
+     </configuration>
+     <recent_temporary>
+       <list>
+-        <item itemvalue="Application.SubjectServiceApplication" />
+         <item itemvalue="Application.AuthServiceApplication" />
++        <item itemvalue="Application.SubjectServiceApplication" />
+         <item itemvalue="Application.UserServiceApplication" />
+         <item itemvalue="Application.ApiGatewayApplication" />
+         <item itemvalue="Application.DiscoveryServerApplication" />
+Index: course-service/src/main/resources/database/Porstgresql Spring Batch Metadata tables script.sql
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>-- Autogenerated: do not edit this file\r\n\r\nCREATE TABLE BATCH_JOB_INSTANCE  (\r\n\tJOB_INSTANCE_ID BIGINT  NOT NULL PRIMARY KEY ,\r\n\tVERSION BIGINT ,\r\n\tJOB_NAME VARCHAR(100) NOT NULL,\r\n\tJOB_KEY VARCHAR(32) NOT NULL,\r\n\tconstraint JOB_INST_UN unique (JOB_NAME, JOB_KEY)\r\n) ;\r\n\r\nCREATE TABLE BATCH_JOB_EXECUTION  (\r\n\tJOB_EXECUTION_ID BIGINT  NOT NULL PRIMARY KEY ,\r\n\tVERSION BIGINT  ,\r\n\tJOB_INSTANCE_ID BIGINT NOT NULL,\r\n\tCREATE_TIME TIMESTAMP NOT NULL,\r\n\tSTART_TIME TIMESTAMP DEFAULT NULL ,\r\n\tEND_TIME TIMESTAMP DEFAULT NULL ,\r\n\tSTATUS VARCHAR(10) ,\r\n\tEXIT_CODE VARCHAR(2500) ,\r\n\tEXIT_MESSAGE VARCHAR(2500) ,\r\n\tLAST_UPDATED TIMESTAMP,\r\n\tconstraint JOB_INST_EXEC_FK foreign key (JOB_INSTANCE_ID)\r\n\treferences BATCH_JOB_INSTANCE(JOB_INSTANCE_ID)\r\n) ;\r\n\r\nCREATE TABLE BATCH_JOB_EXECUTION_PARAMS  (\r\n\tJOB_EXECUTION_ID BIGINT NOT NULL ,\r\n\tPARAMETER_NAME VARCHAR(100) NOT NULL ,\r\n\tPARAMETER_TYPE VARCHAR(100) NOT NULL ,\r\n\tPARAMETER_VALUE VARCHAR(2500) ,\r\n\tIDENTIFYING CHAR(1) NOT NULL ,\r\n\tconstraint JOB_EXEC_PARAMS_FK foreign key (JOB_EXECUTION_ID)\r\n\treferences BATCH_JOB_EXECUTION(JOB_EXECUTION_ID)\r\n) ;\r\n\r\nCREATE TABLE BATCH_STEP_EXECUTION  (\r\n\tSTEP_EXECUTION_ID BIGINT  NOT NULL PRIMARY KEY ,\r\n\tVERSION BIGINT NOT NULL,\r\n\tSTEP_NAME VARCHAR(100) NOT NULL,\r\n\tJOB_EXECUTION_ID BIGINT NOT NULL,\r\n\tCREATE_TIME TIMESTAMP NOT NULL,\r\n\tSTART_TIME TIMESTAMP DEFAULT NULL ,\r\n\tEND_TIME TIMESTAMP DEFAULT NULL ,\r\n\tSTATUS VARCHAR(10) ,\r\n\tCOMMIT_COUNT BIGINT ,\r\n\tREAD_COUNT BIGINT ,\r\n\tFILTER_COUNT BIGINT ,\r\n\tWRITE_COUNT BIGINT ,\r\n\tREAD_SKIP_COUNT BIGINT ,\r\n\tWRITE_SKIP_COUNT BIGINT ,\r\n\tPROCESS_SKIP_COUNT BIGINT ,\r\n\tROLLBACK_COUNT BIGINT ,\r\n\tEXIT_CODE VARCHAR(2500) ,\r\n\tEXIT_MESSAGE VARCHAR(2500) ,\r\n\tLAST_UPDATED TIMESTAMP,\r\n\tconstraint JOB_EXEC_STEP_FK foreign key (JOB_EXECUTION_ID)\r\n\treferences BATCH_JOB_EXECUTION(JOB_EXECUTION_ID)\r\n) ;\r\n\r\nCREATE TABLE BATCH_STEP_EXECUTION_CONTEXT  (\r\n\tSTEP_EXECUTION_ID BIGINT NOT NULL PRIMARY KEY,\r\n\tSHORT_CONTEXT VARCHAR(2500) NOT NULL,\r\n\tSERIALIZED_CONTEXT TEXT ,\r\n\tconstraint STEP_EXEC_CTX_FK foreign key (STEP_EXECUTION_ID)\r\n\treferences BATCH_STEP_EXECUTION(STEP_EXECUTION_ID)\r\n) ;\r\n\r\nCREATE TABLE BATCH_JOB_EXECUTION_CONTEXT  (\r\n\tJOB_EXECUTION_ID BIGINT NOT NULL PRIMARY KEY,\r\n\tSHORT_CONTEXT VARCHAR(2500) NOT NULL,\r\n\tSERIALIZED_CONTEXT TEXT ,\r\n\tconstraint JOB_EXEC_CTX_FK foreign key (JOB_EXECUTION_ID)\r\n\treferences BATCH_JOB_EXECUTION(JOB_EXECUTION_ID)\r\n) ;\r\n\r\nCREATE SEQUENCE BATCH_STEP_EXECUTION_SEQ MAXVALUE 9223372036854775807 NO CYCLE;\r\nCREATE SEQUENCE BATCH_JOB_EXECUTION_SEQ MAXVALUE 9223372036854775807 NO CYCLE;\r\nCREATE SEQUENCE BATCH_JOB_SEQ MAXVALUE 9223372036854775807 NO CYCLE;\r\n\r\n\r\nselect * from course
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/course-service/src/main/resources/database/Porstgresql Spring Batch Metadata tables script.sql b/course-service/src/main/resources/database/Porstgresql Spring Batch Metadata tables script.sql
+--- a/course-service/src/main/resources/database/Porstgresql Spring Batch Metadata tables script.sql	(revision 5b19d26d764a6bd4d0eed77f6a69125d951fec7a)
++++ b/course-service/src/main/resources/database/Porstgresql Spring Batch Metadata tables script.sql	(date 1683264682115)
+@@ -1,5 +1,3 @@
+--- Autogenerated: do not edit this file
+-
+ CREATE TABLE BATCH_JOB_INSTANCE  (
+ 	JOB_INSTANCE_ID BIGINT  NOT NULL PRIMARY KEY ,
+ 	VERSION BIGINT ,
+Index: course-service/src/main/resources/application.properties
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>spring.application.name=subject-service\r\n\r\n#spring.config.import=optional:configserver:http://localhost:8888\r\n\r\neureka.instance.hostname=localhost\r\neureka.client.service-url.defaultZone=http://localhost:8761/eureka\r\n\r\nspring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect\r\nspring.jpa.generate-ddl=true\r\nspring.jpa.hibernate.ddl-auto=update\r\nspring.datasource.url=jdbc:postgresql://localhost:5432/lms-course?createDatabaseIfNotExist=true\r\nspring.datasource.username=postgres\r\nspring.datasource.password=admin\r\nspring.datasource.platform=postgresql\r\nspring.batch.jdbc.initialize-schema=always\r\n# we want to launch our job via our controller\r\nspring.batch.job.enabled=false\r\nspring.jackson.default-property-inclusion=non_empty\r\nspring.mvc.pathmatch.matching-strategy=ANT_PATH_MATCHER\r\nspringdoc.api-docs.path=/docs\r\n\r\nserver.port=8082\r\ninput=src/main/resources/MOCK_DATA.csv\r\n#eureka.client.service-url.defaultZone=http://[myIP@]:8888/eureka\r\n\r\n\r\n\r\n#token.secret=GieJX^>%Pd;Z]#&?kmZY4SRZNlWsjr%JJiH!q9KM~,Zd./[oh*=dus&p_M3Ab#B\r\nmanagement.endpoints.web.exposure.include=*
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>ISO-8859-1
+===================================================================
+diff --git a/course-service/src/main/resources/application.properties b/course-service/src/main/resources/application.properties
+--- a/course-service/src/main/resources/application.properties	(revision 5b19d26d764a6bd4d0eed77f6a69125d951fec7a)
++++ b/course-service/src/main/resources/application.properties	(date 1683264211457)
+@@ -10,7 +10,7 @@
+ spring.jpa.hibernate.ddl-auto=update
+ spring.datasource.url=jdbc:postgresql://localhost:5432/lms-course?createDatabaseIfNotExist=true
+ spring.datasource.username=postgres
+-spring.datasource.password=admin
++spring.datasource.password=password
+ spring.datasource.platform=postgresql
+ spring.batch.jdbc.initialize-schema=always
+ # we want to launch our job via our controller
