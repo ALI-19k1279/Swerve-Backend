@@ -6,19 +6,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
-
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
-public class LearnerEvaluationDTO extends BaseDTO<Long> {
-
+public class EvaluationStatsDTO extends BaseDTO<Long> {
+    private Long id;
     private String title;
-    private int marksObtained;
-    private String type;
-    private int totalMarks;
-    private String publicationDate;
-    private String deadlineDate;
-
+    private Double maxMarks;
+    private Double minMarks;
+    private Double avgMarks;
 }

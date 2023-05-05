@@ -1,9 +1,7 @@
 package com.swerve.backend.subject.controller;
 
 import com.swerve.backend.shared.controller.BaseController;
-import com.swerve.backend.subject.dto.AttendanceDTO;
-import com.swerve.backend.subject.dto.CourseOutlineDTO;
-import com.swerve.backend.subject.dto.OfferedCourseEvaluationDTO;
+import com.swerve.backend.subject.dto.*;
 import com.swerve.backend.subject.model.OfferedCourseEvaluation;
 import com.swerve.backend.subject.model.OfferedCourseOutline;
 import com.swerve.backend.subject.service.CourseOutlineService;
@@ -28,7 +26,7 @@ public class OfferedCourseEvaluationController extends BaseController<OfferedCou
     }
 
     @GetMapping("/{ocid}/{stdid}/bycourse")
-    public ResponseEntity<Object[]> getEvaluationItemsByStudentIdAndOfferedCourseId(
+    public ResponseEntity<List<LearnerEvaluationDTO>> getEvaluationItemsByStudentIdAndOfferedCourseId(
             @PathVariable Long ocid,
             @PathVariable Long stdid){
 
@@ -36,7 +34,7 @@ public class OfferedCourseEvaluationController extends BaseController<OfferedCou
 
     }
     @GetMapping("/{ocid}/{teacherid}/minmaxavgbycourse")
-    public ResponseEntity<Object[]> getEvaluationItemsMinMaxAverageByTeacherIdAndOfferedCourseId(
+    public ResponseEntity<List<EvaluationStatsDTO>> getEvaluationItemsMinMaxAverageByTeacherIdAndOfferedCourseId(
             @PathVariable Long ocid,
             @PathVariable Long teacherid){
 

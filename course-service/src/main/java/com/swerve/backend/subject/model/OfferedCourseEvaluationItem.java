@@ -42,6 +42,9 @@ public class OfferedCourseEvaluationItem extends BaseEntity<Long>{
     private LocalDateTime publicationDate;
 
     @Column(nullable = false)
+    private LocalDateTime deadlineDate;
+
+    @Column(nullable = false)
     private Long groupID;
 
     @Column(nullable = false)
