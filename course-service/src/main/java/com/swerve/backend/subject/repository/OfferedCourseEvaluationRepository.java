@@ -26,7 +26,7 @@ public interface OfferedCourseEvaluationRepository extends BaseRepository<Offere
             " AVG(oce.marks_obtained) AS avg_marks" +
             " FROM offered_course_evaluation_item ocei" +
             " JOIN offered_course_evaluation oce ON oce.oce_id = ocei.id" +
-            " WHERE ocei.offered_courseid = :offeredCourseID AND ocei.teacherid= :teacherID" +
+            " WHERE ocei.offered_courseid = :offeredCourseID" +
             " GROUP BY ocei.title,ocei.id",nativeQuery = true)
-    List<String> findEvaluationItemsMinMaxAverageByTeacherIdAndOfferedCourseId(@Param("offeredCourseID") Long offeredCourseID, @Param("teacherID") Long teacherID);
+    List<String> findEvaluationItemsMinMaxAverageByTeacherIdAndOfferedCourseId(@Param("offeredCourseID") Long offeredCourseID);
 }

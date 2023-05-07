@@ -33,12 +33,11 @@ public class OfferedCourseEvaluationController extends BaseController<OfferedCou
         return new ResponseEntity<>(this.offeredCourseEvaluationService.findEvaluationItemsByStudentIdAndOfferedCourseId(stdid,ocid), HttpStatus.OK);
 
     }
-    @GetMapping("/{ocid}/{teacherid}/minmaxavgbycourse")
+    @GetMapping("/{ocid}/minmaxavgbycourse")
     public ResponseEntity<List<EvaluationStatsDTO>> getEvaluationItemsMinMaxAverageByTeacherIdAndOfferedCourseId(
-            @PathVariable Long ocid,
-            @PathVariable Long teacherid){
+            @PathVariable Long ocid){
 
-        return new ResponseEntity<>(this.offeredCourseEvaluationService.findEvaluationItemsMinMaxAverageByTeacherIdAndOfferedCourseId(ocid,teacherid), HttpStatus.OK);
+        return new ResponseEntity<>(this.offeredCourseEvaluationService.findEvaluationItemsMinMaxAverageByTeacherIdAndOfferedCourseId(ocid), HttpStatus.OK);
 
     }
 }

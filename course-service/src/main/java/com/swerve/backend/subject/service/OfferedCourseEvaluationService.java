@@ -48,8 +48,8 @@ public class OfferedCourseEvaluationService extends BaseService<OfferedCourseEva
         return dtoList;
     }
 
-    public List<EvaluationStatsDTO> findEvaluationItemsMinMaxAverageByTeacherIdAndOfferedCourseId(Long offeredCourseID, Long teacherID){
-        List<String> evaluationItemsMinMaxAverageByTeacherIdAndOfferedCourseId = offeredCourseEvaluationRepository.findEvaluationItemsMinMaxAverageByTeacherIdAndOfferedCourseId(offeredCourseID, teacherID);
+    public List<EvaluationStatsDTO> findEvaluationItemsMinMaxAverageByTeacherIdAndOfferedCourseId(Long offeredCourseID){
+        List<String> evaluationItemsMinMaxAverageByTeacherIdAndOfferedCourseId = offeredCourseEvaluationRepository.findEvaluationItemsMinMaxAverageByTeacherIdAndOfferedCourseId(offeredCourseID);
         List<EvaluationStatsDTO> dtoList = new ArrayList<>();
 
         for (String result : evaluationItemsMinMaxAverageByTeacherIdAndOfferedCourseId) {
