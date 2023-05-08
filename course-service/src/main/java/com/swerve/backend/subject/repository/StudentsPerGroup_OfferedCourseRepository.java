@@ -29,6 +29,11 @@ public interface StudentsPerGroup_OfferedCourseRepository extends BaseRepository
     @Query("Select oc from OfferedCourse oc where oc.teacherId=:id")
     List<OfferedCourse> findOfferedCoursesByTeacherId(Long id);
 
+    @Query("Select gr from Group gr where gr.id in "
+            +"(select spgoc.group.id from StudentsPerGroup_OfferedCourse spgoc where spgoc.offeredCourse.id=:id)")
+    List<Group> findByOfferedCourseIdAndDeletedFalse(Long id);
+
+
     @Query("SELECT oce.offeredCourse_EvaluationItem.type, oce " +
             "FROM OfferedCourseEvaluationItem ocei " +
             "LEFT JOIN OfferedCourseEvaluation oce ON oce.offeredCourse_EvaluationItem = ocei " +

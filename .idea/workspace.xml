@@ -5,10 +5,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e3b09a9e-0488-4344-9c3a-1a8badac1ec4" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_30_04_2023_4_49_pm_[Changes]/shelved.patch" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_30_04_2023_4_49_pm__Changes_.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_4_30_2023_5_43_PM_[Changes]/shelved.patch" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_4_30_2023_5_43_PM__Changes_.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/controller/OfferedCourseEvaluationController.java" beforeDir="false" afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/controller/OfferedCourseEvaluationController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/repository/OfferedCourseEvaluationRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/repository/OfferedCourseEvaluationRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/service/OfferedCourseEvaluationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/service/OfferedCourseEvaluationService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/controller/GroupController.java" beforeDir="false" afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/controller/GroupController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/repository/StudentsPerGroup_OfferedCourseRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/repository/StudentsPerGroup_OfferedCourseRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/service/GroupService.java" beforeDir="false" afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/service/GroupService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -46,7 +50,7 @@
     &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;
   }
 }</component>
-  <component name="RunManager" selected="Application.AuthServiceApplication">
+  <component name="RunManager" selected="Application.SubjectServiceApplication">
     <configuration name="ApiGatewayApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.swerve.backend.apigateway.ApiGatewayApplication" />
       <module name="api-gateway" />

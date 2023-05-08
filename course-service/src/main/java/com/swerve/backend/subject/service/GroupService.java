@@ -39,13 +39,14 @@ public class GroupService extends BaseService<StudentsPerGroup_OfferedCourse, St
         List<OfferedCourse> offeredCourses=studentsPerGroupOfferedCourseRepository.findOfferedCoursesByStudentId(id);
         return offeredCourses.isEmpty()? null:offeredCourses;
     }
-    public List<OfferedCourse> GetOfferedCourseByTeacherID(Long id){
-        List<OfferedCourse> offeredCourses=studentsPerGroupOfferedCourseRepository.findOfferedCoursesByStudentId(id);
-        return offeredCourses.isEmpty()? null:offeredCourses;
-    }
     public List<OfferedCourse> GetOfferedCourseByTeacherId(Long id){
         List<OfferedCourse> offeredCourses=studentsPerGroupOfferedCourseRepository.findOfferedCoursesByTeacherId(id);
         return offeredCourses.isEmpty()? null:offeredCourses;
+    }
+
+    public List<Group> GetSPGOCByOfferedCourseId(Long id){
+        List<Group> byOfferedCourseIdAndDeletedFalse = studentsPerGroupOfferedCourseRepository.findByOfferedCourseIdAndDeletedFalse(id);
+        return byOfferedCourseIdAndDeletedFalse.isEmpty()? null:byOfferedCourseIdAndDeletedFalse;
     }
 
     public Map<String, List<OfferedCourseEvaluation>> getEvaluationItemsByStudentId(Long studentId, Long offeredCourseId) {
