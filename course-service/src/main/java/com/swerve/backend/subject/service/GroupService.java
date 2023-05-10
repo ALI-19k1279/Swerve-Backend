@@ -71,6 +71,10 @@ public class GroupService extends BaseService<StudentsPerGroup_OfferedCourse, St
         return evaluationMap;
     }
 
+    public List<StudentsPerGroup_OfferedCourse> GetSPGOCByGroupIdAndOfferedCourseId(Long groupId, Long offeredCourseId){
+        List<StudentsPerGroup_OfferedCourse> byGroupIdAndOfferedCourseIdAndDeletedFalse = studentsPerGroupOfferedCourseRepository.findByGroupIdAndOfferedCourseIdAndDeletedFalse(groupId, offeredCourseId);
+        return byGroupIdAndOfferedCourseIdAndDeletedFalse;
+    }
 
 //
 //    public LearnerEvaluationDTO getEvaluationsByStudentIDandOfferedCourseID(Long stdID,Long offeredCourseID) {

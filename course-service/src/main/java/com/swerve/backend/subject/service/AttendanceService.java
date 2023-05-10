@@ -6,6 +6,7 @@ import com.swerve.backend.subject.dto.AttendanceDTO;
 import com.swerve.backend.subject.mapper.AttendanceMapper;
 import com.swerve.backend.subject.mapper.StudentsPerGroup_OfferedCourseMapper;
 import com.swerve.backend.subject.model.OfferedCourseAttendance;
+import com.swerve.backend.subject.model.StudentsPerGroup_OfferedCourse;
 import com.swerve.backend.subject.repository.AttendanceRepository;
 import com.swerve.backend.subject.repository.StudentsPerGroup_OfferedCourseRepository;
 import org.springframework.stereotype.Service;
@@ -24,11 +25,14 @@ import java.util.stream.Collectors;
 public class AttendanceService extends BaseService<OfferedCourseAttendance, AttendanceDTO,Long> {
     private final AttendanceRepository attendanceRepository;
     private final AttendanceMapper attendanceMapper;
+
+    private final GroupService groupService;
     public AttendanceService(AttendanceRepository attendanceRepository,
-                             AttendanceMapper attendanceMapper){
+                             AttendanceMapper attendanceMapper,GroupService groupService){
         super(attendanceRepository,attendanceMapper);
         this.attendanceRepository=attendanceRepository;
         this.attendanceMapper=attendanceMapper;
+        this.groupService=groupService;
     }
 
     @Override
@@ -57,6 +61,30 @@ public class AttendanceService extends BaseService<OfferedCourseAttendance, Atte
             return null;
         }
     }
+    public List<AttendanceDTO> getOfferedCourseGroupAttendanceByDate(Long gid,Long oid,Date date){
+        try{
+            List<OfferedCourseAttendance> attendanceList= attendanceRepository.findByGroupIdAndOfferedCourseIdAndDate(gid,oid,date);
+            return attendanceList.stream().map(attendance -> AttendanceMapper.INSTANCE.toDTOWithIds(attendance)).collect(Collectors.toList());
+        }
+        catch (Exception e){
+            System.out.println(e.getCause());
+            return null;
+        }
+    }
+
+//    public List<AttendanceDTO> populateInstructorAttendanceTable(Long gid,Long oid,Date date){
+//        try{
+//            List<AttendanceDTO> offeredCourseGroupAttendanceByDate = getOfferedCourseGroupAttendanceByDate(gid, oid, date);
+//            if(offeredCourseGroupAttendanceByDate.size()==0){
+//                List<StudentsPerGroup_OfferedCourse> studentsPerGroupOfferedCourses = groupService.GetSPGOCByGroupIdAndOfferedCourseId(gid, oid);
+//            }
+//            return offeredCourseGroupAttendanceByDate.stream().map(attendance -> AttendanceMapper.INSTANCE.toDTOWithIds(attendance)).collect(Collectors.toList());
+//        }
+//        catch (Exception e){
+//            System.out.println(e.getCause());
+//            return null;
+//        }
+//    }
     public boolean markAttendance(List<AttendanceDTO> attendanceList){
         try {
             for (AttendanceDTO attendance : attendanceList) {

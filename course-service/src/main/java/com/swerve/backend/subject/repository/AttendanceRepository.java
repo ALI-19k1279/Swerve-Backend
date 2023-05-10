@@ -36,6 +36,9 @@ public interface AttendanceRepository extends BaseRepository<OfferedCourseAttend
 
     List<OfferedCourseAttendance> findByGroupIdAndOfferedCourseId(Long groupId,Long offeredCourseId);
 
+    List<OfferedCourseAttendance> findByGroupIdAndOfferedCourseIdAndDate(Long groupId,Long offeredCourseId, Date date);
+
+
     List<OfferedCourseAttendance> findByGroupIdAndStudentId(Long groupId,Long studentId);
     @Query(
             value = "update offered_course_attendance set status=:status where student_id=:studentId " +

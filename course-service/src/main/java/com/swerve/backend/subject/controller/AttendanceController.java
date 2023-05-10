@@ -8,12 +8,14 @@ import com.swerve.backend.subject.model.OfferedCourseAttendance;
 import com.swerve.backend.subject.service.AttendanceService;
 import com.swerve.backend.subject.service.GroupService;
 import org.springframework.cloud.client.loadbalancer.Response;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.http.HttpResponse;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -42,6 +44,16 @@ public class AttendanceController extends BaseController<OfferedCourseAttendance
                                                                                       ){
         return new ResponseEntity<>(this.attendanceService.getOfferedCourseGroupAttendance(gid,
                 ocid), HttpStatus.OK);
+
+    }
+
+    @GetMapping("/{gid}/{ocid}/{date}")
+    public ResponseEntity<List<AttendanceDTO>> getGroupOfferedCourseAttendanceByDate(@PathVariable Long gid,
+                                                                               @PathVariable Long ocid,
+                                                                                     @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") Date date
+    ){
+        return new ResponseEntity<>(this.attendanceService.getOfferedCourseGroupAttendanceByDate(gid,
+                ocid,date), HttpStatus.OK);
 
     }
 

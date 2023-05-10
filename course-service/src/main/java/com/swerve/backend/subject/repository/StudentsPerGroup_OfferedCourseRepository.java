@@ -17,6 +17,8 @@ public interface StudentsPerGroup_OfferedCourseRepository extends BaseRepository
 
     List<StudentsPerGroup_OfferedCourse> findByStudentIdAndDeletedFalse(Long id);
 
+    List<StudentsPerGroup_OfferedCourse> findByGroupIdAndOfferedCourseIdAndDeletedFalse(Long groupId, Long offeredCourseId);
+
     //select * from offered_course oc where oc.id in (select offered_course_id from students_per_group_offered_course where group_id=1 )
     @Query("Select oc from OfferedCourse oc where oc.id in "
     +"(select spgoc.offeredCourse from StudentsPerGroup_OfferedCourse spgoc where spgoc.group.id=:id)")
