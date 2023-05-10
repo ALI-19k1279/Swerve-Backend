@@ -36,7 +36,11 @@ public interface AttendanceMapper extends BaseMapper<OfferedCourseAttendance, At
 
     @Named("toDate")
     public static LocalDate toDate(String date)  {
-        return LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        System.out.println(date);
+        if (date == null) {
+            return null;
+        }
+        return LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-M-d"));
     }
     @Override
     @Named("default")

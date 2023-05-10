@@ -10,6 +10,7 @@ import lombok.Setter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.bind.DefaultValue;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
@@ -38,10 +39,10 @@ public class OfferedCourseAttendance  extends BaseEntity<Long> {
     @JoinColumn(name="oc_id", nullable=false)
     private OfferedCourse offeredCourse;
 
-    @PrePersist
-    protected void onCreate() {
-        if (date == null) {
-            date = new Date();
-        }
-    }
+//    @PrePersist
+//    protected void onCreate() {
+//        if (date == null) {
+//            date = Date.valueOf(LocalDate.now());
+//        }
+//    }
 }

@@ -22,7 +22,7 @@ import java.util.Date;
 @Setter
 public class AttendanceDTO extends BaseDTO<Long> {
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-M-d")
     private String date;
 
 

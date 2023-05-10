@@ -5,7 +5,9 @@ import com.swerve.backend.subject.dto.AttendanceDTO;
 import com.swerve.backend.subject.mapper.AttendanceMapper;
 import com.swerve.backend.subject.model.OfferedCourseAttendance;
 import com.swerve.backend.subject.model.StudentsPerGroup_OfferedCourse;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Date;
@@ -45,7 +47,22 @@ public interface AttendanceRepository extends BaseRepository<OfferedCourseAttend
                     "and oc_id=:offeredCourseId and date=:date",
             nativeQuery = true
     )
-    void updateAttendanceStatus(Long studentId, Date date, Long offeredCourseId, String status);
+    void updateAttendanceStatusNative(@Param("studentId") Long studentId,
+                                @Param("date")Date date,
+                                @Param("offeredCourseId") Long offeredCourseId,
+                                @Param("status") String status);
+
+
+    @Modifying
+    @Query("UPDATE OfferedCourseAttendance oca SET oca.status = :status " +
+            "WHERE oca.studentId = :studentId " +
+            "AND oca.offeredCourse.id = :offeredCourseId " +
+            "AND oca.date = :date")
+    void updateAttendanceStatus(@Param("studentId") Long studentId,
+                                @Param("date") java.sql.Date date,
+                                @Param("offeredCourseId") Long offeredCourseId,
+                                @Param("status") String status);
+
 
 
 }

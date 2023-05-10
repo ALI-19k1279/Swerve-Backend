@@ -47,12 +47,22 @@ public class AttendanceController extends BaseController<OfferedCourseAttendance
 
     }
 
-    @GetMapping("/{gid}/{ocid}/{date}")
+    @GetMapping("/{gid}/{ocid}/{date}/bydate")
     public ResponseEntity<List<AttendanceDTO>> getGroupOfferedCourseAttendanceByDate(@PathVariable Long gid,
                                                                                @PathVariable Long ocid,
-                                                                                     @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") Date date
+                                                                                     @PathVariable @DateTimeFormat(pattern = "yyyy-M-d") Date date
     ){
         return new ResponseEntity<>(this.attendanceService.getOfferedCourseGroupAttendanceByDate(gid,
+                ocid,date), HttpStatus.OK);
+
+
+    }
+    @GetMapping("/{gid}/{ocid}/{date}/poppulate")
+    public ResponseEntity<List<AttendanceDTO>> poppulateInstructorsAttendanceGrid(@PathVariable Long gid,
+                                                                                     @PathVariable Long ocid,
+                                                                                     @PathVariable @DateTimeFormat(pattern = "yyyy-M-d") Date date
+    ){
+        return new ResponseEntity<>(this.attendanceService.populateInstructorAttendanceTable(gid,
                 ocid,date), HttpStatus.OK);
 
     }
