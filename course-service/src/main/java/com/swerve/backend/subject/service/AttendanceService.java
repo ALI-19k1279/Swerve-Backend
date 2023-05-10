@@ -144,4 +144,28 @@ public class AttendanceService extends BaseService<OfferedCourseAttendance, Atte
             return false;
         }
     }
+
+    public boolean processAttendance(List<AttendanceDTO> attendanceList) {
+        try {
+            for (AttendanceDTO attendance : attendanceList) {
+                OfferedCourseAttendance newAttendance = AttendanceMapper.INSTANCE.toModelWithIds(attendance);
+                OfferedCourseAttendance existingAttendance = attendanceRepository.findByStudentIdAndDateAndOfferedCourseId(
+                        attendance.getStudentId(), newAttendance.getDate(), attendance.getOfferedCourseId());
+
+                if (existingAttendance == null) {
+                    // Insert new attendance
+                    attendanceRepository.save(newAttendance);
+                } else if (!Objects.equals(existingAttendance.getStatus(), attendance.getStatus())) {
+                    // Update existing attendance
+                    existingAttendance.setStatus(attendance.getStatus());
+                    attendanceRepository.save(existingAttendance);
+                }
+            }
+            return true;
+        } catch (Exception e) {
+            logger.error("Failed to process attendance: {}", e.getMessage());
+            return false;
+        }
+    }
+
 }

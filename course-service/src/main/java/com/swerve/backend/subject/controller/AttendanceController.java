@@ -81,6 +81,15 @@ public class AttendanceController extends BaseController<OfferedCourseAttendance
         else
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to update attendance");
     }
+    @PostMapping("/process")
+    public ResponseEntity<String> processAttendance(@RequestBody List<AttendanceDTO> attendanceList) {
+        boolean result = attendanceService.processAttendance(attendanceList);
+        if (result) {
+            return ResponseEntity.ok("Attendance processed successfully");
+        } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to process attendance");
+        }
+    }
     @GetMapping("/{gid}/{stid}/all")
     public ResponseEntity<List<AttendanceDTO>> getOfferedCourseAttendances(@PathVariable Long gid,
                                                                                @PathVariable Long stid
