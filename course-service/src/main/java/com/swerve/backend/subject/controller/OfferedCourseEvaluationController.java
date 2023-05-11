@@ -1,19 +1,21 @@
 package com.swerve.backend.subject.controller;
 
 import com.swerve.backend.shared.controller.BaseController;
-import com.swerve.backend.subject.dto.*;
+import com.swerve.backend.subject.dto.EvaluationStatsDTO;
+import com.swerve.backend.subject.dto.LearnerEvaluationDTO;
+import com.swerve.backend.subject.dto.OfferedCourseEvaluationDTO;
 import com.swerve.backend.subject.model.OfferedCourseEvaluation;
-import com.swerve.backend.subject.model.OfferedCourseOutline;
-import com.swerve.backend.subject.service.CourseOutlineService;
 import com.swerve.backend.subject.service.OfferedCourseEvaluationService;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.apache.poi.xwpf.usermodel.*;
+import org.springframework.http.*;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.List;
+
+import static com.swerve.backend.subject.util.Utility.generateDoc;
 
 @Controller
 @RequestMapping("/evaluation")
@@ -39,5 +41,19 @@ public class OfferedCourseEvaluationController extends BaseController<OfferedCou
 
         return new ResponseEntity<>(this.offeredCourseEvaluationService.findEvaluationItemsMinMaxAverageByTeacherIdAndOfferedCourseId(ocid), HttpStatus.OK);
 
+    }
+
+    @PostMapping("/convert-to-doc")
+    public ResponseEntity<byte[]> convertToDoc(@RequestBody String content) {
+        // Generate the document using Apache POI
+        byte[] docBytes = generateDoc(content);
+
+        // Set the appropriate headers for the response
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        headers.setContentDisposition(ContentDisposition.builder("attachment").filename("output.doc").build());
+
+        // Return the document as a downloadable file
+        return new ResponseEntity<>(docBytes, headers, HttpStatus.OK);
     }
 }

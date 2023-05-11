@@ -1,11 +1,24 @@
 package com.swerve.backend.subject.util;
 
+import org.apache.poi.util.Units;
+import org.apache.poi.xwpf.usermodel.UnderlinePatterns;
+import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.apache.poi.xwpf.usermodel.XWPFParagraph;
+import org.apache.poi.xwpf.usermodel.XWPFRun;
 import org.springframework.http.MediaType;
 
+import java.io.*;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.nodes.TextNode;
+import org.jsoup.select.Elements;
+import org.apache.poi.xwpf.usermodel.ParagraphAlignment;
 
 public class Utility {
 
@@ -58,4 +71,219 @@ public class Utility {
             default: return -1;
         }
     }
+
+    public static byte[] generateDoc(String content) {
+        try (XWPFDocument document = new XWPFDocument()) {
+            Document htmlDoc = Jsoup.parse(content);
+            Elements elements = htmlDoc.body().children();
+            for (Element element : elements) {
+                processContent(element, document);
+            }
+
+            // Generate the document bytes
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            document.write(outputStream);
+            return outputStream.toByteArray();
+        } catch (IOException e) {
+            // Handle any exceptions
+            e.printStackTrace();
+        }
+        return new byte[0];
+    }
+
+    public static void processContent(Element element, XWPFDocument document) {
+        switch (element.tagName()) {
+            case "h1":
+            case "h2":
+            case "h3":
+            case "h4":
+            case "h5":
+            case "h6":
+                processHeading(element, document);
+                break;
+            case "p":
+                processParagraph(element, document);
+                break;
+            case "code":
+                processCodeBlock(element, document);
+                break;
+            case "blockquote":
+                processBlockquote(element, document);
+                break;
+            case "ul":
+                processBulletList(element, document);
+                break;
+            case "ol":
+                processNumberedList(element, document);
+                break;
+            default:
+                // Ignore unrecognized tags
+                break;
+        }
+    }
+
+    public static void processParagraph(Element element, XWPFDocument document) {
+        XWPFParagraph paragraph = document.createParagraph();
+        processInlineStyles(element, paragraph);
+        XWPFRun run = paragraph.createRun();
+        run.setText(element.text());
+    }
+
+    public static void processInlineStyles(Element element, XWPFParagraph paragraph) {
+        if (element.tagName().equals("em")) {
+            applyItalicFormatting(paragraph);
+        } else if (element.tagName().equals("strong")) {
+            applyBoldFormatting(paragraph);
+        } else if (element.tagName().equals("u")) {
+            applyUnderlineFormatting(paragraph);
+        } else if (element.tagName().equals("code")) {
+            applyCodeFormatting(paragraph);
+        } else if (element.hasAttr("style")) {
+            String style = element.attr("style");
+            if (style.contains("text-align:")) {
+                String alignment = style.substring(style.indexOf("text-align:") + 11).trim();
+                applyAlignment(paragraph, alignment);
+            }
+        }
+    }
+
+    public static void applyItalicFormatting(XWPFParagraph paragraph) {
+        for (XWPFRun run : paragraph.getRuns()) {
+            run.setItalic(true);
+        }
+    }
+
+    public static void applyBoldFormatting(XWPFParagraph paragraph) {
+        for (XWPFRun run : paragraph.getRuns()) {
+            run.setBold(true);
+        }
+    }
+
+    public static void applyUnderlineFormatting(XWPFParagraph paragraph) {
+        for (XWPFRun run : paragraph.getRuns()) {
+            run.setUnderline(UnderlinePatterns.SINGLE);
+        }
+    }
+
+    public static void applyCodeFormatting(XWPFParagraph paragraph) {
+        for (XWPFRun run : paragraph.getRuns()) {
+            run.setFontFamily("Courier New");
+            run.setFontSize(9);
+            run.setColor("000000");
+            run.setItalic(true);
+        }
+    }
+
+    public static void applyAlignment(XWPFParagraph paragraph, String alignment) {
+        switch (alignment) {
+            case "left":
+                paragraph.setAlignment(ParagraphAlignment.LEFT);
+                break;
+            case "right":
+                paragraph.setAlignment(ParagraphAlignment.RIGHT);
+                break;
+            case "center":
+                paragraph.setAlignment(ParagraphAlignment.CENTER);
+                break;
+            case "justify":
+                paragraph.setAlignment(ParagraphAlignment.BOTH);
+                break;
+            default:
+                // Ignore unrecognized alignment values
+                break;
+        }
+    }
+
+    public static void processCodeBlock(Element element, XWPFDocument document) {
+        XWPFParagraph paragraph = document.createParagraph();
+        processInlineStyles(element, paragraph);
+        XWPFRun run = paragraph.createRun();
+        run.setText(element.select("code").text());
+        run.setFontFamily("Courier New");
+        run.setFontSize(9);
+        run.setColor("000000");
+    }
+
+    public static void processBlockquote(Element element, XWPFDocument document) {
+        XWPFParagraph paragraph = document.createParagraph();
+        XWPFRun run = paragraph.createRun();
+        run.setText(element.text());
+        run.setItalic(true);
+        run.setColor("808080");
+    }
+
+    public static void processBulletList(Element element, XWPFDocument document) {
+        for (Element li : element.select("li")) {
+            XWPFParagraph paragraph = document.createParagraph();
+            XWPFRun run = paragraph.createRun();
+            run.setText("\u2022 " + li.text());
+            run.setFontFamily("Calibri"); // Set the font family for bullet points
+        }
+    }
+    public static void processHeading(Element element, XWPFDocument document) {
+        String tagName = element.tagName();
+        int level = Integer.parseInt(tagName.substring(1));
+        XWPFParagraph paragraph = document.createParagraph();
+        paragraph.setStyle("Heading" + level);
+        XWPFRun run = paragraph.createRun();
+        run.setText(element.text());
+
+        // Set heading properties
+        run.setBold(true);
+        run.setFontSize(getHeadingSize(level));
+    }
+
+    public static int getHeadingSize(int level) {
+        switch (level) {
+            case 1:
+                return 24;  // Heading 1 size
+            case 2:
+                return 18;  // Heading 2 size
+            case 3:
+                return 16;  // Heading 3 size
+            case 4:
+                return 14;  // Heading 4 size
+            case 5:
+                return 12;  // Heading 5 size
+            case 6:
+                return 10;  // Heading 6 size
+            default:
+                return 12;  // Default size
+        }
+    }
+
+    public static void processNumberedList(Element element, XWPFDocument document) {
+        int index = 1;
+        for (Element li : element.select("li")) {
+            XWPFParagraph listItemParagraph = document.createParagraph();
+            XWPFRun listItemRun = listItemParagraph.createRun();
+            listItemRun.setText(index + ". ");
+            listItemRun.setFontFamily("Calibri"); // Set the font family for ordered list
+            listItemRun.setFontSize(9);
+            listItemRun.setColor("000000");
+
+            // Process the sub-numbered list recursively
+            Elements subLists = li.select("ol");
+            for (Element subList : subLists) {
+                processNumberedList(subList, document);
+            }
+
+            // Process the list item text
+            XWPFRun listItemTextRun = listItemParagraph.createRun();
+            listItemTextRun.setText(li.text());
+            listItemTextRun.setFontFamily("Calibri");
+
+            index++;
+        }
+    }
+
+
+
+    public static XWPFParagraph createNewParagraph(XWPFParagraph currentParagraph) {
+        XWPFParagraph newParagraph = currentParagraph.getDocument().createParagraph();
+        newParagraph.setStyle(currentParagraph.getStyle());
+        return newParagraph;
+    }
+
+
 }

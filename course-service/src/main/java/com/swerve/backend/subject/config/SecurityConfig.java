@@ -65,7 +65,8 @@ public class SecurityConfig {
                         "/batch/importenrollments",
                         "/attendance/mark",
                         "/attendance/process",
-                        "/courseoutline/*/*/update/outline"
+                        "/courseoutline/*/*/update/outline",
+                        "/evaluation/convert-to-doc"
                 ).permitAll()
                 .requestMatchers(
                         HttpMethod.PATCH,
