@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -21,7 +22,7 @@ public class CourseMaterialDTO extends BaseDTO<Long> {
     @NotBlank(message = "Resource URL is mandatory")
     private String resourceUrl;
     @NotBlank(message = "Publication Date is mandatory")
-    private LocalDateTime publicationDate;
+    private Date publicationDate;
     @NotBlank(message = "Teacher is mandatory")
     private InstructorDTO teacher;
     @NotBlank(message = "Offered Course is mandatory")

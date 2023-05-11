@@ -16,6 +16,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @Entity
 @NoArgsConstructor
@@ -34,7 +35,7 @@ public class CourseMaterial extends BaseEntity<Long> {
     private String resourceUrl;
 
     @Column(nullable = false)
-    private LocalDateTime publicationDate;
+    private Date publicationDate;
 
     @Column(nullable = false)
     private Long teacherId;

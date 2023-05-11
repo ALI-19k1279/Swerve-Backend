@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,10 +34,15 @@ public class CourseMaterialService extends BaseService<CourseMaterial, CourseMat
         this.courseMaterialMapper=courseMaterialMapper;
     }
 
-    public void createCourseMaterial(String name, String description, String resourceUrl, LocalDateTime publicationDate,
-                                     Long teacher, Long offeredCourse){
+    public void createCourseMaterial(MultipartFile file,String name, String description, Date publicationDate,
+                                     Long teacher, Long offeredCourse) throws IOException{
+
+        String filePath=FOLDER_PATH+file.getOriginalFilename();
+
+        file.transferTo(new File(filePath));
+
         courseMaterialRepository.insertCourseMaterial(name,description,
-                resourceUrl,publicationDate,teacher,offeredCourse);
+                filePath,publicationDate,teacher,offeredCourse);
     }
 
 //    public String uploadImageToFileSystem(MultipartFile file) throws IOException {
