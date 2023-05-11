@@ -18,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -60,32 +61,46 @@ public class CourseMaterialController extends BaseController<CourseMaterial, Cou
         return new ResponseEntity<>(courseMaterials, HttpStatus.OK);
     }
 
-    @PostMapping("/fileSystem")
-    public ResponseEntity<?> create(@RequestBody Map<String, Object> requestBody) {
-        String name = (String) requestBody.get("name");
-        String description = (String) requestBody.get("description");
-        String resourceUrl = (String) requestBody.get("resourceUrl");
-        LocalDateTime publicationDate = LocalDateTime.parse((String) requestBody.get("publicationDate"));
-        Long teacher = Long.parseLong((String) requestBody.get("teacher"));
-        Long offeredCourse = Long.parseLong((String) requestBody.get("offeredCourse"));
+    @PostMapping("/filesystem")
+    public ResponseEntity<?> create(@RequestParam("file") MultipartFile file,
+                                    @RequestParam("name") String name,
+                                    @RequestParam("description") String description,
+                                    @RequestParam("publicationDate") @DateTimeFormat(pattern = "yyyy-M-d") Date publicationDate,
+                                    @RequestParam("teacher") String teacher,
+                                    @RequestParam("offeredCourse") String offeredCourse
+    ) throws IOException{
+        // Handle file and other parameters here
 
-        System.out.println(name);
-        System.out.println(description);
-        System.out.println(resourceUrl);
-        System.out.println(publicationDate);
-        System.out.println(teacher);
-        System.out.println(offeredCourse);
-//        CourseMaterialDTO courseMaterialDTO= new CourseMaterialDTO(name,description,
-//                resourceUrl,publicationDate,teacher,offeredCourse);
-
-//        CourseDTO course = courseService.save(courseDTO);
-        courseMaterialService.createCourseMaterial(name,description,
-                resourceUrl,publicationDate,teacher,offeredCourse);
-//        if (course == null) {
-//            throw new ServerException;
-//        } else {
-//            return new ResponseEntity<>(course, HttpStatus.CREATED);
-//        }
+        courseMaterialService.createCourseMaterial(file,name,description,publicationDate,Long.parseLong(teacher),Long.parseLong(offeredCourse));
         return new ResponseEntity<>( HttpStatus.CREATED);
     }
+
+//    @PostMapping("/fileSystem")
+//    public ResponseEntity<?> create(@RequestBody Map<String, Object> requestBody) {
+//        String name = (String) requestBody.get("name");
+//        String description = (String) requestBody.get("description");
+//        String resourceUrl = (String) requestBody.get("resourceUrl");
+//        LocalDateTime publicationDate = LocalDateTime.parse((String) requestBody.get("publicationDate"));
+//        Long teacher = Long.parseLong((String) requestBody.get("teacher"));
+//        Long offeredCourse = Long.parseLong((String) requestBody.get("offeredCourse"));
+//
+//        System.out.println(name);
+//        System.out.println(description);
+//        System.out.println(resourceUrl);
+//        System.out.println(publicationDate);
+//        System.out.println(teacher);
+//        System.out.println(offeredCourse);
+////        CourseMaterialDTO courseMaterialDTO= new CourseMaterialDTO(name,description,
+////                resourceUrl,publicationDate,teacher,offeredCourse);
+//
+////        CourseDTO course = courseService.save(courseDTO);
+//        courseMaterialService.createCourseMaterial(name,description,
+//                resourceUrl,publicationDate,teacher,offeredCourse);
+////        if (course == null) {
+////            throw new ServerException;
+////        } else {
+////            return new ResponseEntity<>(course, HttpStatus.CREATED);
+////        }
+//        return new ResponseEntity<>( HttpStatus.CREATED);
+//    }
 }

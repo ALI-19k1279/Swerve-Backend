@@ -5,11 +5,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e3b09a9e-0488-4344-9c3a-1a8badac1ec4" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_5_7_2023_9_24_PM__Changes_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_5_7_2023_9_24_PM__Changes_.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_5_10_2023_12_42_PM__Changes_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_5_10_2023_12_42_PM__Changes_.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/auth-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/config/SecurityConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/controller/AttendanceController.java" beforeDir="false" afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/controller/AttendanceController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/service/AttendanceService.java" beforeDir="false" afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/service/AttendanceService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/course-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/course-service/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/controller/CourseMaterialController.java" beforeDir="false" afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/controller/CourseMaterialController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/dto/CourseMaterialDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/dto/CourseMaterialDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/model/CourseMaterial.java" beforeDir="false" afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/model/CourseMaterial.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/repository/CourseMaterialRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/repository/CourseMaterialRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/service/CourseMaterialService.java" beforeDir="false" afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/service/CourseMaterialService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/course-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/course-service/src/main/resources/application.properties" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

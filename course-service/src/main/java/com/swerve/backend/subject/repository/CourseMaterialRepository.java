@@ -11,6 +11,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,7 +30,7 @@ public interface CourseMaterialRepository extends BaseRepository<CourseMaterial,
                             "values (:name, :description, :resourceUrl, :publicationDate, :teacher, :offeredCourse)",
             nativeQuery = true)
     void insertCourseMaterial(@Param("name") String name, @Param("description") String description,
-                      @Param("resourceUrl") String resourceUrl, @Param("publicationDate") LocalDateTime publicationDate,
+                      @Param("resourceUrl") String resourceUrl, @Param("publicationDate") Date publicationDate,
                       @Param("teacher") Long teacher,
                         @Param("offeredCourse") Long offeredCourse);
 
