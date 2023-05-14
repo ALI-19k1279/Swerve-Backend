@@ -8,9 +8,6 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/config/BatchConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/config/BatchConfig.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/controller/BatchController.java" beforeDir="false" afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/controller/BatchController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/controller/GroupController.java" beforeDir="false" afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/controller/GroupController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/repository/StudentsPerGroup_OfferedCourseRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/repository/StudentsPerGroup_OfferedCourseRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/service/GroupService.java" beforeDir="false" afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/service/GroupService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/util/Utility.java" beforeDir="false" afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/util/Utility.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />

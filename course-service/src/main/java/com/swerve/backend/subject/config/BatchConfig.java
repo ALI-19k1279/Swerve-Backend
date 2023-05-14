@@ -9,6 +9,7 @@ import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
+import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.batch.item.file.FlatFileItemReader;
@@ -21,6 +22,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
@@ -39,9 +42,10 @@ public class BatchConfig {
 
 
     @Bean
-    public FlatFileItemReader<CourseDTO> reader(@Value("#{jobParameters['filePath']}") String filePath){
+    @Scope(value = "step", proxyMode = ScopedProxyMode.TARGET_CLASS)
+    public FlatFileItemReader<CourseDTO> reader(@Value("#{jobParameters[filePath]}") String pathToFile){
         FlatFileItemReader<CourseDTO> itemReader = new FlatFileItemReader<>();
-        itemReader.setResource(new FileSystemResource(filePath));
+        itemReader.setResource(new FileSystemResource(pathToFile));
         itemReader.setName("CourseItemReader");
         itemReader.setLinesToSkip(1);
         itemReader.setLineMapper(lineMapper());
@@ -80,10 +84,11 @@ public class BatchConfig {
 
     @Bean
     public Step step1(JobRepository jobRepository,
-                      PlatformTransactionManager transactionManager, JdbcBatchItemWriter<CourseImport> writer) {
+                      PlatformTransactionManager transactionManager, JdbcBatchItemWriter<CourseImport> writer,
+                      ItemReader<CourseDTO> reader) {
         return new StepBuilder("step1", jobRepository)
                 .<CourseDTO, CourseImport> chunk(10, transactionManager)
-                .reader(reader(null))
+                .reader(reader)
               .processor(processor())
                 .writer(writer)
                 .build();
@@ -99,12 +104,4 @@ public class BatchConfig {
                 .end()
                 .build();
     }
-
-
-
-
-
-
-
-
 }
