@@ -42,6 +42,11 @@ public interface StudentsPerGroup_OfferedCourseRepository extends BaseRepository
             "WHERE oce.studentID = :stdid AND ocei.offeredCourseID = :ocid " +
             "GROUP BY oce.offeredCourse_EvaluationItem.type,oce")
     Object[] findEvaluationItemsByStudentId(Long stdid, Long ocid);
+    @Query("SELECT ocei.type, ocei " +
+            "FROM OfferedCourseEvaluationItem ocei " +
+            "WHERE ocei.teacherID = :teacherId AND ocei.offeredCourseID = :ocid " +
+            "GROUP BY ocei.type,ocei")
+    Object[] findEvaluationItemsByTeacherIdType(Long teacherId, Long ocid);
     @Query("SELECT ocei " +
             "FROM OfferedCourseEvaluationItem ocei " +
             "WHERE ocei.teacherID = :tid AND ocei.offeredCourseID = :ocid " )

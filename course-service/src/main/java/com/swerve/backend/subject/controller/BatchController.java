@@ -18,9 +18,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+
+import static com.swerve.backend.subject.util.Utility.saveUploadedFile;
 
 @RestController
 @RequestMapping(path = "/batch")// Root path
@@ -46,13 +50,17 @@ public class BatchController {
 
 
     @PostMapping("/importcourses")
-    public ResponseEntity<String> importCsvToDBJob() throws IOException, JobParametersInvalidException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException, NoSuchJobException {
-//        this.importCourseJob=jobLocator.getJob("importCourseJob");
+    public ResponseEntity<String> importCsvToDBJob(@RequestParam("file") MultipartFile file) throws IOException, JobParametersInvalidException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException, NoSuchJobException {
         log.info("BatchController | importCourseCsvToDBJob is called");
-
+        if (file.isEmpty()) {
+            return ResponseEntity.badRequest().body("No file uploaded.");
+        } try {
+            String filePath = saveUploadedFile(file);
         JobParameters jobParameters = new JobParametersBuilder()
-                .addLong("startAt", System.currentTimeMillis()).toJobParameters();
-        try {
+                .addLong("startAt", System.currentTimeMillis())
+                .addString("filePath", filePath)
+                .toJobParameters();
+
             jobLauncher.run(this.importCourseJob, jobParameters);
         } catch (JobExecutionAlreadyRunningException | JobRestartException |
                  JobInstanceAlreadyCompleteException | JobParametersInvalidException e) {

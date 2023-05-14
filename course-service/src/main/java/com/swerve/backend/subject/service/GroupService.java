@@ -72,6 +72,44 @@ public class GroupService extends BaseService<StudentsPerGroup_OfferedCourse, St
 
         return evaluationMap;
     }
+    public Map<Long, Map<String, List<OfferedCourseEvaluationItem>>> getEvaluationItemsByTeacherIdandType(Long studentId, Long offeredCourseId) {
+        Map<Long, Map<String, List<OfferedCourseEvaluationItem>>> evaluationMap = new HashMap<>();
+
+        Object[] result = studentsPerGroupOfferedCourseRepository.findEvaluationItemsByTeacherIdType(studentId, offeredCourseId);
+
+        for (Object obj : result) {
+            Object[] arr = (Object[]) obj;
+            String type = (String) arr[0];
+            OfferedCourseEvaluationItem ocei = (OfferedCourseEvaluationItem) arr[1];
+
+
+            Long groupId = ocei.getGroupID();  // Convert group ID to Long
+
+            if (evaluationMap.containsKey(groupId)) {
+                Map<String, List<OfferedCourseEvaluationItem>> innerMap = evaluationMap.get(groupId);
+                if (innerMap.containsKey(type)) {
+                    innerMap.get(type).add(ocei);
+                } else {
+                    List<OfferedCourseEvaluationItem> list = new ArrayList<>();
+                    list.add(ocei);
+                    innerMap.put(type, list);
+                }
+            } else {
+                Map<String, List<OfferedCourseEvaluationItem>> innerMap = new HashMap<>();
+                List<OfferedCourseEvaluationItem> list = new ArrayList<>();
+                list.add(ocei);
+                innerMap.put(type, list);
+                evaluationMap.put(groupId, innerMap);
+            }
+        }
+
+        return evaluationMap;
+    }
+
+
+
+
+
     public List<OfferedCourseEvaluationItem>  getEvaluationItemsByTeacherId(Long teacherId, Long offeredCourseId) {
 
 

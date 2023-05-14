@@ -19,6 +19,8 @@ import org.jsoup.nodes.Element;
 import org.jsoup.nodes.TextNode;
 import org.jsoup.select.Elements;
 import org.apache.poi.xwpf.usermodel.ParagraphAlignment;
+import org.springframework.util.ResourceUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 public class Utility {
 
@@ -250,6 +252,13 @@ public class Utility {
             default:
                 return 12;  // Default size
         }
+    }
+    public static String saveUploadedFile(MultipartFile file) throws IOException {
+        String fileName = file.getOriginalFilename();
+        String filePath = "classpath:static/uploads/" + fileName;
+        File destinationFile = ResourceUtils.getFile(filePath);
+        file.transferTo(destinationFile);
+        return destinationFile.getAbsolutePath();
     }
 
     public static void processNumberedList(Element element, XWPFDocument document) {

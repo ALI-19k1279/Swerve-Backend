@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.transaction.PlatformTransactionManager;
 
@@ -38,9 +39,9 @@ public class BatchConfig {
 
 
     @Bean
-    public FlatFileItemReader<CourseDTO> reader(){
+    public FlatFileItemReader<CourseDTO> reader(@Value("#{jobParameters['filePath']}") String filePath){
         FlatFileItemReader<CourseDTO> itemReader = new FlatFileItemReader<>();
-        itemReader.setResource(new ClassPathResource("MOCK_DATA.csv"));
+        itemReader.setResource(new FileSystemResource(filePath));
         itemReader.setName("CourseItemReader");
         itemReader.setLinesToSkip(1);
         itemReader.setLineMapper(lineMapper());
@@ -82,7 +83,7 @@ public class BatchConfig {
                       PlatformTransactionManager transactionManager, JdbcBatchItemWriter<CourseImport> writer) {
         return new StepBuilder("step1", jobRepository)
                 .<CourseDTO, CourseImport> chunk(10, transactionManager)
-                .reader(reader())
+                .reader(reader(null))
               .processor(processor())
                 .writer(writer)
                 .build();
