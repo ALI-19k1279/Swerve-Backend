@@ -1,5 +1,6 @@
 package com.swerve.backend.subject.config;
 
+import com.swerve.backend.subject.dto.CourseDTO;
 import com.swerve.backend.subject.dto.SPGOC_DTO;
 import com.swerve.backend.subject.dto.SPGOC_Import;
 import com.swerve.backend.subject.model.Course;
@@ -10,6 +11,7 @@ import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
+import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.batch.item.file.FlatFileItemReader;
@@ -22,7 +24,10 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.transaction.PlatformTransactionManager;
 
@@ -38,9 +43,10 @@ public class EnrollmentBatchConfig {
 
 
     @Bean
-    public FlatFileItemReader<SPGOC_DTO> enrollmentsReader(){
+    @Scope(value = "step", proxyMode = ScopedProxyMode.TARGET_CLASS)
+    public FlatFileItemReader<SPGOC_DTO> enrollmentsReader(@Value("#{jobParameters[filePath]}") String pathToFile){
         FlatFileItemReader<SPGOC_DTO> itemReader = new FlatFileItemReader<>();
-        itemReader.setResource(new ClassPathResource("MOCK_DATA_Enroll.csv"));
+        itemReader.setResource(new FileSystemResource(pathToFile));
         itemReader.setName("EnrollmentItemReader");
         itemReader.setLinesToSkip(1);
         itemReader.setLineMapper(lineMapper());
@@ -80,10 +86,11 @@ public class EnrollmentBatchConfig {
 
     @Bean
     public Step enrollemntStep1(JobRepository jobRepository,
-                      PlatformTransactionManager transactionManager, JdbcBatchItemWriter<SPGOC_Import> enrollmentWriter) {
+                      PlatformTransactionManager transactionManager, JdbcBatchItemWriter<SPGOC_Import> enrollmentWriter,
+                                ItemReader<SPGOC_DTO> enrollmentsReader) {
         return new StepBuilder("enrollemntStep1", jobRepository)
                 .<SPGOC_DTO, SPGOC_Import> chunk(10, transactionManager)
-                .reader(enrollmentsReader())
+                .reader(enrollmentsReader)
                 .processor(enrollmentProcessor())
                 .writer(enrollmentWriter)
                 .build();

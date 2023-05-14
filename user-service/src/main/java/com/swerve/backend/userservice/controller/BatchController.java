@@ -34,7 +34,7 @@ public class BatchController {
         this.job = job;
     }
 
-    @PostMapping("/importstudents")
+    @PostMapping("/importlearners")
     public ResponseEntity<String> importCsvToDBJob() throws IOException, JobParametersInvalidException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException {
 
         log.info("BatchController | importStudentsCsvToDBJob is called");

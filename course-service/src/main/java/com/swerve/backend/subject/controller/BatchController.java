@@ -85,20 +85,36 @@ public class BatchController {
 
     }
     @PostMapping("/importenrollments")
-    public ResponseEntity<String> importEnrollmentsCsvToDBJob() throws IOException, JobParametersInvalidException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException, NoSuchJobException {
+    public ResponseEntity<BatchStatus> importEnrollmentsCsvToDBJob(@RequestParam("file") MultipartFile file) throws IOException, JobParametersInvalidException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException, NoSuchJobException {
 
         log.info("BatchController | importEnrollmentsCsvToDBJob is called");
-
-        JobParameters jobParameters = new JobParametersBuilder()
-                .addLong("startAt", System.currentTimeMillis()).toJobParameters();
         try {
-            jobLauncher.run(this.importEnrollmentsJob, jobParameters);
+            String fileName = file.getOriginalFilename();
+            Path tempUploadsPath = Paths.get("tempuploads/");
+
+            if (!Files.exists(tempUploadsPath)) {
+                Files.createDirectories(tempUploadsPath);
+            }
+            Path fileToImport = tempUploadsPath.resolve(fileName);
+            Files.copy(file.getInputStream(), fileToImport, StandardCopyOption.REPLACE_EXISTING);
+
+            JobParametersBuilder jobParametersBuilder = new JobParametersBuilder();
+            jobParametersBuilder.addLong("startAt", System.currentTimeMillis());
+            jobParametersBuilder.addString("filePath", fileToImport.toAbsolutePath().toString());
+
+            JobExecution jobExecution = jobLauncher.run(this.importEnrollmentsJob, jobParametersBuilder.toJobParameters());
+            if (jobExecution.getStatus() == BatchStatus.COMPLETED) {
+                return new ResponseEntity<>( BatchStatus.COMPLETED,HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(BatchStatus.ABANDONED,HttpStatus.INTERNAL_SERVER_ERROR);
+            }
         } catch (JobExecutionAlreadyRunningException | JobRestartException |
                  JobInstanceAlreadyCompleteException | JobParametersInvalidException e) {
             log.info("BatchController | importEnrollmentsCsvToDBJob | error : " + e.getMessage());
             e.printStackTrace();
+            return new ResponseEntity<>(BatchStatus.FAILED, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        return new ResponseEntity<>("Batch Process Completed!!", HttpStatus.OK);
+//        return new ResponseEntity<>("Batch Process Completed!!", HttpStatus.OK);
     }
 }

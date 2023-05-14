@@ -46,7 +46,7 @@ public class SecurityConfig {
                         "/students/**").hasAnyAuthority(ROLE_TEACHER, ROLE_ADMIN)
                 .requestMatchers(
                         HttpMethod.POST,
-                        "/batch/importstudents"
+                        "/batch/importlearners"
                 ).permitAll()
                 .anyRequest().hasAuthority(ROLE_ADMIN)
                 .and()
