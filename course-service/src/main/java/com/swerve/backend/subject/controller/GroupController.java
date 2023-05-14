@@ -45,6 +45,11 @@ public class GroupController extends BaseController<StudentsPerGroup_OfferedCour
                                                                                                        @PathVariable Long ocid){
         return new ResponseEntity<>(groupService.getEvaluationItemsByStudentId(stdid,ocid),HttpStatus.OK);
     }
+    @GetMapping("/{tid}/{ocid}/coursework")
+    public ResponseEntity< List<OfferedCourseEvaluationItem> > getEvaluationItemsByTeacherID(@PathVariable  Long tid,
+                                                                                                      @PathVariable Long ocid){
+        return new ResponseEntity<>(groupService.getEvaluationItemsByTeacherId(tid,ocid),HttpStatus.OK);
+    }
     @GetMapping("/{tid}/offeredcourses/tid")
     public ResponseEntity<List<OfferedCourse>> findOfferedCourseByTeacherID(@PathVariable  Long tid){
         return new ResponseEntity<>(groupService.GetOfferedCourseByTeacherId(tid),HttpStatus.OK);

@@ -31,6 +31,8 @@ public class OfferedCourseEvaluation extends BaseEntity<Long>{
     @Column()
     private int marksObtained;
 
+    @Column()
+    private String resourceUrl;
 
     @Column()
     private int noOfAttempts;

@@ -8,16 +8,23 @@ import com.swerve.backend.subject.dto.OfferedCourseEvaluationDTO;
 import com.swerve.backend.subject.mapper.CourseOutlineMapper;
 import com.swerve.backend.subject.mapper.OfferedCourseEvaluationMapper;
 import com.swerve.backend.subject.model.OfferedCourseEvaluation;
+import com.swerve.backend.subject.model.OfferedCourseEvaluationItem;
 import com.swerve.backend.subject.model.OfferedCourseOutline;
 import com.swerve.backend.subject.repository.OfferedCourseEvaluationRepository;
 import com.swerve.backend.subject.repository.OfferedCourseOutlineRepository;
 import com.swerve.backend.subject.repository.OfferedCourseRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
+import static com.swerve.backend.shared.security.SecurityUtils.FOLDER_PATH;
+
 @Service
 public class OfferedCourseEvaluationService extends BaseService<OfferedCourseEvaluation, OfferedCourseEvaluationDTO,Long> {
 
@@ -63,5 +70,60 @@ public class OfferedCourseEvaluationService extends BaseService<OfferedCourseEva
             dtoList.add(dto);
         }
         return dtoList;
+    }
+    public void createOfferedCourseEvaluationItem(
+            String title,
+            String type,
+            boolean canReattempt,
+            int totalMarks,
+            int passingMarks,
+            LocalDateTime publicationDate,
+            LocalDateTime deadlineDate,
+            Long groupID,
+            Long offeredCourseID,
+            Long teacherID,
+            MultipartFile file,
+            String instructions
+    ) {
+        try {
+            String filePath=FOLDER_PATH+file.getOriginalFilename();
+            file.transferTo(new File(filePath));
+            int passingMarkss= (int) Math.floor(totalMarks/2)+1;
+            offeredCourseEvaluationRepository.insertEvalautionItem(title,
+                    type,canReattempt,totalMarks,passingMarkss,publicationDate,deadlineDate,
+                    groupID,offeredCourseID,teacherID,filePath,instructions);
+        }
+        catch (Exception e){
+            System.out.println(e.getCause());
+            throw new RuntimeException();
+        }
+    }
+    public void updateOfferedCourseEvaluationItemDeadline(
+            Long evalItemId,
+            LocalDateTime deadlineDate
+    ) {
+        try {
+
+            offeredCourseEvaluationRepository.updateEvalautionItem(deadlineDate,
+                    evalItemId);
+        }
+        catch (Exception e){
+            System.out.println(e.getCause());
+            throw new RuntimeException();
+        }
+    }
+    public Boolean deleteEvalItem(Long itemId){
+        try {
+            Optional<OfferedCourseEvaluationItem> optionalItem = offeredCourseEvaluationRepository.findItemById(itemId);
+            if (optionalItem.isPresent()) {
+                offeredCourseEvaluationRepository.deleteItemById(itemId);
+                return true;
+            }
+            return false; // Item not found
+        } catch (Exception e) {
+            return false; // Deletion failed
+        }
+
+
     }
 }

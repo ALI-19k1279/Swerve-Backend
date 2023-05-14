@@ -7,13 +7,19 @@ import com.swerve.backend.subject.dto.OfferedCourseEvaluationDTO;
 import com.swerve.backend.subject.model.OfferedCourseEvaluation;
 import com.swerve.backend.subject.service.OfferedCourseEvaluationService;
 import org.apache.poi.xwpf.usermodel.*;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.List;
+
 
 import static com.swerve.backend.subject.util.Utility.generateDoc;
 
@@ -55,5 +61,87 @@ public class OfferedCourseEvaluationController extends BaseController<OfferedCou
 
         // Return the document as a downloadable file
         return new ResponseEntity<>(docBytes, headers, HttpStatus.OK);
+    }
+    @PostMapping("/create-coursework")
+    public ResponseEntity<?> createEvalItem( @RequestParam("title") String title,
+                                             @RequestParam("type") String type,
+                                             @RequestParam("canReattempt") String canReattempt,
+                                             @RequestParam("totalMarks") int totalMarks,
+                                             @RequestParam("passingMarks") int passingMarks,
+                                             @RequestParam("publicationDate") String publicationDate,
+                                             @RequestParam("deadline") String deadlineDate,
+                                             @RequestParam("groupId") String groupId,
+                                             @RequestParam("offeredCourseId") String offeredCourseId,
+                                             @RequestParam("teacher") String teacherId,
+                                             @RequestParam("file") MultipartFile file,
+                                             @RequestParam("instructions") String instructions){
+        try {
+            boolean canReattemptBool= canReattempt.equals("Yes");
+            System.out.println("pubDate");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            LocalDateTime pubDate = LocalDateTime.parse(publicationDate, formatter);
+            System.out.println("pubDate2222");
+            LocalDateTime dedDate = LocalDateTime.parse(deadlineDate, formatter);
+            System.out.println(pubDate);
+            offeredCourseEvaluationService.createOfferedCourseEvaluationItem(title,
+            type,
+            canReattemptBool,
+          totalMarks,
+            passingMarks,
+                    pubDate,
+                    dedDate,
+            Long.parseLong(groupId),
+            Long.parseLong(offeredCourseId),
+           Long.parseLong(teacherId),
+                    file,
+           instructions);
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        catch (DateTimeParseException e) {
+            String errorMessage = "Invalid date format. Please provide the date in the format 'yyyy-MM-dd'.";
+            System.out.println(errorMessage);
+            return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            // Log the exception using a logging framework
+            System.out.println("An error occurred while creating the evaluation item. "+ e);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    @PatchMapping("/update-coursework")
+    public ResponseEntity<?> updateEvalItemDeadlineDate(
+                                             @RequestParam("deadline") String deadlineDate,
+                                             @RequestParam("evalItemId") String evalItemId
+                                             ){
+        try {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            LocalDateTime dedDate = LocalDateTime.parse(deadlineDate, formatter);
+            offeredCourseEvaluationService.updateOfferedCourseEvaluationItemDeadline(
+                    Long.parseLong(evalItemId),
+                    dedDate
+                    );
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        catch (DateTimeParseException e) {
+            String errorMessage = "Invalid date format. Please provide the date in the format 'yyyy-MM-dd'.";
+            System.out.println(errorMessage);
+            return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            System.out.println("An error occurred while updating the evaluation item. "+ e);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    @DeleteMapping("/{itemId}/delete-coursework-item")
+    public ResponseEntity<?> deleteEvalItem(@PathVariable Long itemId){
+        try{
+            Boolean result=offeredCourseEvaluationService.deleteEvalItem(itemId);
+            if(result)
+                return new ResponseEntity<>(HttpStatus.OK);
+            else
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        catch (Exception e){
+            System.out.println("An error occurred while deleting the evaluation item. "+ e);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }

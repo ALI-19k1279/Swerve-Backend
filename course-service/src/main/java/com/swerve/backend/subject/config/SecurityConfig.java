@@ -50,6 +50,7 @@ public class SecurityConfig {
                         "/spgoc/*/offeredcourses/stdid",
                         "/spgoc/*/offeredcourses/tid",
                         "/spgoc/*/*/evaluationitems",
+                        "/spgoc/*/*/coursework",
                         "/spgoc/*/*/evaluations/stdid",
                         "/spgoc/*/students",
                         "/courseoutline/*/offeredcourse",
@@ -66,11 +67,18 @@ public class SecurityConfig {
                         "/attendance/mark",
                         "/attendance/process",
                         "/courseoutline/*/*/update/outline",
-                        "/evaluation/convert-to-doc"
+                        "/evaluation/convert-to-doc",
+                        "/evaluation/create-coursework"
                 ).permitAll()
                 .requestMatchers(
                         HttpMethod.PATCH,
-                        "attendance/update"
+                        "/attendance/update",
+                        "/evaluation/update-coursework"
+                ).permitAll()
+                .requestMatchers(
+                        HttpMethod.DELETE,
+                        "/attendance/update",
+                        "/evaluation/*/delete-coursework-item"
                 ).permitAll()
 //                .requestMatchers(
 //                        HttpMethod.GET,

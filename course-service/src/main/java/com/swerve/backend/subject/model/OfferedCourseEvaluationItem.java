@@ -26,8 +26,6 @@ public class OfferedCourseEvaluationItem extends BaseEntity<Long>{
     @Column(nullable = false)
     private String type;
 
-    //Attachments left
-
     @Column(nullable = false)
     public boolean canReattempt;
 
@@ -41,7 +39,7 @@ public class OfferedCourseEvaluationItem extends BaseEntity<Long>{
     @Column(nullable = false)
     private LocalDateTime publicationDate;
 
-    @Column(nullable = false)
+    @Column()
     private LocalDateTime deadlineDate;
 
     @Column(nullable = false)
@@ -53,9 +51,11 @@ public class OfferedCourseEvaluationItem extends BaseEntity<Long>{
     @Column(nullable = false)
     private Long teacherID;
 
-//    @ManyToOne(optional = false)
-//    @JoinColumn(name="SPG_ID", nullable=false)
-//    private StudentsPerGroup_OfferedCourse studentsPerGroup_OfferedCourse;
+    @Column()
+    private String resourceUrl;
+
+    @Column()
+    private String instructions;
 
     @OneToMany
     Set<OfferedCourseEvaluation> offeredCourseEvaluations=new HashSet<>();
