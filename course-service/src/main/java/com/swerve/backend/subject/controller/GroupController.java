@@ -9,6 +9,7 @@ import com.swerve.backend.subject.service.CourseOutlineService;
 import com.swerve.backend.subject.service.GroupService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -39,17 +40,19 @@ public class GroupController extends BaseController<StudentsPerGroup_OfferedCour
         return new ResponseEntity<>(groupService.GetOfferedCourseByStudentID(id),HttpStatus.OK);
     }
 
-
+    @PreAuthorize("hasAnyAuthority('viewCourseEvaluation')")
     @GetMapping("/{stdid}/{ocid}/evaluationitems")
     public ResponseEntity< Map<String, List<OfferedCourseEvaluation>> > getEvaluationItemsByStudentID(@PathVariable  Long stdid,
                                                                                                        @PathVariable Long ocid){
         return new ResponseEntity<>(groupService.getEvaluationItemsByStudentId(stdid,ocid),HttpStatus.OK);
     }
+    @PreAuthorize("hasAnyAuthority('viewCourseEvaluation')")
     @GetMapping("/{tid}/{ocid}/coursework")
     public ResponseEntity< List<OfferedCourseEvaluationItem> > getEvaluationItemsByTeacherID(@PathVariable  Long tid,
                                                                                                       @PathVariable Long ocid){
         return new ResponseEntity<>(groupService.getEvaluationItemsByTeacherId(tid,ocid),HttpStatus.OK);
     }
+    @PreAuthorize("hasAnyAuthority('viewCourseEvaluation')")
     @GetMapping("/{tid}/{ocid}/evalitem/teacher")
     public ResponseEntity<Map<Long,Map<String, List<OfferedCourseEvaluationItem>>>> getEvaluationItemsByTeacherIDAndType(@PathVariable  Long tid,
                                                                                              @PathVariable Long ocid){
@@ -59,6 +62,7 @@ public class GroupController extends BaseController<StudentsPerGroup_OfferedCour
     public ResponseEntity<List<OfferedCourse>> findOfferedCourseByTeacherID(@PathVariable  Long tid){
         return new ResponseEntity<>(groupService.GetOfferedCourseByTeacherId(tid),HttpStatus.OK);
     }
+
 
     @GetMapping("/{ocid}/groups/ocid")
     public ResponseEntity<List<Group>> findSPGOCByOfferedCourseId(@PathVariable  Long ocid){

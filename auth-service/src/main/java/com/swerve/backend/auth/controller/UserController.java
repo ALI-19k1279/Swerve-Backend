@@ -25,7 +25,6 @@ public class UserController extends BaseController<User, UserDetailsDTO, Long> {
     }
 
     @GetMapping("/")
-    @PreAuthorize("hasAnyAuthority('auth:hello','auth:read')")
     public String getPuc() {
         return "hello";
     }
@@ -35,7 +34,7 @@ public class UserController extends BaseController<User, UserDetailsDTO, Long> {
         System.out.println(id);
         return new ResponseEntity<>(service.findByIdPublic(id), HttpStatus.OK);
     }
-
+    @PreAuthorize("hasAnyAuthority('viewUsers')")
     @GetMapping("/username/{username}")
     public ResponseEntity<UserDetails> getUserByUsername(@PathVariable String username) {
         System.out.println("Hello");
@@ -43,11 +42,13 @@ public class UserController extends BaseController<User, UserDetailsDTO, Long> {
         return new ResponseEntity<>(service.findByUsername(username), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyAuthority('viewUsers')")
     @GetMapping("/username/{username}/id")
     public ResponseEntity<Long> getUserIdByUsername(@PathVariable String username) {
         return new ResponseEntity<>(service.findIdByUsername(username), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyAuthority('updateUsers')")
     @PatchMapping({"/{id}"})
     public ResponseEntity<UserDetailsDTO> patch(
             @PathVariable Long id, @RequestBody UserDetailsDTO DTO) {

@@ -1,5 +1,7 @@
-Insert into learning_track(deleted,description,name) values(false,123,'CS');
-Insert into learning_track(deleted,description,name) values(false,124,'MG');
+Insert into learning_track(deleted,description,name) values(false,'field of study focused on the theory, design, development, and application of computer technology and software.','CS');
+Insert into learning_track(deleted,description,name) values(false,'study that focuses on understanding consumer behavior, developing effective communication strategies','MG');
+Insert into learning_track(deleted,description,name) values(false,'study of human behavior and society','SS');
+Insert into learning_track(deleted,description,name) values(false,'study of numbers, quantities, and shapes','MT');
 Insert into course(deleted,course_code,credits,short_description,title,learning_track_id) values(false,'CS123',3,'algorithm related course','DSA',1);
 Insert into course(deleted,course_code,credits,short_description,title,learning_track_id) values(false,'CS124',3,'management fundamentals related course','CPM',2);	
 Insert into course(deleted,course_code,credits,short_description,title,learning_track_id) values(false,'CS125',3,'data structures related course','DS',1);

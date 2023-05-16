@@ -12,6 +12,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -43,7 +44,7 @@ public class CourseMaterialController extends BaseController<CourseMaterial, Cou
 //    }
 
 
-
+    @PreAuthorize("hasAnyAuthority('viewCourse')")
     @GetMapping("/fileSystem/{id}")
     public ResponseEntity<?> downloadFileFromFileSystem(@PathVariable Long id) throws IOException {
         byte[] fileData = courseMaterialService.downloadFileFromFileSystem(id);
@@ -55,12 +56,14 @@ public class CourseMaterialController extends BaseController<CourseMaterial, Cou
                 .body(fileData);
     }
 
+    @PreAuthorize("hasAnyAuthority('viewCourse')")
     @GetMapping("/fileSystem/{teacherId}/{offeredCourseId}")
     public ResponseEntity<?> getCourseMaterialsByTeacherIdAndOfferedCourseId(@PathVariable Long teacherId,@PathVariable Long offeredCourseId) throws IOException {
         List<CourseMaterial> courseMaterials = courseMaterialService.getCourseMaterialByTeacherIDAndOfferedCourse(teacherId, offeredCourseId);
         return new ResponseEntity<>(courseMaterials, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyAuthority('updateCourse')")
     @PostMapping("/filesystem")
     public ResponseEntity<?> create(@RequestParam("file") MultipartFile file,
                                     @RequestParam("name") String name,

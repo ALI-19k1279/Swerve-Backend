@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -52,6 +53,7 @@ public class BatchController {
 
 
 
+    @PreAuthorize("hasAnyAuthority('migrateCourses')")
     @PostMapping("/importcourses")
     public ResponseEntity<BatchStatus> importCsvToDBJob(@RequestParam("file") MultipartFile file) throws IOException, JobParametersInvalidException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException, NoSuchJobException {
         log.info("BatchController | importCourseCsvToDBJob is called");
@@ -84,6 +86,7 @@ public class BatchController {
         }
 
     }
+    @PreAuthorize("hasAnyAuthority('migrateEnrollments')")
     @PostMapping("/importenrollments")
     public ResponseEntity<BatchStatus> importEnrollmentsCsvToDBJob(@RequestParam("file") MultipartFile file) throws IOException, JobParametersInvalidException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException, NoSuchJobException {
 
