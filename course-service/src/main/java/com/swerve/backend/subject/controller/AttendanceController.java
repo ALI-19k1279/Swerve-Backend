@@ -29,8 +29,8 @@ public class AttendanceController extends BaseController<OfferedCourseAttendance
         super(attendanceService);
         this.attendanceService=attendanceService;
     }
-    @PreAuthorize("hasAnyAuthority('viewAttendance')")
     @GetMapping("/{ocid}/{stdid}/bycourse")
+    @PreAuthorize("hasAnyAuthority('viewAttendance')")
     public ResponseEntity<List<AttendanceDTO>> getLearnerOfferedCourseAttendance(
                                                                                @PathVariable Long ocid,
                                                                                @PathVariable Long stdid){
@@ -39,7 +39,6 @@ public class AttendanceController extends BaseController<OfferedCourseAttendance
                 ocid,stdid), HttpStatus.OK);
 
     }
-    @PreAuthorize("hasAnyAuthority('viewAttendance')")
     @GetMapping("/{gid}/{ocid}")
     public ResponseEntity<List<AttendanceDTO>> getGroupOfferedCourseAttendance(@PathVariable Long gid,
                                                                                       @PathVariable Long ocid
@@ -48,7 +47,6 @@ public class AttendanceController extends BaseController<OfferedCourseAttendance
                 ocid), HttpStatus.OK);
 
     }
-    @PreAuthorize("hasAnyAuthority('viewAttendance')")
     @GetMapping("/{gid}/{ocid}/{date}/bydate")
     public ResponseEntity<List<AttendanceDTO>> getGroupOfferedCourseAttendanceByDate(@PathVariable Long gid,
                                                                                @PathVariable Long ocid,
@@ -59,7 +57,6 @@ public class AttendanceController extends BaseController<OfferedCourseAttendance
 
 
     }
-    @PreAuthorize("hasAnyAuthority('markAttendance')")
     @GetMapping("/{gid}/{ocid}/{date}/poppulate")
     public ResponseEntity<List<AttendanceDTO>> poppulateInstructorsAttendanceGrid(@PathVariable Long gid,
                                                                                      @PathVariable Long ocid,
@@ -69,7 +66,6 @@ public class AttendanceController extends BaseController<OfferedCourseAttendance
                 ocid,date), HttpStatus.OK);
 
     }
-    @PreAuthorize("hasAnyAuthority('markAttendance')")
     @PostMapping("/mark")
     public ResponseEntity<?> markAttendance(@RequestBody List<AttendanceDTO> attendanceList){
         if(this.attendanceService.markAttendance(attendanceList))
@@ -77,7 +73,6 @@ public class AttendanceController extends BaseController<OfferedCourseAttendance
         else
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to mark attendance");
     }
-    @PreAuthorize("hasAnyAuthority('markAttendance')")
     @PatchMapping("/update")
     public ResponseEntity<?>  updateAttendance(@RequestBody List<AttendanceDTO> attendanceList){
         if(this.attendanceService.updateAttendance(attendanceList))
@@ -85,7 +80,6 @@ public class AttendanceController extends BaseController<OfferedCourseAttendance
         else
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to update attendance");
     }
-    @PreAuthorize("hasAnyAuthority('markAttendance')")
     @PostMapping("/process")
     public ResponseEntity<String> processAttendance(@RequestBody List<AttendanceDTO> attendanceList) {
         boolean result = attendanceService.processAttendance(attendanceList);
@@ -95,7 +89,6 @@ public class AttendanceController extends BaseController<OfferedCourseAttendance
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to process attendance");
         }
     }
-    @PreAuthorize("hasAnyAuthority('viewAttendance')")
     @GetMapping("/{gid}/{stid}/all")
     public ResponseEntity<List<AttendanceDTO>> getOfferedCourseAttendances(@PathVariable Long gid,
                                                                                @PathVariable Long stid

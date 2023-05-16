@@ -36,23 +36,23 @@ public class GroupController extends BaseController<StudentsPerGroup_OfferedCour
     }
 
     @GetMapping("/{id}/offeredcourses/stdid")
+    @PreAuthorize("hasAnyAuthority('viewCourse')")
     public ResponseEntity<List<OfferedCourse>> getOfferedCourseByStudentID(@PathVariable Long id){
         return new ResponseEntity<>(groupService.GetOfferedCourseByStudentID(id),HttpStatus.OK);
     }
 
-    @PreAuthorize("hasAnyAuthority('viewCourseEvaluation')")
+
     @GetMapping("/{stdid}/{ocid}/evaluationitems")
+    @PreAuthorize("hasAnyAuthority('viewCourse')")
     public ResponseEntity< Map<String, List<OfferedCourseEvaluation>> > getEvaluationItemsByStudentID(@PathVariable  Long stdid,
                                                                                                        @PathVariable Long ocid){
         return new ResponseEntity<>(groupService.getEvaluationItemsByStudentId(stdid,ocid),HttpStatus.OK);
     }
-    @PreAuthorize("hasAnyAuthority('viewCourseEvaluation')")
     @GetMapping("/{tid}/{ocid}/coursework")
     public ResponseEntity< List<OfferedCourseEvaluationItem> > getEvaluationItemsByTeacherID(@PathVariable  Long tid,
                                                                                                       @PathVariable Long ocid){
         return new ResponseEntity<>(groupService.getEvaluationItemsByTeacherId(tid,ocid),HttpStatus.OK);
     }
-    @PreAuthorize("hasAnyAuthority('viewCourseEvaluation')")
     @GetMapping("/{tid}/{ocid}/evalitem/teacher")
     public ResponseEntity<Map<Long,Map<String, List<OfferedCourseEvaluationItem>>>> getEvaluationItemsByTeacherIDAndType(@PathVariable  Long tid,
                                                                                              @PathVariable Long ocid){
@@ -62,7 +62,6 @@ public class GroupController extends BaseController<StudentsPerGroup_OfferedCour
     public ResponseEntity<List<OfferedCourse>> findOfferedCourseByTeacherID(@PathVariable  Long tid){
         return new ResponseEntity<>(groupService.GetOfferedCourseByTeacherId(tid),HttpStatus.OK);
     }
-
 
     @GetMapping("/{ocid}/groups/ocid")
     public ResponseEntity<List<Group>> findSPGOCByOfferedCourseId(@PathVariable  Long ocid){

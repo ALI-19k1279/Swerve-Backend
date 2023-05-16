@@ -33,8 +33,9 @@ public class OfferedCourseEvaluationController extends BaseController<OfferedCou
         super(offeredCourseEvaluationService);
         this.offeredCourseEvaluationService = offeredCourseEvaluationService;
     }
-    @PreAuthorize("hasAnyAuthority('viewCourseEvaluation')")
+
     @GetMapping("/{ocid}/{stdid}/bycourse")
+    @PreAuthorize("hasAnyAuthority('viewGradeBook')")
     public ResponseEntity<List<LearnerEvaluationDTO>> getEvaluationItemsByStudentIdAndOfferedCourseId(
             @PathVariable Long ocid,
             @PathVariable Long stdid){
@@ -42,8 +43,8 @@ public class OfferedCourseEvaluationController extends BaseController<OfferedCou
         return new ResponseEntity<>(this.offeredCourseEvaluationService.findEvaluationItemsByStudentIdAndOfferedCourseId(stdid,ocid), HttpStatus.OK);
 
     }
-    @PreAuthorize("hasAnyAuthority('viewCourseEvaluation')")
     @GetMapping("/{ocid}/minmaxavgbycourse")
+    @PreAuthorize("hasAnyAuthority('viewGradeBook')")
     public ResponseEntity<List<EvaluationStatsDTO>> getEvaluationItemsMinMaxAverageByTeacherIdAndOfferedCourseId(
             @PathVariable Long ocid){
 
@@ -64,7 +65,6 @@ public class OfferedCourseEvaluationController extends BaseController<OfferedCou
         // Return the document as a downloadable file
         return new ResponseEntity<>(docBytes, headers, HttpStatus.OK);
     }
-    @PreAuthorize("hasAnyAuthority('updateCourseEvaluation')")
     @PostMapping("/create-coursework")
     public ResponseEntity<?> createEvalItem( @RequestParam("title") String title,
                                              @RequestParam("type") String type,
@@ -110,7 +110,6 @@ public class OfferedCourseEvaluationController extends BaseController<OfferedCou
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    @PreAuthorize("hasAnyAuthority('updateCourseEvaluation')")
     @PatchMapping("/update-coursework")
     public ResponseEntity<?> updateEvalItemDeadlineDate(
                                              @RequestParam("deadline") String deadlineDate,
@@ -134,7 +133,6 @@ public class OfferedCourseEvaluationController extends BaseController<OfferedCou
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    @PreAuthorize("hasAnyAuthority('updateCourseEvaluation')")
     @DeleteMapping("/{itemId}/delete-coursework-item")
     public ResponseEntity<?> deleteEvalItem(@PathVariable Long itemId){
         try{

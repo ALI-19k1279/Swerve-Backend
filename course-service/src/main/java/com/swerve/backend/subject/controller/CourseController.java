@@ -37,39 +37,34 @@ public class CourseController extends BaseController<Course, CourseDTO,Long> {
         this.courseService=courseService;
     }
 
-    @PreAuthorize("hasAnyAuthority('viewCourse')")
     @GetMapping("/{id}/course")
     public ResponseEntity<CourseDTO> getCourseByID(@PathVariable Long id){
         System.out.println("IDDD:::"+this.courseService.GetCourseById(id));
         return new ResponseEntity<>(this.courseService.GetCourseById(id), HttpStatus.OK);
     }
     @GetMapping("/all/course")
-    @PreAuthorize("hasAnyAuthority('viewCourse')")
+    @PreAuthorize("hasAnyAuthority('auth:hello','auth:read')")
     public ResponseEntity<List<CourseDTO>> getAllCourses(){
         System.out.println("all:::");
         return new ResponseEntity<>(this.courseService.GetAllCourses(), HttpStatus.OK);
     }
 
     @GetMapping("/{id}/learningtrack")
-    @PreAuthorize("hasAnyAuthority('viewCourse')")
     public ResponseEntity<LearningTrack> getCourseLearningTrack(@PathVariable Long id){
         System.out.println("all:::");
         return new ResponseEntity<>(this.courseService.getLearningTrackbyCourseID(id), HttpStatus.OK);
     }
 
     @GetMapping("/{id}/prereq")
-    @PreAuthorize("hasAnyAuthority('viewCourse')")
     public ResponseEntity<List<PreRequisite>> getCoursePreRequisite(@PathVariable Long id){
         System.out.println("all:::");
         return new ResponseEntity<>(this.courseService.getPreRequisitebyCourseID(id), HttpStatus.OK);
     }
     @GetMapping("/offeredcourses")
-    @PreAuthorize("hasAnyAuthority('viewCourse')")
     public ResponseEntity<List<OfferedCourse>> getAllOfferedCourses(){
         System.out.println("all:::");
         return new ResponseEntity<>(this.courseService.GetAllOfferedCourses(), HttpStatus.OK);
     }
-    @PreAuthorize("hasAnyAuthority('updateCourse')")
     @RequestMapping(path = "/create", method = POST, consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
     public ResponseEntity<CourseDTO> create(@RequestParam String course_code,
                                          @RequestParam String credits,

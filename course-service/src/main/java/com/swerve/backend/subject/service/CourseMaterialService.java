@@ -73,8 +73,8 @@ public class CourseMaterialService extends BaseService<CourseMaterial, CourseMat
         return courseMaterial.get();
     }
 
-    public List<CourseMaterial> getCourseMaterialByTeacherIDAndOfferedCourse(Long teacherId, Long offeredCourseId) throws IOException {
-        List<CourseMaterial> courseMaterials = courseMaterialRepository.findByTeacherIdAndOfferedCourseId(teacherId, offeredCourseId);
+    public List<CourseMaterial> getCourseMaterialByOfferedCourse(Long offeredCourseId) throws IOException {
+        List<CourseMaterial> courseMaterials = courseMaterialRepository.findByOfferedCourseId(offeredCourseId);
         return courseMaterials;
     }
 

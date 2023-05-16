@@ -21,7 +21,7 @@ public interface CourseMaterialRepository extends BaseRepository<CourseMaterial,
     Optional<CourseMaterial> findById(Long id);
 
 
-    List<CourseMaterial> findByTeacherIdAndOfferedCourseId(Long teacherId, Long offeredCourseId);
+    List<CourseMaterial> findByOfferedCourseId(Long offeredCourseId);
 
     @Modifying
     @Query(

@@ -21,14 +21,13 @@ public class CourseOutlineController extends BaseController<OfferedCourseOutline
         super(courseOutlineService);
         this.courseOutlineService = courseOutlineService;
     }
-    @PreAuthorize("hasAnyAuthority('viewCourse')")
     @GetMapping("/{offeredCourseId}/offeredcourse")
+    @PreAuthorize("hasAnyAuthority('viewCourse')")
     public ResponseEntity<CourseOutlineDTO> getCourseOutlineByOfferedCourseId(@PathVariable Long offeredCourseId) {
         CourseOutlineDTO courseOutlineDTOs = courseOutlineService.getCourseOutlineByOfferedCourseId(offeredCourseId);
         return ResponseEntity.ok(courseOutlineDTOs);
     }
 
-    @PreAuthorize("hasAnyAuthority('updateCourse')")
     @PostMapping("/{offeredCourseId}/{teacherId}/update/outline")
     public ResponseEntity<?> getCourseOutlineByOfferedCourseId(@PathVariable Long offeredCourseId,@PathVariable Long teacherId,
                                                                               @RequestBody CourseOutlineDTO courseOutlineDTO) {
