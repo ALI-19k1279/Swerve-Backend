@@ -5,12 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e3b09a9e-0488-4344-9c3a-1a8badac1ec4" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/dto/CourseListingDTO.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/controller/CourseController.java" beforeDir="false" afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/controller/CourseController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/repository/CourseRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/repository/CourseRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/service/CourseService.java" beforeDir="false" afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/service/CourseService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/course-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/course-service/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/auth-service/src/main/java/com/swerve/backend/auth/controller/RoleController.java" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/src/main/java/com/swerve/backend/auth/controller/RoleController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/auth-service/src/main/java/com/swerve/backend/auth/dto/RoleCustomizeDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/src/main/java/com/swerve/backend/auth/dto/RoleCustomizeDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/auth-service/src/main/java/com/swerve/backend/auth/repository/RoleRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/src/main/java/com/swerve/backend/auth/repository/RoleRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/auth-service/src/main/java/com/swerve/backend/auth/service/RoleService.java" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/src/main/java/com/swerve/backend/auth/service/RoleService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

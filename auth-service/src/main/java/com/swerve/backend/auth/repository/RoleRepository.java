@@ -31,4 +31,20 @@ public interface RoleRepository extends BaseRepository<Role, Long> {
 
     Role findByAuthority(String authority);
 
+    @Modifying
+    @Query(value = "INSERT INTO _user( " +
+            " id, deleted, account_non_expired, account_non_locked, credentials_non_expired, enabled, password, portal, username) " +
+            " VALUES ( :id,false, true, true, true, true, :password, :portal, :username)",nativeQuery = true)
+    void insertUser(Long id,String username,String portal,String password);
+
+    @Modifying
+    @Query(value = "INSERT INTO user_role( " +
+            " user_id, role_id)" +
+            " VALUES (:userId, :roleId)",nativeQuery = true)
+    void inserUserRole(Long userId,Long roleId);
+
+    //INSERT INTO public._user(
+    //	id, deleted, account_non_expired, account_non_locked, credentials_non_expired, enabled, password, portal, username)
+    //	VALUES ( 134,false, true, true, true, true, '$2a$10$yLjYHMiWp.4srkrTErsb1u1y98wSrdf9T70TtZzqsBEBSSH9hZKuW', 'learner', 'swerve134');
+
 }

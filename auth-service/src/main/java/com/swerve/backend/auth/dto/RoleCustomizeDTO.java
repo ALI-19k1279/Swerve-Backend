@@ -12,6 +12,10 @@ import java.util.List;
 @Getter
 @Setter
 public class RoleCustomizeDTO {
+    private Long userId;
+    private String username;
+    private String password;
+    private String portal;
     private String authority;
     private List<String> system_features;
 }

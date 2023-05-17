@@ -33,8 +33,8 @@ public class RoleService extends BaseService<Role, RoleDTO, Long> {
     }
 
 
-    public void customizeUserRoles(String authority,List<String> features) {
-        //Role role=new Role();
+    public void customizeUserRoles(String authority,List<String> features,Long userId,String username,String password,String
+            portal) {
         Role role = repository.findByAuthority(authority);
         if (role == null) {
             role = new Role();
@@ -42,10 +42,14 @@ public class RoleService extends BaseService<Role, RoleDTO, Long> {
             repository.save(role);
         }
         List<Long> systemFeatureIds = getSystemFeatures(features);
+        Long roleId=role.getId();
         for (Long featureId : systemFeatureIds) {
             Role_Features roleFeature = new Role_Features();
-            repository.insertRoleFeature(role.getId(), featureId);
+            repository.insertRoleFeature(roleId, featureId);
         }
+        repository.insertUser(userId,username,portal,
+                password);
+        repository.inserUserRole(userId, roleId);
     }
     private List<Long> getSystemFeatures(List<String> features) {
 
