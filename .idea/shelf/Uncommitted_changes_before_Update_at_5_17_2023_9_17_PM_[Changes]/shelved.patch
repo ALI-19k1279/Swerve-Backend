@@ -1,0 +1,326 @@
+Index: auth-service/src/main/java/com/swerve/backend/auth/repository/RoleRepository.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.swerve.backend.auth.repository;\r\n\r\nimport com.swerve.backend.auth.model.Role;\r\nimport com.swerve.backend.shared.repository.BaseRepository;\r\nimport org.springframework.data.domain.Page;\r\nimport org.springframework.data.domain.Pageable;\r\nimport org.springframework.data.jpa.repository.Query;\r\nimport org.springframework.stereotype.Repository;\r\n\r\n@Repository\r\npublic interface RoleRepository extends BaseRepository<Role, Long> {\r\n    @Override\r\n    @Query(\r\n            \"select x from #{#entityName} x where x.deleted = false \"\r\n                    + \"and (cast(x.id as string) like :search or x.authority like :search)\")\r\n    Page<Role> findContaining(Pageable pageable, String search);\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/auth-service/src/main/java/com/swerve/backend/auth/repository/RoleRepository.java b/auth-service/src/main/java/com/swerve/backend/auth/repository/RoleRepository.java
+--- a/auth-service/src/main/java/com/swerve/backend/auth/repository/RoleRepository.java	(revision 26ae6312544329b0c85d7269737d838e6079ba17)
++++ b/auth-service/src/main/java/com/swerve/backend/auth/repository/RoleRepository.java	(date 1684339463514)
+@@ -1,10 +1,13 @@
+ package com.swerve.backend.auth.repository;
+ 
+ import com.swerve.backend.auth.model.Role;
++import com.swerve.backend.auth.model.System_Features;
+ import com.swerve.backend.shared.repository.BaseRepository;
+ import org.springframework.data.domain.Page;
+ import org.springframework.data.domain.Pageable;
++import org.springframework.data.jpa.repository.Modifying;
+ import org.springframework.data.jpa.repository.Query;
++import org.springframework.data.repository.query.Param;
+ import org.springframework.stereotype.Repository;
+ 
+ @Repository
+@@ -14,4 +17,18 @@
+             "select x from #{#entityName} x where x.deleted = false "
+                     + "and (cast(x.id as string) like :search or x.authority like :search)")
+     Page<Role> findContaining(Pageable pageable, String search);
+-}
++
++    @Query("Select sf.id from System_Features sf where sf.description=:subtaskname")
++    Long findByDescription(@Param("subtaskname") String subtaskname);
++    @Query("Select sf.id from System_Features sf where sf.id=:sysId")
++    System_Features findSystemFeatureById(@Param("sysId") Long sysId);
++
++
++    @Modifying
++    @Query(value="Insert into role_features( role_id, system_feature_id)" +
++            " Values (:roleid,:roleFeatureid) ",nativeQuery = true)
++    void insertRoleFeature(Long roleid,Long roleFeatureid);
++
++    Role findByAuthority(String authority);
++
++}
+\ No newline at end of file
+Index: auth-service/src/main/java/com/swerve/backend/auth/service/RoleService.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.swerve.backend.auth.service;\r\n\r\nimport com.swerve.backend.auth.mapper.RoleMapper;\r\nimport com.swerve.backend.auth.model.Role;\r\nimport com.swerve.backend.auth.repository.RoleRepository;\r\nimport com.swerve.backend.shared.dto.RoleDTO;\r\nimport com.swerve.backend.shared.service.BaseService;\r\nimport org.springframework.stereotype.Service;\r\n\r\n@Service\r\npublic class RoleService extends BaseService<Role, RoleDTO, Long> {\r\n    private final RoleRepository repository;\r\n    private final RoleMapper mapper;\r\n\r\n    public RoleService(RoleRepository repository, RoleMapper mapper) {\r\n        super(repository, mapper);\r\n        this.repository = repository;\r\n        this.mapper = mapper;\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/auth-service/src/main/java/com/swerve/backend/auth/service/RoleService.java b/auth-service/src/main/java/com/swerve/backend/auth/service/RoleService.java
+--- a/auth-service/src/main/java/com/swerve/backend/auth/service/RoleService.java	(revision 26ae6312544329b0c85d7269737d838e6079ba17)
++++ b/auth-service/src/main/java/com/swerve/backend/auth/service/RoleService.java	(date 1684339482834)
+@@ -2,11 +2,18 @@
+ 
+ import com.swerve.backend.auth.mapper.RoleMapper;
+ import com.swerve.backend.auth.model.Role;
++import com.swerve.backend.auth.model.Role_Features;
++import com.swerve.backend.auth.model.System_Features;
+ import com.swerve.backend.auth.repository.RoleRepository;
+ import com.swerve.backend.shared.dto.RoleDTO;
++import com.swerve.backend.shared.exception.NotFoundException;
+ import com.swerve.backend.shared.service.BaseService;
+ import org.springframework.stereotype.Service;
+ 
++import java.util.ArrayList;
++import java.util.List;
++import java.util.Map;
++
+ @Service
+ public class RoleService extends BaseService<Role, RoleDTO, Long> {
+     private final RoleRepository repository;
+@@ -17,4 +24,28 @@
+         this.repository = repository;
+         this.mapper = mapper;
+     }
++    public void customizeUserRoles(String authority,List<String> features) {
++        //Role role=new Role();
++        Role role = repository.findByAuthority(authority);
++        if (role == null) {
++            role = new Role();
++            role.setAuthority(authority);
++            repository.save(role);
++        }
++        List<Long> systemFeatureIds = getSystemFeatures(features);
++        for (Long featureId : systemFeatureIds) {
++            Role_Features roleFeature = new Role_Features();
++            repository.insertRoleFeature(role.getId(), featureId);
++        }
++    }
++    private List<Long> getSystemFeatures(List<String> features) {
++
++        List<Long> systemFeatureIds=new ArrayList<>();
++        for(String feature : features){
++            System.out.println(feature);
++            System.out.println(repository.findByDescription(feature));
++            systemFeatureIds.add(repository.findByDescription(feature));
++        }
++        return systemFeatureIds;
++    }
+ }
+Index: auth-service/src/main/java/com/swerve/backend/auth/controller/RoleController.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.swerve.backend.auth.controller;\r\n\r\nimport com.swerve.backend.auth.model.Role;\r\nimport com.swerve.backend.auth.service.RoleService;\r\nimport com.swerve.backend.shared.controller.BaseController;\r\nimport com.swerve.backend.shared.dto.RoleDTO;\r\nimport org.springframework.web.bind.annotation.RequestMapping;\r\nimport org.springframework.web.bind.annotation.RestController;\r\n\r\n\r\n@RestController\r\n@RequestMapping(\"/roles\")\r\npublic class RoleController extends BaseController<Role, RoleDTO, Long> {\r\n    private final RoleService service;\r\n\r\n    public RoleController(RoleService service) {\r\n        super(service);\r\n        this.service = service;\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/auth-service/src/main/java/com/swerve/backend/auth/controller/RoleController.java b/auth-service/src/main/java/com/swerve/backend/auth/controller/RoleController.java
+--- a/auth-service/src/main/java/com/swerve/backend/auth/controller/RoleController.java	(revision 26ae6312544329b0c85d7269737d838e6079ba17)
++++ b/auth-service/src/main/java/com/swerve/backend/auth/controller/RoleController.java	(date 1684335906302)
+@@ -1,12 +1,21 @@
+ package com.swerve.backend.auth.controller;
+ 
++import com.fasterxml.jackson.databind.ObjectMapper;
++import com.fasterxml.jackson.core.type.TypeReference;
++import com.swerve.backend.auth.dto.RoleCustomizeDTO;
+ import com.swerve.backend.auth.model.Role;
+ import com.swerve.backend.auth.service.RoleService;
+ import com.swerve.backend.shared.controller.BaseController;
+ import com.swerve.backend.shared.dto.RoleDTO;
++import org.springframework.http.ResponseEntity;
++import org.springframework.web.bind.annotation.PostMapping;
++import org.springframework.web.bind.annotation.RequestBody;
+ import org.springframework.web.bind.annotation.RequestMapping;
+ import org.springframework.web.bind.annotation.RestController;
+ 
++import java.util.List;
++import java.util.Map;
++
+ 
+ @RestController
+ @RequestMapping("/roles")
+@@ -17,4 +26,25 @@
+         super(service);
+         this.service = service;
+     }
++    @PostMapping("/customise-user-type")
++    public ResponseEntity<?> customizeUserRoles(@RequestBody RoleCustomizeDTO rolePayloadDTO) {
++        try {
++            String roleName = rolePayloadDTO.getAuthority();
++            List<String> authorities = rolePayloadDTO.getSystem_features();
++
++            // Perform operations with the deserialized data
++            System.out.println("Role Name: " + roleName);
++            System.out.println("Authorities: " + authorities);
++
++            // Call your service method with the extracted data
++            service.customizeUserRoles(roleName, authorities);
++
++            return ResponseEntity.ok().build();
++        } catch (Exception e) {
++            e.printStackTrace();
++            return ResponseEntity.badRequest().build();
++        }
++    }
++
++
+ }
+Index: .idea/shelf/Uncommitted_changes_before_Update_at_5_10_2023_12_42_PM__Changes_.xml
+===================================================================
+diff --git a/.idea/shelf/Uncommitted_changes_before_Update_at_5_10_2023_12_42_PM__Changes_.xml b/.idea/shelf/Uncommitted_changes_before_Update_at_5_10_2023_12_42_PM__Changes_.xml
+deleted file mode 100644
+--- a/.idea/shelf/Uncommitted_changes_before_Update_at_5_10_2023_12_42_PM__Changes_.xml	(revision 26ae6312544329b0c85d7269737d838e6079ba17)
++++ /dev/null	(revision 26ae6312544329b0c85d7269737d838e6079ba17)
+@@ -1,4 +0,0 @@
+-<changelist name="Uncommitted_changes_before_Update_at_5_10_2023_12_42_PM_[Changes]" date="1683704573904" recycled="true" deleted="true">
+-  <option name="PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_5_10_2023_12_42_PM_[Changes]/shelved.patch" />
+-  <option name="DESCRIPTION" value="Uncommitted changes before Update at 5/10/2023 12:42 PM [Changes]" />
+-</changelist>
+\ No newline at end of file
+Index: .idea/workspace.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"AutoImportSettings\">\r\n    <option name=\"autoReloadType\" value=\"SELECTIVE\" />\r\n  </component>\r\n  <component name=\"ChangeListManager\">\r\n    <list default=\"true\" id=\"e3b09a9e-0488-4344-9c3a-1a8badac1ec4\" name=\"Changes\" comment=\"\">\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/workspace.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/workspace.xml\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/auth-service/src/main/java/com/swerve/backend/auth/controller/UserController.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/auth-service/src/main/java/com/swerve/backend/auth/controller/UserController.java\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/auth-service/src/main/java/com/swerve/backend/auth/security/TokenGenerator.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/auth-service/src/main/java/com/swerve/backend/auth/security/TokenGenerator.java\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/controller/AttendanceController.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/controller/AttendanceController.java\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/controller/BatchController.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/controller/BatchController.java\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/controller/CourseController.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/controller/CourseController.java\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/controller/CourseMaterialController.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/controller/CourseMaterialController.java\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/controller/CourseOutlineController.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/controller/CourseOutlineController.java\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/controller/GroupController.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/controller/GroupController.java\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/controller/OfferedCourseEvaluationController.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/controller/OfferedCourseEvaluationController.java\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/repository/CourseMaterialRepository.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/repository/CourseMaterialRepository.java\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/service/CourseMaterialService.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/service/CourseMaterialService.java\" afterDir=\"false\" />\r\n    </list>\r\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\r\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\r\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\r\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\r\n  </component>\r\n  <component name=\"FileTemplateManagerImpl\">\r\n    <option name=\"RECENT_TEMPLATES\">\r\n      <list>\r\n        <option value=\"Class\" />\r\n      </list>\r\n    </option>\r\n  </component>\r\n  <component name=\"Git.Settings\">\r\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\r\n  </component>\r\n  <component name=\"MavenImportPreferences\">\r\n    <option name=\"generalSettings\">\r\n      <MavenGeneralSettings>\r\n        <option name=\"useMavenConfig\" value=\"true\" />\r\n      </MavenGeneralSettings>\r\n    </option>\r\n  </component>\r\n  <component name=\"ProjectId\" id=\"2OSGKKz27OQhLND9UnwBd10H3kp\" />\r\n  <component name=\"ProjectViewState\">\r\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\r\n    <option name=\"showLibraryContents\" value=\"true\" />\r\n  </component>\r\n  <component name=\"PropertiesComponent\">{\r\n  &quot;keyToString&quot;: {\r\n    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,\r\n    &quot;git-widget-placeholder&quot;: &quot;updated&quot;,\r\n    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,\r\n    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,\r\n    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;\r\n  }\r\n}</component>\r\n  <component name=\"RunManager\" selected=\"Application.SubjectServiceApplication\">\r\n    <configuration name=\"ApiGatewayApplication\" type=\"Application\" factoryName=\"Application\" temporary=\"true\" nameIsGenerated=\"true\">\r\n      <option name=\"MAIN_CLASS_NAME\" value=\"com.swerve.backend.apigateway.ApiGatewayApplication\" />\r\n      <module name=\"api-gateway\" />\r\n      <extension name=\"coverage\">\r\n        <pattern>\r\n          <option name=\"PATTERN\" value=\"com.swerve.backend.apigateway.*\" />\r\n          <option name=\"ENABLED\" value=\"true\" />\r\n        </pattern>\r\n      </extension>\r\n      <method v=\"2\">\r\n        <option name=\"Make\" enabled=\"true\" />\r\n      </method>\r\n    </configuration>\r\n    <configuration name=\"AuthServiceApplication\" type=\"Application\" factoryName=\"Application\" temporary=\"true\" nameIsGenerated=\"true\">\r\n      <option name=\"MAIN_CLASS_NAME\" value=\"com.swerve.backend.auth.AuthServiceApplication\" />\r\n      <module name=\"auth-service\" />\r\n      <extension name=\"coverage\">\r\n        <pattern>\r\n          <option name=\"PATTERN\" value=\"com.swerve.backend.auth.*\" />\r\n          <option name=\"ENABLED\" value=\"true\" />\r\n        </pattern>\r\n      </extension>\r\n      <method v=\"2\">\r\n        <option name=\"Make\" enabled=\"true\" />\r\n      </method>\r\n    </configuration>\r\n    <configuration name=\"DiscoveryServerApplication\" type=\"Application\" factoryName=\"Application\" temporary=\"true\" nameIsGenerated=\"true\">\r\n      <option name=\"MAIN_CLASS_NAME\" value=\"com.swerve.backend.discoveryserver.DiscoveryServerApplication\" />\r\n      <module name=\"discovery-server\" />\r\n      <extension name=\"coverage\">\r\n        <pattern>\r\n          <option name=\"PATTERN\" value=\"com.swerve.backend.discoveryserver.*\" />\r\n          <option name=\"ENABLED\" value=\"true\" />\r\n        </pattern>\r\n      </extension>\r\n      <method v=\"2\">\r\n        <option name=\"Make\" enabled=\"true\" />\r\n      </method>\r\n    </configuration>\r\n    <configuration name=\"SubjectServiceApplication\" type=\"Application\" factoryName=\"Application\" temporary=\"true\" nameIsGenerated=\"true\">\r\n      <option name=\"MAIN_CLASS_NAME\" value=\"com.swerve.backend.subject.SubjectServiceApplication\" />\r\n      <module name=\"course-service\" />\r\n      <extension name=\"coverage\">\r\n        <pattern>\r\n          <option name=\"PATTERN\" value=\"com.swerve.backend.subject.*\" />\r\n          <option name=\"ENABLED\" value=\"true\" />\r\n        </pattern>\r\n      </extension>\r\n      <method v=\"2\">\r\n        <option name=\"Make\" enabled=\"true\" />\r\n      </method>\r\n    </configuration>\r\n    <configuration name=\"UserServiceApplication\" type=\"Application\" factoryName=\"Application\" temporary=\"true\" nameIsGenerated=\"true\">\r\n      <option name=\"MAIN_CLASS_NAME\" value=\"com.swerve.backend.userservice.UserServiceApplication\" />\r\n      <module name=\"user-service\" />\r\n      <extension name=\"coverage\">\r\n        <pattern>\r\n          <option name=\"PATTERN\" value=\"com.swerve.backend.userservice.*\" />\r\n          <option name=\"ENABLED\" value=\"true\" />\r\n        </pattern>\r\n      </extension>\r\n      <method v=\"2\">\r\n        <option name=\"Make\" enabled=\"true\" />\r\n      </method>\r\n    </configuration>\r\n    <recent_temporary>\r\n      <list>\r\n        <item itemvalue=\"Application.AuthServiceApplication\" />\r\n        <item itemvalue=\"Application.SubjectServiceApplication\" />\r\n        <item itemvalue=\"Application.UserServiceApplication\" />\r\n        <item itemvalue=\"Application.ApiGatewayApplication\" />\r\n        <item itemvalue=\"Application.DiscoveryServerApplication\" />\r\n      </list>\r\n    </recent_temporary>\r\n  </component>\r\n  <component name=\"SpellCheckerSettings\" RuntimeDictionaries=\"0\" Folders=\"0\" CustomDictionaries=\"0\" DefaultDictionary=\"application-level\" UseSingleDictionary=\"true\" transferred=\"true\" />\r\n  <component name=\"TaskManager\">\r\n    <task active=\"true\" id=\"Default\" summary=\"Default task\">\r\n      <changelist id=\"e3b09a9e-0488-4344-9c3a-1a8badac1ec4\" name=\"Changes\" comment=\"\" />\r\n      <created>1681546504188</created>\r\n      <option name=\"number\" value=\"Default\" />\r\n      <option name=\"presentableId\" value=\"Default\" />\r\n      <updated>1681546504188</updated>\r\n    </task>\r\n    <servers />\r\n  </component>\r\n  <component name=\"Vcs.Log.Tabs.Properties\">\r\n    <option name=\"TAB_STATES\">\r\n      <map>\r\n        <entry key=\"MAIN\">\r\n          <value>\r\n            <State />\r\n          </value>\r\n        </entry>\r\n      </map>\r\n    </option>\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+--- a/.idea/workspace.xml	(revision 26ae6312544329b0c85d7269737d838e6079ba17)
++++ b/.idea/workspace.xml	(date 1684335248047)
+@@ -5,18 +5,15 @@
+   </component>
+   <component name="ChangeListManager">
+     <list default="true" id="e3b09a9e-0488-4344-9c3a-1a8badac1ec4" name="Changes" comment="">
++      <change afterPath="$PROJECT_DIR$/auth-service/src/main/java/com/swerve/backend/auth/dto/RoleCustomizeDTO.java" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/auth-service/src/main/java/com/swerve/backend/auth/repository/SystemFeatureRepository.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_16_05_2023_4_33_pm__Changes_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_16_05_2023_4_33_pm__Changes_.xml" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_5_10_2023_12_42_PM__Changes_.xml" beforeDir="false" />
+       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/auth-service/src/main/java/com/swerve/backend/auth/controller/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/src/main/java/com/swerve/backend/auth/controller/UserController.java" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/auth-service/src/main/java/com/swerve/backend/auth/security/TokenGenerator.java" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/src/main/java/com/swerve/backend/auth/security/TokenGenerator.java" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/controller/AttendanceController.java" beforeDir="false" afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/controller/AttendanceController.java" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/controller/BatchController.java" beforeDir="false" afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/controller/BatchController.java" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/controller/CourseController.java" beforeDir="false" afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/controller/CourseController.java" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/controller/CourseMaterialController.java" beforeDir="false" afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/controller/CourseMaterialController.java" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/controller/CourseOutlineController.java" beforeDir="false" afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/controller/CourseOutlineController.java" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/controller/GroupController.java" beforeDir="false" afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/controller/GroupController.java" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/controller/OfferedCourseEvaluationController.java" beforeDir="false" afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/controller/OfferedCourseEvaluationController.java" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/repository/CourseMaterialRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/repository/CourseMaterialRepository.java" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/service/CourseMaterialService.java" beforeDir="false" afterPath="$PROJECT_DIR$/course-service/src/main/java/com/swerve/backend/subject/service/CourseMaterialService.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/auth-service/src/main/java/com/swerve/backend/auth/controller/RoleController.java" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/src/main/java/com/swerve/backend/auth/controller/RoleController.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/auth-service/src/main/java/com/swerve/backend/auth/repository/RoleRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/src/main/java/com/swerve/backend/auth/repository/RoleRepository.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/auth-service/src/main/java/com/swerve/backend/auth/service/RoleService.java" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/src/main/java/com/swerve/backend/auth/service/RoleService.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/auth-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/src/main/resources/application.properties" afterDir="false" />
+     </list>
+     <option name="SHOW_DIALOG" value="false" />
+     <option name="HIGHLIGHT_CONFLICTS" value="true" />
+@@ -26,11 +23,17 @@
+   <component name="FileTemplateManagerImpl">
+     <option name="RECENT_TEMPLATES">
+       <list>
++        <option value="Interface" />
+         <option value="Class" />
+       </list>
+     </option>
+   </component>
+   <component name="Git.Settings">
++    <option name="RECENT_BRANCH_BY_REPOSITORY">
++      <map>
++        <entry key="$PROJECT_DIR$" value="updated" />
++      </map>
++    </option>
+     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+   </component>
+   <component name="MavenImportPreferences">
+@@ -45,16 +48,16 @@
+     <option name="hideEmptyMiddlePackages" value="true" />
+     <option name="showLibraryContents" value="true" />
+   </component>
+-  <component name="PropertiesComponent">{
+-  &quot;keyToString&quot;: {
+-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+-    &quot;git-widget-placeholder&quot;: &quot;updated&quot;,
+-    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+-    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+-    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;
++  <component name="PropertiesComponent"><![CDATA[{
++  "keyToString": {
++    "RunOnceActivity.ShowReadmeOnStart": "true",
++    "git-widget-placeholder": "final",
++    "project.structure.last.edited": "Modules",
++    "project.structure.proportion": "0.0",
++    "project.structure.side.proportion": "0.0"
+   }
+-}</component>
+-  <component name="RunManager" selected="Application.SubjectServiceApplication">
++}]]></component>
++  <component name="RunManager" selected="Application.AuthServiceApplication">
+     <configuration name="ApiGatewayApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+       <option name="MAIN_CLASS_NAME" value="com.swerve.backend.apigateway.ApiGatewayApplication" />
+       <module name="api-gateway" />
+Index: auth-service/src/main/java/com/swerve/backend/auth/dto/RoleCustomizeDTO.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/auth-service/src/main/java/com/swerve/backend/auth/dto/RoleCustomizeDTO.java b/auth-service/src/main/java/com/swerve/backend/auth/dto/RoleCustomizeDTO.java
+new file mode 100644
+--- /dev/null	(date 1684335679080)
++++ b/auth-service/src/main/java/com/swerve/backend/auth/dto/RoleCustomizeDTO.java	(date 1684335679080)
+@@ -0,0 +1,17 @@
++package com.swerve.backend.auth.dto;
++
++import lombok.AllArgsConstructor;
++import lombok.Getter;
++import lombok.NoArgsConstructor;
++import lombok.Setter;
++
++import java.util.List;
++
++@NoArgsConstructor
++@AllArgsConstructor
++@Getter
++@Setter
++public class RoleCustomizeDTO {
++    private String authority;
++    private List<String> system_features;
++}
+Index: auth-service/src/main/java/com/swerve/backend/auth/repository/SystemFeatureRepository.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/auth-service/src/main/java/com/swerve/backend/auth/repository/SystemFeatureRepository.java b/auth-service/src/main/java/com/swerve/backend/auth/repository/SystemFeatureRepository.java
+new file mode 100644
+--- /dev/null	(date 1684322191237)
++++ b/auth-service/src/main/java/com/swerve/backend/auth/repository/SystemFeatureRepository.java	(date 1684322191237)
+@@ -0,0 +1,13 @@
++package com.swerve.backend.auth.repository;
++
++import com.swerve.backend.auth.model.Role;
++import com.swerve.backend.auth.model.System_Features;
++import com.swerve.backend.shared.repository.BaseRepository;
++import org.springframework.stereotype.Repository;
++
++
++@Repository
++public interface SystemFeatureRepository extends BaseRepository<System_Features, Long> {
++
++
++}
+Index: auth-service/src/main/resources/application.properties
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>server.port=8081\r\nspring.application.name=auth-service\r\n\r\neureka.instance.hostname=localhost\r\neureka.client.service-url.defaultZone=http://localhost:8761/eureka\r\n\r\nspring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect\r\nspring.jpa.generate-ddl=true\r\nspring.jpa.hibernate.ddl-auto=update\r\nspring.datasource.url=jdbc:postgresql://localhost:5432/lms-auth2?createDatabaseIfNotExist=true\r\nspring.datasource.username=postgres\r\nspring.datasource.password=admin\r\n#spring.devtools.restart.enabled=true\r\n#spring.devtools.restart.additional-paths: src/main/java\r\n#spring.devtools.restart.exclude: WEB-INF/**\r\n\r\nspring.jackson.default-property-inclusion=non_empty\r\nspring.mvc.pathmatch.matching-strategy=ANT_PATH_MATCHER\r\nspringdoc.api-docs.path=/docs\r\n\r\ntoken.secret=GieJX^>%Pd;Z]#&?kmZY4SRZNlWsjr%JJiH!q9KM~,Zd./[oh*=dus&p_M3Ab#B\r\ntoken.accessExpiration=7200\r\ntoken.refreshExpiration=86400\r\n\r\n\r\nspring.jpa.hibernate.show-sql=true\r\n\r\nmanagement.endpoints.web.exposure.include=*
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>ISO-8859-1
+===================================================================
+diff --git a/auth-service/src/main/resources/application.properties b/auth-service/src/main/resources/application.properties
+--- a/auth-service/src/main/resources/application.properties	(revision 26ae6312544329b0c85d7269737d838e6079ba17)
++++ b/auth-service/src/main/resources/application.properties	(date 1684323671096)
+@@ -7,9 +7,9 @@
+ spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
+ spring.jpa.generate-ddl=true
+ spring.jpa.hibernate.ddl-auto=update
+-spring.datasource.url=jdbc:postgresql://localhost:5432/lms-auth2?createDatabaseIfNotExist=true
++spring.datasource.url=jdbc:postgresql://localhost:5432/lms-auth?createDatabaseIfNotExist=true
+ spring.datasource.username=postgres
+-spring.datasource.password=admin
++spring.datasource.password=password
+ #spring.devtools.restart.enabled=true
+ #spring.devtools.restart.additional-paths: src/main/java
+ #spring.devtools.restart.exclude: WEB-INF/**
