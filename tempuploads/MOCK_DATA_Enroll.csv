@@ -1,3 +1,5 @@
 student_id,is_enrolled,group_id,offered_course_id
 1279,TRUE,1,1
 134,no,1,1
+123,TRUE,1,1
+124,FALSE,1,1

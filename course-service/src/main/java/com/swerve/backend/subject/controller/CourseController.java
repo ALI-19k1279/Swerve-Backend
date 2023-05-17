@@ -19,9 +19,11 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.swing.text.html.Option;
 import java.rmi.ServerException;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
@@ -43,7 +45,6 @@ public class CourseController extends BaseController<Course, CourseDTO,Long> {
         return new ResponseEntity<>(this.courseService.GetCourseById(id), HttpStatus.OK);
     }
     @GetMapping("/all/course")
-    @PreAuthorize("hasAnyAuthority('auth:hello','auth:read')")
     public ResponseEntity<List<CourseDTO>> getAllCourses(){
         System.out.println("all:::");
         return new ResponseEntity<>(this.courseService.GetAllCourses(), HttpStatus.OK);
@@ -88,6 +89,22 @@ public class CourseController extends BaseController<Course, CourseDTO,Long> {
 //            return new ResponseEntity<>(course, HttpStatus.CREATED);
 //        }
         return new ResponseEntity<>(courseDTO, HttpStatus.CREATED);
+    }
+
+
+    @PostMapping("/offer-course")
+    public ResponseEntity<HttpStatus> insertOfferedCourse(@RequestParam("courseID") Long courseId,
+                                                        @RequestParam("cycleId") Long cycleId,
+                                                        @RequestParam("fee") int fee, @RequestParam("teacherId") Long teacherID
+    ){
+        try {
+            courseService.insertOfferedCourse(courseId, cycleId, fee, teacherID);
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        catch (Exception e)
+        {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
 }

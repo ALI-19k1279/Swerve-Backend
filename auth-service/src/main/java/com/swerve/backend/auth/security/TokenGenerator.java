@@ -77,6 +77,8 @@ public class TokenGenerator {
         User user = validateUser(username);
         Long userId = user.getId();
         claims.put("userId", userId);
+        String portal=user.getPortal();
+        claims.put("portal",portal);
 
         List<String> authorities =
                 user.getRoles().stream().map(GrantedAuthority::getAuthority).toList();

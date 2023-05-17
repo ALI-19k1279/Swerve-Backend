@@ -14,8 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Controller
 @RequestMapping("/spgoc")
@@ -63,6 +62,15 @@ public class GroupController extends BaseController<StudentsPerGroup_OfferedCour
     @GetMapping("/{ocid}/groups/ocid")
     public ResponseEntity<List<Group>> findSPGOCByOfferedCourseId(@PathVariable  Long ocid){
         return new ResponseEntity<>(groupService.GetSPGOCByOfferedCourseId(ocid),HttpStatus.OK);
+    }
+
+    @GetMapping("/all/spgocs")
+    public ResponseEntity<List<StudentsPerGroup_OfferedCourseDTO>> getSPGOCs(){
+        return new ResponseEntity<>(groupService.findAll(),HttpStatus.OK);
+    }
+    @GetMapping("/groups")
+    public ResponseEntity<List<Group>> getGroups() {
+        return new ResponseEntity<>(groupService.findGroups(),HttpStatus.OK);
     }
 
 

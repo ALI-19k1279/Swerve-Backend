@@ -71,4 +71,7 @@ public class CourseService extends BaseService<Course,CourseDTO,Long> {
                                             Long learning_track_id){
         courseRepository.insertCourse(course_code,credits,short_description,title,learning_track_id);
     }
+    public void insertOfferedCourse(Long courseId,Long cycleId,int fee,Long teacherId){
+        courseRepository.insertOfferedCourse( courseId, cycleId, fee,teacherId);
+    }
 }

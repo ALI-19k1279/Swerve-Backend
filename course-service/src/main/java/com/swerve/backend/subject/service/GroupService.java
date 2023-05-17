@@ -4,10 +4,7 @@ package com.swerve.backend.subject.service;
 
 import com.fasterxml.jackson.databind.util.JSONPObject;
 import com.swerve.backend.shared.service.BaseService;
-import com.swerve.backend.subject.dto.LearnerEvaluationDTO;
-import com.swerve.backend.subject.dto.OfferedCourseEvaluationDTO;
-import com.swerve.backend.subject.dto.OfferedCourseEvaluationItemDTO;
-import com.swerve.backend.subject.dto.StudentsPerGroup_OfferedCourseDTO;
+import com.swerve.backend.subject.dto.*;
 import com.swerve.backend.subject.mapper.StudentsPerGroup_OfferedCourseMapper;
 import com.swerve.backend.subject.model.*;
 import com.swerve.backend.subject.repository.LearningTrackRepository;
@@ -121,6 +118,11 @@ public class GroupService extends BaseService<StudentsPerGroup_OfferedCourse, St
     public List<StudentsPerGroup_OfferedCourse> GetSPGOCByGroupIdAndOfferedCourseId(Long groupId, Long offeredCourseId){
         List<StudentsPerGroup_OfferedCourse> byGroupIdAndOfferedCourseIdAndDeletedFalse = studentsPerGroupOfferedCourseRepository.findByGroupIdAndOfferedCourseIdAndDeletedFalse(groupId, offeredCourseId);
         return byGroupIdAndOfferedCourseIdAndDeletedFalse;
+    }
+
+    public List<Group> findGroups(){
+        List<Group> groups=studentsPerGroupOfferedCourseRepository.findAllGroups();
+        return groups.isEmpty()?null:groups;
     }
 
 

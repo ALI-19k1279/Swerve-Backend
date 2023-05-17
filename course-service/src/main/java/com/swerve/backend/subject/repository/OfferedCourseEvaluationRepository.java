@@ -24,6 +24,12 @@ public interface OfferedCourseEvaluationRepository extends BaseRepository<Offere
             " WHERE oce.studentid = :studentID AND ocei.offered_courseid= :offeredCourseID",nativeQuery = true)
     List<String> findEvaluationItemsByStudentIdAndOfferedCourseId(@Param("studentID") Long studentID, @Param("offeredCourseID") Long offeredCourseID);
 
+//    @Query(value="SELECT oce from OfferedCourseEvaluation oce oce JOIN " +
+//            "  OfferedCourseEvaluationItem ocei where oce.offeredCourse_EvaluationItem.id = ocei.id AND ocei.offeredCourseID=:offeredCourseId " +
+//            "  AND oce.studentID=:studentID")
+//    OfferedCourseEvaluation findEvaluationByStudentIdAndOfferedCourseId(@Param("studentID") Long studentID, @Param("offeredCourseID") Long offeredCourseID);
+
+
     @Query(value="SELECT ocei.title,ocei.id," +
             " MAX(oce.marks_obtained) AS max_marks," +
             " MIN(oce.marks_obtained) AS min_marks," +
@@ -74,6 +80,53 @@ public interface OfferedCourseEvaluationRepository extends BaseRepository<Offere
     @Query("DELETE FROM OfferedCourseEvaluationItem oce WHERE oce.id = :evalItemId")
     void deleteItemById(@Param("evalItemId") Long id);
 
+    @Query("Select oce from OfferedCourseEvaluation oce JOIN " +
+            " OfferedCourseEvaluationItem ocei where oce.offeredCourse_EvaluationItem.id = ocei.id AND ocei.offeredCourseID=:offeredCourseId " +
+            " AND ocei.groupID=:groupId"
+
+    )
+    List<OfferedCourseEvaluation> findOfferedCourseEvaluationByGroupIdAndOfferedCourseId(Long offeredCourseId,Long groupId);
+//    @Modifying
+//    @Query("UPDATE OfferedCourseEvaluation oce " +
+//            "SET oce.marksObtained = :mark " +
+//            "WHERE oce.offeredCourse_EvaluationItem.offeredCourseID = :offeredCourseId " +
+//            "AND oce.studentID = :studentId")
+//    int gradeSubmissions(@Param("offeredCourseId") Long offeredCourseId,
+//                        @Param("studentId") Long studentId,
+//                        @Param("mark") Integer mark);
+
+
+
+//    @Modifying
+//    @Query("UPDATE OfferedCourseEvaluation oce " +
+//            "SET oce.marksObtained = :marks " +
+//            "WHERE oce.offeredCourse_EvaluationItem.offeredCourseID = :offeredCourseId " +
+//            "AND oce.studentID IN :studentIds")
+//    int bulkGradeSubmissions(@Param("offeredCourseId") Long offeredCourseId,
+//                             @Param("studentIds") List<Long> studentIds,
+//                             @Param("marks") List<Integer> marks);
+
+
+ @Modifying
+ @Query(value = "UPDATE offered_course_evaluation " +
+         "SET marks_obtained = :mark " +
+         "WHERE oce_id IN " +
+         "(SELECT id FROM offered_course_evaluation_item WHERE offered_courseid = :offeredCourseId " +
+         " And id=:evalItemId) " +
+         "AND studentid = :studentId", nativeQuery = true)
+ int gradeSubmissions(@Param("offeredCourseId") Long offeredCourseId,
+ @Param("studentId") Long studentId,
+ @Param("mark") Integer mark,
+                      @Param("evalItemId") Long evalItemId);
+
+
+    @Modifying
+    @Query(value = "INSERT INTO offered_course_evaluation (studentid, resource_url, oce_id, no_of_attempts) " +
+            "VALUES (:studentID, :filePath, :evalItemId, :attempts)", nativeQuery = true)
+    void submitCourseWork(@Param("studentID") Long studentID,
+                          @Param("filePath") String filePath,
+                          @Param("evalItemId") Long evalItemId,
+                          @Param("attempts") Long attempts);
 }
 
 

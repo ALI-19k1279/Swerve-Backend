@@ -1,12 +1,11 @@
 package com.swerve.backend.subject.controller;
 
 import com.swerve.backend.shared.controller.BaseController;
-import com.swerve.backend.subject.dto.EvaluationStatsDTO;
-import com.swerve.backend.subject.dto.LearnerEvaluationDTO;
-import com.swerve.backend.subject.dto.OfferedCourseEvaluationDTO;
+import com.swerve.backend.subject.dto.*;
 import com.swerve.backend.subject.model.OfferedCourseEvaluation;
 import com.swerve.backend.subject.service.OfferedCourseEvaluationService;
 import org.apache.poi.xwpf.usermodel.*;
+import org.bouncycastle.cert.ocsp.Req;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.*;
 import org.springframework.stereotype.Controller;
@@ -19,6 +18,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.List;
+import java.util.Map;
 
 
 import static com.swerve.backend.subject.util.Utility.generateDoc;
@@ -144,4 +144,61 @@ public class OfferedCourseEvaluationController extends BaseController<OfferedCou
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+    @GetMapping("/{ocid}/{gid}/coursework-submissions")
+    public ResponseEntity<List<OfferedCourseEvaluation>> viewSubmissions(@PathVariable Long ocid,@PathVariable Long gid){
+        try{
+            return new ResponseEntity<>(this.offeredCourseEvaluationService.getSubmissionsByGroupIdandOfferedCourseID(ocid,gid),HttpStatus.OK);
+        }
+        catch (Exception e){
+            System.out.println("An error occurred while getting the coursework. "+ e);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+//    @PatchMapping("/{ocid}/{stdid}/grade-student-submission")
+//    public ResponseEntity<HttpStatus> gradeSubmissions(@PathVariable Long ocid,@PathVariable Long stdid,
+//                                                       @RequestParam("marks" ) String marks){
+//        try{
+//            Boolean result=offeredCourseEvaluationService.gradeSubmissions(ocid, stdid,Integer.parseInt(marks));
+//            if(result)
+//                return new ResponseEntity<>(HttpStatus.OK);
+//            else
+//                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+//        }
+//        catch (Exception e){
+//            System.out.println("An error occurred while deleting the evaluation item. "+ e);
+//            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//    }
+
+    @PatchMapping("/{ocid}/grade-coursework-submissions")
+    public ResponseEntity<HttpStatus> gradeSubmissions(@PathVariable Long ocid,
+                                                       @RequestBody  List<LearnerMarksDTO> studentMarks
+                                                       ) {
+        try {
+            offeredCourseEvaluationService.bulkGradeSubmissions(ocid, studentMarks);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (Exception e) {
+            System.out.println("An error occurred while grading the coursework submissions. " + e);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    @PostMapping("/{ocid}/submit-coursework")
+    public ResponseEntity<HttpStatus> evalItemSubmission(@PathVariable Long ocid,
+                                                       @RequestParam("studentId") Long studentID,
+                                                         @RequestParam("file") MultipartFile file,
+                                                         @RequestParam("evalItemId") Long evalItemId,
+                                                         @RequestParam("attempts") Long attempts
+    ) {
+        try {
+            offeredCourseEvaluationService.evalItemSubmission(ocid,studentID,
+                    file,
+                    evalItemId,
+                    attempts);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (Exception e) {
+            System.out.println("An error occurred while submitting coursework. " + e);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 }

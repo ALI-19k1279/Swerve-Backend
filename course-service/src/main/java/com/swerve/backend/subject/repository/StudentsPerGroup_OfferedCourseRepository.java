@@ -2,6 +2,7 @@ package com.swerve.backend.subject.repository;
 
 import com.fasterxml.jackson.databind.util.JSONPObject;
 import com.swerve.backend.shared.repository.BaseRepository;
+import com.swerve.backend.subject.dto.GroupDTO;
 import com.swerve.backend.subject.dto.LearnerEvaluationDTO;
 import com.swerve.backend.subject.model.*;
 import org.springframework.data.domain.Page;
@@ -58,6 +59,9 @@ public interface StudentsPerGroup_OfferedCourseRepository extends BaseRepository
             "offered_course_evaluation e where s.id=o.spg_id and e.oce_id=o.id and s.offered_course_id=:id " +
             "group by title,type",nativeQuery = true)
     List<String> findMaxMinAvgbyOfferedCourseID(Long id);
+
+    @Query("Select grp from Group grp")
+    List<Group> findAllGroups();
 
 
 //
