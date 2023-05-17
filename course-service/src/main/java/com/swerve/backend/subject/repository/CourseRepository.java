@@ -53,6 +53,11 @@ public interface CourseRepository extends BaseRepository<Course,Long> {
                     @Param("short_description") String short_description, @Param("title") String title,
                       @Param("learning_track_id") Long learning_track_id);
 
+    @Modifying
+    @Query(value = "INSERT INTO offered_course (courseid_id, cycle_id, fee, teacher_id) " +
+            " VALUES (:courseId, :cycleId, :fee, :teacherId)", nativeQuery = true)
+    void insertOfferedCourse(@Param("courseId") Long courseId, @Param("cycleId") Long cycleId, @Param("fee") int fee, @Param("teacherId") Long teacherId);
+
 //    List<Course> findByProfessorIdOrAssistantIdAndDeletedFalseOrderBySemesterAscNameAsc(
 //            Long professorId, Long assistantId);
 //

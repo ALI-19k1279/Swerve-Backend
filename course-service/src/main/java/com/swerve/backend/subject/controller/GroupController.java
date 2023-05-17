@@ -43,7 +43,7 @@ public class GroupController extends BaseController<StudentsPerGroup_OfferedCour
 
 
     @GetMapping("/{stdid}/{ocid}/evaluationitems")
-    @PreAuthorize("hasAnyAuthority('viewCourse')")
+    @PreAuthorize("hasAnyAuthority('viewCourseEvaluation')")
     public ResponseEntity< Map<String, List<OfferedCourseEvaluation>> > getEvaluationItemsByStudentID(@PathVariable  Long stdid,
                                                                                                        @PathVariable Long ocid){
         return new ResponseEntity<>(groupService.getEvaluationItemsByStudentId(stdid,ocid),HttpStatus.OK);
@@ -66,6 +66,15 @@ public class GroupController extends BaseController<StudentsPerGroup_OfferedCour
     @GetMapping("/{ocid}/groups/ocid")
     public ResponseEntity<List<Group>> findSPGOCByOfferedCourseId(@PathVariable  Long ocid){
         return new ResponseEntity<>(groupService.GetSPGOCByOfferedCourseId(ocid),HttpStatus.OK);
+    }
+
+    @GetMapping("/all/spgocs")
+    public ResponseEntity<List<StudentsPerGroup_OfferedCourseDTO>> getSPGOCs(){
+        return new ResponseEntity<>(groupService.findAll(),HttpStatus.OK);
+    }
+    @GetMapping("/groups")
+    public ResponseEntity<List<Group>> getGroups() {
+        return new ResponseEntity<>(groupService.findGroups(),HttpStatus.OK);
     }
 
 

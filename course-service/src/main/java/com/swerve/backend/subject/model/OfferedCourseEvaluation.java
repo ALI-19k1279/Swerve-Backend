@@ -37,4 +37,7 @@ public class OfferedCourseEvaluation extends BaseEntity<Long>{
     @Column()
     private int noOfAttempts;
 
+    //    @Column()
+//    private DA submissionDate;
+
 }

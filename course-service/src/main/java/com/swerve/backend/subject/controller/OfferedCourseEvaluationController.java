@@ -3,6 +3,7 @@ package com.swerve.backend.subject.controller;
 import com.swerve.backend.shared.controller.BaseController;
 import com.swerve.backend.subject.dto.EvaluationStatsDTO;
 import com.swerve.backend.subject.dto.LearnerEvaluationDTO;
+import com.swerve.backend.subject.dto.LearnerMarksDTO;
 import com.swerve.backend.subject.dto.OfferedCourseEvaluationDTO;
 import com.swerve.backend.subject.model.OfferedCourseEvaluation;
 import com.swerve.backend.subject.service.OfferedCourseEvaluationService;
@@ -66,6 +67,7 @@ public class OfferedCourseEvaluationController extends BaseController<OfferedCou
         return new ResponseEntity<>(docBytes, headers, HttpStatus.OK);
     }
     @PostMapping("/create-coursework")
+    @PreAuthorize("hasAnyAuthority('updateCourseEvaluation')")
     public ResponseEntity<?> createEvalItem( @RequestParam("title") String title,
                                              @RequestParam("type") String type,
                                              @RequestParam("canReattempt") String canReattempt,
@@ -111,6 +113,7 @@ public class OfferedCourseEvaluationController extends BaseController<OfferedCou
         }
     }
     @PatchMapping("/update-coursework")
+    @PreAuthorize("hasAnyAuthority('updateCourseEvaluation')")
     public ResponseEntity<?> updateEvalItemDeadlineDate(
                                              @RequestParam("deadline") String deadlineDate,
                                              @RequestParam("evalItemId") String evalItemId
@@ -134,6 +137,7 @@ public class OfferedCourseEvaluationController extends BaseController<OfferedCou
         }
     }
     @DeleteMapping("/{itemId}/delete-coursework-item")
+    @PreAuthorize("hasAnyAuthority('updateCourseEvaluation')")
     public ResponseEntity<?> deleteEvalItem(@PathVariable Long itemId){
         try{
             Boolean result=offeredCourseEvaluationService.deleteEvalItem(itemId);
@@ -144,6 +148,48 @@ public class OfferedCourseEvaluationController extends BaseController<OfferedCou
         }
         catch (Exception e){
             System.out.println("An error occurred while deleting the evaluation item. "+ e);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/{ocid}/{gid}/coursework-submissions")
+    public ResponseEntity<List<OfferedCourseEvaluation>> viewSubmissions(@PathVariable Long ocid,@PathVariable Long gid){
+        try{
+            return new ResponseEntity<>(this.offeredCourseEvaluationService.getSubmissionsByGroupIdandOfferedCourseID(ocid,gid),HttpStatus.OK);
+        }
+        catch (Exception e){
+            System.out.println("An error occurred while getting the coursework. "+ e);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PatchMapping("/{ocid}/grade-coursework-submissions")
+    public ResponseEntity<HttpStatus> gradeSubmissions(@PathVariable Long ocid,
+                                                       @RequestBody  List<LearnerMarksDTO> studentMarks
+    ) {
+        try {
+            offeredCourseEvaluationService.bulkGradeSubmissions(ocid, studentMarks);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (Exception e) {
+            System.out.println("An error occurred while grading the coursework submissions. " + e);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    @PostMapping("/{ocid}/submit-coursework")
+    public ResponseEntity<HttpStatus> evalItemSubmission(@PathVariable Long ocid,
+                                                         @RequestParam("studentId") Long studentID,
+                                                         @RequestParam("file") MultipartFile file,
+                                                         @RequestParam("evalItemId") Long evalItemId,
+                                                         @RequestParam("attempts") Long attempts
+    ) {
+        try {
+            offeredCourseEvaluationService.evalItemSubmission(ocid,studentID,
+                    file,
+                    evalItemId,
+                    attempts);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (Exception e) {
+            System.out.println("An error occurred while submitting coursework. " + e);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

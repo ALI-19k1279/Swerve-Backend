@@ -62,6 +62,9 @@ public class CourseService extends BaseService<Course,CourseDTO,Long> {
         return preRequisites.isEmpty()?null: preRequisites;
 
     }
+    public void insertOfferedCourse(Long courseId,Long cycleId,int fee,Long teacherId){
+        courseRepository.insertOfferedCourse( courseId, cycleId, fee,teacherId);
+    }
     public List<OfferedCourse> GetAllOfferedCourses(){
         List<OfferedCourse> offeredCourses=courseRepository.GetAllOfferedCourses();
         return offeredCourses.isEmpty()?null:offeredCourses;

@@ -123,6 +123,11 @@ public class GroupService extends BaseService<StudentsPerGroup_OfferedCourse, St
         return byGroupIdAndOfferedCourseIdAndDeletedFalse;
     }
 
+    public List<Group> findGroups(){
+        List<Group> groups=studentsPerGroupOfferedCourseRepository.findAllGroups();
+        return groups.isEmpty()?null:groups;
+    }
+
 
 //
 //    public LearnerEvaluationDTO getEvaluationsByStudentIDandOfferedCourseID(Long stdID,Long offeredCourseID) {

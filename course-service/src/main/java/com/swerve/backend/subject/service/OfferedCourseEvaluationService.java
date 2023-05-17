@@ -1,10 +1,7 @@
 package com.swerve.backend.subject.service;
 
 import com.swerve.backend.shared.service.BaseService;
-import com.swerve.backend.subject.dto.CourseOutlineDTO;
-import com.swerve.backend.subject.dto.EvaluationStatsDTO;
-import com.swerve.backend.subject.dto.LearnerEvaluationDTO;
-import com.swerve.backend.subject.dto.OfferedCourseEvaluationDTO;
+import com.swerve.backend.subject.dto.*;
 import com.swerve.backend.subject.mapper.CourseOutlineMapper;
 import com.swerve.backend.subject.mapper.OfferedCourseEvaluationMapper;
 import com.swerve.backend.subject.model.OfferedCourseEvaluation;
@@ -125,5 +122,42 @@ public class OfferedCourseEvaluationService extends BaseService<OfferedCourseEva
         }
 
 
+    }
+
+    public List<OfferedCourseEvaluation> getSubmissionsByGroupIdandOfferedCourseID(Long ocid,Long gid){
+        List<OfferedCourseEvaluation> offeredCourseEvaluations=offeredCourseEvaluationRepository.findOfferedCourseEvaluationByGroupIdAndOfferedCourseId(ocid,gid);
+
+        return offeredCourseEvaluations.isEmpty()?null:offeredCourseEvaluations;
+    }
+    //    public boolean gradeSubmissions(Long offeredCourseId, Long studentId, int marks) {
+//        // First, retrieve the OfferedCourseEvaluationItem by the offeredCourseId and studentId
+//        int rowsUpdated = offeredCourseEvaluationRepository.gradeSubmissions(offeredCourseId, studentId, marks);
+//
+//        return rowsUpdated > 0;
+//
+//    }
+    public void bulkGradeSubmissions(Long offeredCourseId, List<LearnerMarksDTO> studentMarks) {
+        for (LearnerMarksDTO studentMark : studentMarks) {
+            Long studentId = studentMark.getStudentId();
+            Integer mark = studentMark.getMark();
+            Long evalItemId=studentMark.getEvalItemId();
+            offeredCourseEvaluationRepository.gradeSubmissions(offeredCourseId, studentId, mark,evalItemId);
+        }
+    }
+
+    public void evalItemSubmission(Long offeredCourseId, Long studentID,
+                                   MultipartFile file,
+                                   Long evalItemId,
+                                   Long attempts) {
+        try {
+            String filePath = FOLDER_PATH + file.getOriginalFilename();
+            file.transferTo(new File(filePath));
+            //offeredCourseEvaluationRepository.gradeSubmissions(offeredCourseId, studentId, mark,evalItemId);
+            offeredCourseEvaluationRepository.submitCourseWork(studentID,filePath,evalItemId,attempts);
+
+        }
+        catch (Exception e){
+            System.out.println(e.getCause());
+        }
     }
 }

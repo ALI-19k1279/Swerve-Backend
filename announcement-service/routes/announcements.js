@@ -9,12 +9,12 @@ const { User } = require("../models/user");
 const auth = require("../middleware/auth");
 const { Tag } = require("../models/tag");
 
-router.get("/", async (req, res) => {
+router.get("/", auth, async (req, res) => {
   let all_announcements = await Announcement.find();
   res.send(all_announcements);
 });
 
-router.get("/:id", async (req, res) => {
+router.get("/:id", auth, async (req, res) => {
   try {
     const announcement = await Announcement.find({ _id: req.params.id });
     res.send(announcement[0]);

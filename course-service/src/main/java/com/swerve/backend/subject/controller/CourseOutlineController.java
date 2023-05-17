@@ -29,6 +29,7 @@ public class CourseOutlineController extends BaseController<OfferedCourseOutline
     }
 
     @PostMapping("/{offeredCourseId}/{teacherId}/update/outline")
+    @PreAuthorize("hasAnyAuthority('updateCourse')")
     public ResponseEntity<?> getCourseOutlineByOfferedCourseId(@PathVariable Long offeredCourseId,@PathVariable Long teacherId,
                                                                               @RequestBody CourseOutlineDTO courseOutlineDTO) {
         CourseOutlineDTO courseOutlineDTOs = courseOutlineService.saveOrUpdateCourseOutline(offeredCourseId,teacherId,courseOutlineDTO);

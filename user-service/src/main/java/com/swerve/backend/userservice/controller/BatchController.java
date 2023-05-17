@@ -2,10 +2,7 @@ package com.swerve.backend.userservice.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.batch.core.Job;
-import org.springframework.batch.core.JobParameters;
-import org.springframework.batch.core.JobParametersBuilder;
-import org.springframework.batch.core.JobParametersInvalidException;
+import org.springframework.batch.core.*;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
 import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
@@ -15,9 +12,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 
 @RestController
 @RequestMapping(path = "/batch")// Root path
@@ -35,20 +38,38 @@ public class BatchController {
     }
 
     @PostMapping("/importlearners")
-    public ResponseEntity<String> importCsvToDBJob() throws IOException, JobParametersInvalidException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException {
+    public ResponseEntity<BatchStatus> importCsvToDBJob(@RequestParam("file") MultipartFile file) throws IOException, JobParametersInvalidException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException {
 
         log.info("BatchController | importStudentsCsvToDBJob is called");
 
-        JobParameters jobParameters = new JobParametersBuilder()
-                .addLong("startAt", System.currentTimeMillis()).toJobParameters();
         try {
-            jobLauncher.run(job, jobParameters);
-        } catch (JobExecutionAlreadyRunningException | JobRestartException |
+
+            String fileName = file.getOriginalFilename();
+            Path tempUploadsPath = Paths.get("tempuploads/");
+
+            if (!Files.exists(tempUploadsPath)) {
+                Files.createDirectories(tempUploadsPath);
+            }
+            Path fileToImport = tempUploadsPath.resolve(fileName);
+            Files.copy(file.getInputStream(), fileToImport, StandardCopyOption.REPLACE_EXISTING);
+
+            JobParametersBuilder jobParametersBuilder = new JobParametersBuilder();
+            jobParametersBuilder.addLong("startAt", System.currentTimeMillis());
+            jobParametersBuilder.addString("filePath", fileToImport.toAbsolutePath().toString());
+
+            JobExecution jobExecution = jobLauncher.run(job, jobParametersBuilder.toJobParameters());
+            if (jobExecution.getStatus() == BatchStatus.COMPLETED) {
+                return new ResponseEntity<>( BatchStatus.COMPLETED,HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(BatchStatus.ABANDONED,HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        }  catch (JobExecutionAlreadyRunningException | JobRestartException |
                  JobInstanceAlreadyCompleteException | JobParametersInvalidException e) {
-            log.info("BatchController | importStudentsCsvToDBJob | error : " + e.getMessage());
+            log.info("BatchController | importEnrollmentsCsvToDBJob | error : " + e.getMessage());
             e.printStackTrace();
+            return new ResponseEntity<>(BatchStatus.FAILED, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        return new ResponseEntity<>("Batch Process Completed!!", HttpStatus.OK);
+//        return new ResponseEntity<>("Batch Process Completed!!", HttpStatus.OK);
     }
 }

@@ -81,6 +81,7 @@ public class AttendanceController extends BaseController<OfferedCourseAttendance
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to update attendance");
     }
     @PostMapping("/process")
+    @PreAuthorize("hasAnyAuthority('updateAttendance')")
     public ResponseEntity<String> processAttendance(@RequestBody List<AttendanceDTO> attendanceList) {
         boolean result = attendanceService.processAttendance(attendanceList);
         if (result) {

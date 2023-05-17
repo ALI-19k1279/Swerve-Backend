@@ -64,6 +64,7 @@ public class CourseMaterialController extends BaseController<CourseMaterial, Cou
     }
 
     @PostMapping("/filesystem")
+    @PreAuthorize("hasAnyAuthority('updateCourse')")
     public ResponseEntity<?> create(@RequestParam("file") MultipartFile file,
                                     @RequestParam("name") String name,
                                     @RequestParam("description") String description,

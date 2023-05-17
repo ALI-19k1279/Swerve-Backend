@@ -7,9 +7,8 @@ const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const users = require("./routes/users");
 const announcements = require("./routes/announcements");
-const eurekaHelper = require('./eureka-helper');
+const eurekaHelper = require("./eureka-helper");
 const app = express();
-
 
 let mongoDBURL = process.env.mongoDBURL;
 
@@ -40,4 +39,4 @@ const port = process.env.PORT || 4000;
 app.listen(port, () => {
   console.log(`App running on port ${port}`);
 });
-eurekaHelper.registerWithEureka('announcement-service', port);
+// eurekaHelper.registerWithEureka('announcement-service', port);
