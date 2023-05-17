@@ -3,6 +3,7 @@ package com.swerve.backend.subject.controller;
 
 import com.swerve.backend.shared.controller.BaseController;
 import com.swerve.backend.subject.dto.CourseDTO;
+import com.swerve.backend.subject.dto.CourseListingDTO;
 import com.swerve.backend.subject.dto.LearningTrackDTO;
 import com.swerve.backend.subject.model.Course;
 import com.swerve.backend.subject.model.LearningTrack;
@@ -103,6 +104,11 @@ public class CourseController extends BaseController<Course, CourseDTO,Long> {
         {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
+    }
+    @GetMapping("/course-listing")
+    public ResponseEntity<List<CourseListingDTO>> getCourseListing() {
+        List<CourseListingDTO> courses = courseService.getAllCourses();
+        return ResponseEntity.ok(courses);
     }
 
 }

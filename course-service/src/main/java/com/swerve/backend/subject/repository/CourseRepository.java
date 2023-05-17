@@ -58,6 +58,9 @@ public interface CourseRepository extends BaseRepository<Course,Long> {
             " VALUES (:courseId, :cycleId, :fee, :teacherId)", nativeQuery = true)
     void insertOfferedCourse(@Param("courseId") Long courseId, @Param("cycleId") Long cycleId, @Param("fee") int fee, @Param("teacherId") Long teacherId);
 
+    @Query(value = "SELECT CASE WHEN COUNT(*) > 0 THEN true ELSE false END FROM offered_course" +
+            " WHERE courseid_id = :courseId", nativeQuery = true)
+    boolean existsByCourseID(@Param("courseId") Long courseId);
 //    List<Course> findByProfessorIdOrAssistantIdAndDeletedFalseOrderBySemesterAscNameAsc(
 //            Long professorId, Long assistantId);
 //

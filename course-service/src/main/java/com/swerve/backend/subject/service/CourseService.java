@@ -4,6 +4,7 @@ package com.swerve.backend.subject.service;
 import com.swerve.backend.shared.service.BaseService;
 import com.swerve.backend.subject.client.FacultyFeignClient;
 import com.swerve.backend.subject.dto.CourseDTO;
+import com.swerve.backend.subject.dto.CourseListingDTO;
 import com.swerve.backend.subject.dto.LearningTrackDTO;
 import com.swerve.backend.subject.dto.OfferedCourseDTO;
 import com.swerve.backend.subject.mapper.CourseMapper;
@@ -14,6 +15,7 @@ import com.swerve.backend.subject.model.PreRequisite;
 import com.swerve.backend.subject.repository.CourseRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -73,5 +75,24 @@ public class CourseService extends BaseService<Course,CourseDTO,Long> {
     public void CreateCourse(String course_code,String credits,String short_description,String title,
                                             Long learning_track_id){
         courseRepository.insertCourse(course_code,credits,short_description,title,learning_track_id);
+    }
+    public List<CourseListingDTO> getAllCourses() {
+        List<Course> courses = courseRepository.findAll();
+        List<CourseListingDTO> courseDTOs = new ArrayList<>();
+
+        for (Course course : courses) {
+            CourseListingDTO courseDTO = new CourseListingDTO();
+            courseDTO.setId(course.getId());
+            courseDTO.setCourseCode(course.getCourseCode());
+            courseDTO.setTitle(course.getTitle());
+            courseDTO.setShortDescription(course.getShortDescription());
+            courseDTO.setCredits(course.getCredits());
+            boolean isOffered = courseRepository.existsByCourseID(course.getId());
+            courseDTO.setOffered(isOffered);
+
+            courseDTOs.add(courseDTO);
+        }
+
+        return courseDTOs;
     }
 }
