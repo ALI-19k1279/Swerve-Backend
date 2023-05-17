@@ -152,10 +152,11 @@ public class OfferedCourseEvaluationController extends BaseController<OfferedCou
         }
     }
 
-    @GetMapping("/{ocid}/{gid}/coursework-submissions")
-    public ResponseEntity<List<OfferedCourseEvaluation>> viewSubmissions(@PathVariable Long ocid,@PathVariable Long gid){
+    @GetMapping("/{ocid}/{gid}/{evalitemid}/coursework-submissions")
+    public ResponseEntity<List<OfferedCourseEvaluation>> viewSubmissions(@PathVariable Long ocid,@PathVariable Long gid,
+                                                                         @PathVariable Long evalitemid){
         try{
-            return new ResponseEntity<>(this.offeredCourseEvaluationService.getSubmissionsByGroupIdandOfferedCourseID(ocid,gid),HttpStatus.OK);
+            return new ResponseEntity<>(this.offeredCourseEvaluationService.getSubmissionsByGroupIdandOfferedCourseID(ocid,gid,evalitemid),HttpStatus.OK);
         }
         catch (Exception e){
             System.out.println("An error occurred while getting the coursework. "+ e);

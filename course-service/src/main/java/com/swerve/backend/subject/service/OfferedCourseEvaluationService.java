@@ -124,8 +124,8 @@ public class OfferedCourseEvaluationService extends BaseService<OfferedCourseEva
 
     }
 
-    public List<OfferedCourseEvaluation> getSubmissionsByGroupIdandOfferedCourseID(Long ocid,Long gid){
-        List<OfferedCourseEvaluation> offeredCourseEvaluations=offeredCourseEvaluationRepository.findOfferedCourseEvaluationByGroupIdAndOfferedCourseId(ocid,gid);
+    public List<OfferedCourseEvaluation> getSubmissionsByGroupIdandOfferedCourseID(Long ocid,Long gid,Long evalItemId){
+        List<OfferedCourseEvaluation> offeredCourseEvaluations=offeredCourseEvaluationRepository.findOfferedCourseEvaluationByGroupIdAndOfferedCourseId(ocid,gid,evalItemId);
 
         return offeredCourseEvaluations.isEmpty()?null:offeredCourseEvaluations;
     }

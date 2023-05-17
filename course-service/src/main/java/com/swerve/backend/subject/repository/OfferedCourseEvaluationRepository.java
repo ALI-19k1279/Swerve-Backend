@@ -76,10 +76,10 @@ public interface OfferedCourseEvaluationRepository extends BaseRepository<Offere
 
     @Query("Select oce from OfferedCourseEvaluation oce JOIN " +
             " OfferedCourseEvaluationItem ocei where oce.offeredCourse_EvaluationItem.id = ocei.id AND ocei.offeredCourseID=:offeredCourseId " +
-            " AND ocei.groupID=:groupId"
+            " AND ocei.groupID=:groupId AND ocei.id=:evalItemId"
 
     )
-    List<OfferedCourseEvaluation> findOfferedCourseEvaluationByGroupIdAndOfferedCourseId(Long offeredCourseId,Long groupId);
+    List<OfferedCourseEvaluation> findOfferedCourseEvaluationByGroupIdAndOfferedCourseId(Long offeredCourseId,Long groupId,Long evalItemId);
 
     @Modifying
     @Query(value = "UPDATE offered_course_evaluation " +
